@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/editormenusave" android:onClick="onSaveItem" android:showAsAction="always|withText" android:title="@string/editormenusave" android:icon="@drawable/menusave"></item>
+    <item android:id="@+id/editormenuattach" android:title="@string/editormenuattach" android:showAsAction="ifRoom|withText" android:onClick="onAttachPhoto" android:icon="@drawable/menuattach"></item>
+    
+</menu>

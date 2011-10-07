@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/menunew" android:onClick="onNewItemSelected"
+		android:showAsAction="ifRoom|withText" android:title="@string/recipemenucreate"
+		android:icon="@drawable/menucreate"></item>
+
+	<item android:id="@+id/menushowall" android:title="@string/recipemenushowall"
+		android:showAsAction="always|withText" android:onClick="onShowAllRecipes"></item>
+	<item android:id="@+id/submenusort" android:title="@string/recipemenusort">
+		<menu>
+            
+            <group android:checkableBehavior="single" android:menuCategory="alternative" android:id="@+id/sorttypes">
+            <item android:id="@+id/menusortname" android:title="@string/menusortname"></item>
+            <item android:id="@+id/menusortrating" android:title="@string/menusortrating">
+	</item>
+            <item android:id="@+id/menusorttime" android:title="@string/menusorttime"></item>
+</group>
+            <group android:checkableBehavior="single" android:menuCategory="alternative" android:id="@+id/sortdirections">
+                <item android:id="@+id/menusortascending" android:title="@string/menusortascending"></item>
+                <item android:id="@+id/menusortdescending" android:title="@string/menusortdescending"></item>
+            </group>
+        </menu>
+    </item>
+    <item android:icon="@drawable/searchicon" android:title="@string/recipemenusearch" android:showAsAction="ifRoom" android:id="@+id/submenusearch">
+        <menu>
+            <item android:id="@+id/menusearch" android:title="@string/menusearchstring"></item>
+            <item android:title="@string/menusearchtag" android:id="@+id/menusearchtag"></item>
+            <item android:title="@string/menusearchtime" android:id="@+id/menusearchtime"></item>
+        </menu>
+    </item>
+    
+    
+    
+</menu>

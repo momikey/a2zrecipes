@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent" android:gravity="center"
+	android:background="#003388">
+	<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="Set Timer" android:id="@+id/timertext"></TextView>
+	<LinearLayout android:layout_height="wrap_content"
+		android:id="@+id/linearLayout1" android:layout_gravity="center"
+		android:layout_width="wrap_content">
+		<EditText android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="00" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/timerdisplayminutes"
+			android:textSize="60sp" android:inputType="number" android:lines="1"
+			android:maxLength="3" android:minEms="1"></EditText>
+		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="min" android:id="@+id/timertextminutes"
+			android:layout_marginLeft="10dip" android:layout_marginRight="10dip"></TextView>
+		<EditText android:textAppearance="?android:attr/textAppearanceLarge"
+			android:text="00" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/timerdisplayseconds"
+			android:textSize="60sp" android:inputType="number" android:lines="1"
+			android:maxLength="2" android:minWidth="45sp" android:minEms="1"></EditText>
+		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="sec" android:id="@+id/timerseconds"
+			android:layout_marginLeft="10dip"></TextView>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/pickerlayout"
+		android:orientation="horizontal" android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</LinearLayout>
+	<LinearLayout android:id="@+id/buttonlayout"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<Button android:id="@+id/timerstartbutton"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:text="Start"></Button>
+		<Button android:id="@+id/timerstopbutton"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:text="Stop" android:enabled="false"></Button>
+	</LinearLayout>
+
+</LinearLayout>

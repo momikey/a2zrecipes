@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, RecipeBookActivity!</string>
+    <string name="app_name">RecipeBook</string>
+    <string name="recipename">Recipe Name</string>
+    <string name="recipedescription">Description</string>
+    <string name="recipecreator">"Creator's Name"</string>
+    <string name="reciperating">Rating</string>
+    <string name="recipedate">Date</string>
+    <string name="recipeclearbutton">Clear All</string>
+    <string name="recipesavebutton">Save</string>
+    <string name="recipetime">Total Preparation Time</string>
+    <string name="recipetimehours">hours</string>
+    <string name="recipetimeminutes">minutes</string>
+    <string name="recipeserving">Serves</string>
+    <string name="rvby">by </string>
+    <string name="rvserves">Serves </string>
+    <string name="ingredientstext">Ingredients</string>
+    <string name="recipetags">Tags</string>
+    <string name="recipeaddtag">Add Tag</string>
+    <string name="directionstext">Directions</string>
+    <string name="ctxedittag">Edit Tag</string>
+    <string name="ctxdeletetag">Delete Tag</string>
+    <string name="ctxeditingredient">Edit</string>
+    <string name="ctxdeleteingredient">Delete</string>
+    <string name="ctxeditdirection">Edit</string>
+    <string name="ctxdeletedirection">Delete</string>
+    <string name="ctxmoveupdirection">Move Up</string>
+    <string name="ctxmovedowndirection">Move Down</string>
+    <string name="recipelistedit">Edit Recipe</string>
+    <string name="recipelistdelete">Delete Recipe</string>
+    <string name="recipemenucreate">Create New Recipe</string>
+    <string name="viewermenutimer">Start Timer</string>
+    <string name="recipeattachphoto">Set Photo</string>
+    <string name="editormenusave">Save</string>
+    <string name="editormenuattach">Attach Photo</string>
+    <string name="search_hint">Search recipes</string>
+    <string name="recipemenusearch">Search</string>
+    <string-array name="fragmentnames">
+        <item>Recipe Information</item>
+        <item>Ingredients</item>
+        <item>Directions</item>
+        <item>Tags</item>
+    </string-array>
+        <string name="flipbookswitch">Switch to Flipbook Mode</string>
+        <string name="recipelistswitch">Switch to Recipe List Mode</string>
+        <string name="numrecipes">Recipes: %d</string>
+        <string name="viewallrecipes">Show All Recipes</string>
+        <string name="recipemenushowall">Show All Recipes</string>
+        <string name="menusearchstring">Search for Text</string>
+        <string name="menusearchtag">Search by Tag</string>
+        <string name="menusearchtime">Search by Time</string>
+        <string name="recipemenusort">Sort</string>
+        <string name="menusortname">Sort by Name</string>
+        <string name="menusortrating">Sort by Rating</string>
+        <string name="menusorttime">Sort by Time</string>
+        <string name="menusortascending">Ascending Sort</string>
+        <string name="menusortdescending">Descending Sort</string>
+</resources>

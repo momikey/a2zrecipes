@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent" android:gravity="center" android:background="#003388">
+	<TextView android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="00:00" android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/timerdisplay" android:textSize="60sp"></TextView>
+	<LinearLayout android:id="@+id/pickerlayout" android:orientation="horizontal"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TextView android:textAppearance="?android:attr/textAppearanceSmall" android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:text="Set timer for " android:id="@+id/textView1" android:layout_gravity="center_vertical"></TextView>
+		<NumberPicker android:id="@+id/numberpicker"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			android:orientation="vertical" android:layout_gravity="center_vertical" android:paddingLeft="20dip" android:paddingRight="20dip">
+		</NumberPicker>
+		<TextView android:textAppearance="?android:attr/textAppearanceSmall" android:text=" minute(s)" android:id="@+id/textView2" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center_vertical"></TextView>
+	</LinearLayout>
+	<LinearLayout
+	    android:id="@+id/buttonlayout"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content">
+	    <Button android:id="@+id/timerstartbutton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Start"></Button>
+	    <Button android:id="@+id/timerstopbutton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="Stop" android:enabled="false"></Button>
+	</LinearLayout>
+
+</LinearLayout>

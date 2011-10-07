@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <RelativeLayout android:layout_width="match_parent" android:id="@+id/relativeLayout1" android:layout_height="wrap_content" android:layout_weight="0">
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_alignParentTop="true" android:id="@+id/rvname" android:text="Recipe Name"></TextView>
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_below="@+id/rvname" android:layout_alignLeft="@+id/rvname" android:id="@+id/rvservestext" android:text="@string/recipeserving"></TextView>
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_below="@+id/rvservestext" android:layout_alignLeft="@+id/rvservestext" android:id="@+id/rvtimetext" android:text="@string/recipetime"></TextView>
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_toRightOf="@+id/rvtimetext" android:layout_alignTop="@+id/rvtimetext" android:layout_alignBottom="@+id/rvtimetext" android:layout_marginLeft="16dip" android:id="@+id/rvtime" android:text="Time taken"></TextView>
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_toRightOf="@+id/rvservestext" android:layout_alignTop="@+id/rvservestext" android:layout_alignBottom="@+id/rvservestext" android:id="@+id/rvserving" android:layout_marginLeft="16dip" android:text="Serving size"></TextView>
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_toRightOf="@+id/rvname" android:layout_alignBottom="@+id/rvname" android:id="@+id/rvbytext" android:text="@string/rvby" android:layout_alignBaseline="@id/rvname" android:layout_marginLeft="20dip" android:layout_marginRight="8dip"></TextView>
+        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_toRightOf="@+id/rvbytext" android:layout_alignBottom="@+id/rvbytext" android:id="@+id/rvcreator" android:layout_alignBaseline="@id/rvname" android:text="Creator"></TextView>
+        <RatingBar android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_width="wrap_content" android:id="@+id/rvrating" android:numStars="5" android:isIndicator="true"></RatingBar>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/middlerow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_weight="2" android:orientation="horizontal">
+        <GridView android:id="@+id/ingredients" android:layout_height="wrap_content" android:layout_width="0dip" android:padding="20dip" android:verticalSpacing="20dip" android:horizontalSpacing="20dip" android:numColumns="auto_fit" android:columnWidth="160dip" android:stretchMode="columnWidth" android:layout_weight="3"></GridView>
+        <FrameLayout android:layout_height="match_parent" android:id="@+id/photofragment" android:layout_width="0dip" android:layout_weight="2"></FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottomrow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:layout_weight="3" android:orientation="horizontal">
+        <ListView android:id="@+id/directions" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="2"></ListView>
+        <FrameLayout android:layout_height="match_parent" android:id="@+id/timerfragment" android:layout_width="0dip" android:layout_weight="1"></FrameLayout>
+    </LinearLayout>
+    
+</LinearLayout>

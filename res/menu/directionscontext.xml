@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/ctxeditdirection" android:title="@string/ctxeditdirection"></item>
+    <item android:id="@+id/ctxdeletedirection" android:title="@string/ctxdeletedirection"></item>
+    <item android:id="@+id/ctxmoveupdirection" android:title="@string/ctxmoveupdirection"></item>
+    <item android:id="@+id/ctxmovedowndirection" android:title="@string/ctxmovedowndirection"></item>
+    
+</menu>
