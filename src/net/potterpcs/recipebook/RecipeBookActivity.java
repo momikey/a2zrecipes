@@ -21,6 +21,7 @@ public class RecipeBookActivity extends FragmentActivity {
 	private final String TAG = RecipeBookActivity.class.getSimpleName();
 
 	FragmentManager manager;
+	Intent lastIntent;
 	String searchQuery;
 	boolean searchMode;
 	boolean sortDescending;
@@ -45,14 +46,15 @@ public class RecipeBookActivity extends FragmentActivity {
 				switchToFlipBook();
 			}
 		});
-        
-        	handleIntent(getIntent());
+        	lastIntent = getIntent();
+        	handleIntent(lastIntent);
     }
     
     @Override
     protected void onNewIntent(Intent intent) {
     	// TODO Auto-generated method stub
 //    	super.onNewIntent(intent);
+    	lastIntent = intent;
     	handleIntent(intent);
     }
     
@@ -183,8 +185,10 @@ public class RecipeBookActivity extends FragmentActivity {
 	}
 
     void switchToFlipBook() {
-    	Intent intent = new Intent(this, RecipeFlipbook.class);
-    	intent.putExtra(RecipeBook.SEARCH_EXTRA, searchQuery);
+//    	Intent intent = new Intent(this, RecipeFlipbook.class);
+    	Intent intent = new Intent(lastIntent);
+    	intent.setClass(this, RecipeFlipbook.class);
+//    	intent.putExtra(RecipeBook.SEARCH_EXTRA, searchQuery);
     	startActivity(intent);
     }
     

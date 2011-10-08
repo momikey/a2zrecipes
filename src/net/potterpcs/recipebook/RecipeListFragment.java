@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.MenuCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,6 +67,7 @@ public class RecipeListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 	
 	@Override
@@ -132,6 +135,12 @@ public class RecipeListFragment extends ListFragment {
 	}
 	
 	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.listviewmenu, menu);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtoflipbook), MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	}
+	
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -150,7 +159,6 @@ public class RecipeListFragment extends ListFragment {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.ctxmenuedit:
 			onEditItemSelected(item);
@@ -160,6 +168,18 @@ public class RecipeListFragment extends ListFragment {
 			return true;
 		default:
 			return super.onContextItemSelected(item);			
+		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.switchtoflipbook:
+			RecipeBookActivity activity = (RecipeBookActivity) getActivity();
+			activity.switchToFlipBook();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

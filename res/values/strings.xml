@@ -56,4 +56,6 @@
         <string name="menusorttime">Sort by Time</string>
         <string name="menusortascending">Ascending Sort</string>
         <string name="menusortdescending">Descending Sort</string>
+        <string name="switchtolist">Switch to List Mode</string>
+        <string name="switchtoflipbook">Switch to Flipbook Mode</string>
 </resources>

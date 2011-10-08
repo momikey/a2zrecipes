@@ -14,10 +14,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuCompat;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +35,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RecipeFlipbook extends FragmentActivity {
+	private static final String TAG = "RecipeFlipbook";
 	FlipAdapter flip;
 	ViewPager pager;
 	Intent intent;
@@ -51,7 +55,7 @@ public class RecipeFlipbook extends FragmentActivity {
 			sortKey = getIntent().getIntExtra(RecipeBookActivity.SORT_KEY, R.id.menusortname);
 			sortDescending = getIntent().getBooleanExtra(RecipeBookActivity.SORT_DESCENDING, false);
 			
-			String sortBy;
+			String sortBy = "";
 			switch (sortKey) {
 			case R.id.menusortrating:
 				sortBy = RecipeData.RT_RATING;
@@ -80,23 +84,25 @@ public class RecipeFlipbook extends FragmentActivity {
 			for (int i = 0 ; i < cursor.getCount(); ++i) {
 				cursor.moveToPosition(i);
 				ids[i] = cursor.getInt(cursor.getColumnIndex(RecipeData.RT_ID));
+				Log.i(TAG, "Cursor: " + cursor.getString(cursor.getColumnIndex(RecipeData.RT_NAME)));
 			}
 			Log.i(TAG, "Searching: " + searchQuery + ", Matches: " + cursor.getCount());
-			Log.i(TAG, ids.toString());
+			Log.i(TAG, "Sorting by: " + sortBy + " with descending: " + sortDescending + " and key: " + sortKey);
 			cursor.close();
 		}
 
 		@Override
 		public Fragment getItem(int position) {
 			// TODO Auto-generated method stub
-			if (searchQuery == null) {
-				return FlipperFragment.newInstance(position + 1);
-			} else {
+//			if (searchQuery == null) {
+//				return FlipperFragment.newInstance(position + 1);
+//			} else {
 //				Log.i(TAG, "Moving to position: " + position + " with ID " + cursor.getInt(cursor.getColumnIndex(RecipeData.RT_ID)));
 //				cursor.moveToPosition(position);
 //				return FlipperFragment.newInstance(cursor.getInt(cursor.getColumnIndex(RecipeData.RT_ID)));
-				return FlipperFragment.newInstance(ids[position]);
-			}
+//				return FlipperFragment.newInstance(ids[position]);
+//			}
+			return FlipperFragment.newInstance(ids[position]);
 		}
 
 		@Override
@@ -127,6 +133,7 @@ public class RecipeFlipbook extends FragmentActivity {
 			super.onCreate(savedInstanceState);
 			recipeId = getArguments() != null ? getArguments().getInt("rid") : 1;
 			recipe = ((RecipeBook) getActivity().getApplication()).getData().getSingleRecipeObject(recipeId);
+//			setHasOptionsMenu(true);
 		}
 		
 		@Override
@@ -175,8 +182,7 @@ public class RecipeFlipbook extends FragmentActivity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-			
+			}	
 			return v;
 		}
 	}
@@ -193,14 +199,17 @@ public class RecipeFlipbook extends FragmentActivity {
 		listmode.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), RecipeBookActivity.class);
-				if (getIntent().hasExtra(RecipeBook.SEARCH_EXTRA)) {
-					intent.putExtra(RecipeBook.SEARCH_EXTRA, getIntent().getStringExtra(RecipeBook.SEARCH_EXTRA));
-				}
-	            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	            startActivity(intent);
+				switchToListMode();
 			}
 		});
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.flippermenu, menu);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtolist), MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		return true;
 	}
 	
 	@Override
@@ -211,9 +220,28 @@ public class RecipeFlipbook extends FragmentActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             return true;
+		case R.id.switchtolist:
+			switchToListMode();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	void switchToListMode() {
+		Log.i(TAG, getIntent().toString());
+		Intent intent;
+		if (!Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+			intent = new Intent(getIntent());
+			intent.setClass(this, RecipeBookActivity.class);
+		} else {
+			intent = new Intent(this, RecipeBookActivity.class);
+			if (getIntent().hasExtra(RecipeBook.SEARCH_EXTRA)) {
+				intent.putExtra(RecipeBook.SEARCH_EXTRA, getIntent().getStringExtra(RecipeBook.SEARCH_EXTRA));
+			}
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		}
+		startActivity(intent);
 	}
 	
 }
