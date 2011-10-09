@@ -17,6 +17,8 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -35,6 +37,7 @@ public class RecipeViewer extends FragmentActivity {
 	GridView lvingredients;
 	ListView lvdirections;
 	FrameLayout rvphoto;
+	String photoUri;
 	
 	static final String TAG = "RecipeViewer";
 	
@@ -50,7 +53,7 @@ public class RecipeViewer extends FragmentActivity {
 
 		app = (RecipeBook) getApplication();
 		RecipeData data = app.getData();
-		
+
 		rvname = (TextView) findViewById(R.id.rvname);
 		rvcreator = (TextView) findViewById(R.id.rvcreator);
 		rvserving = (TextView) findViewById(R.id.rvserving);
@@ -72,14 +75,21 @@ public class RecipeViewer extends FragmentActivity {
 		rvrating.setRating(mdc.getFloat(mdc.getColumnIndex(RecipeData.RT_RATING)));
 		
 		// TODO: use fragments instead
-		String photoUri = mdc.getString(mdc.getColumnIndex(RecipeData.RT_PHOTO));
+		photoUri = mdc.getString(mdc.getColumnIndex(RecipeData.RT_PHOTO));
 		if (photoUri != null) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
 			try {
 				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(photoUri));
-//				rvphoto.setForeground(new BitmapDrawable(bitmap));
 				ImageView iv = new ImageView(this);
 				iv.setImageBitmap(bitmap);
+				iv.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+						PhotoDialog pd = PhotoDialog.newInstance(photoUri);
+						pd.show(ft, "dialog");
+					}
+				});
 				rvphoto.addView(iv);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

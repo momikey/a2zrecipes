@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
@@ -174,6 +175,14 @@ public class RecipeFlipbook extends FragmentActivity {
 //					rvphoto.setForeground(new BitmapDrawable(bitmap));
 					ImageView iv = new ImageView(getActivity());
 					iv.setImageBitmap(bitmap);
+					iv.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+							PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
+							pd.show(ft, "dialog");
+						}
+					});
 					rvphoto.addView(iv);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
