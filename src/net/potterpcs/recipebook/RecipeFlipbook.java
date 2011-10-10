@@ -1,15 +1,10 @@
 package net.potterpcs.recipebook;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -168,32 +163,28 @@ public class RecipeFlipbook extends FragmentActivity {
 			lvdirections.setAdapter(directions);
 			
 			if (recipe.photo != null) {
-				try {
-					Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), 
-							Uri.parse(recipe.photo));
-//					rvphoto.setForeground(new BitmapDrawable(bitmap));
-					ImageView iv = new ImageView(getActivity());
-					iv.setImageBitmap(bitmap);
-					iv.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-							PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
-							pd.show(ft, "dialog");
-						}
-					});
-					rvphoto.addView(iv);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				Uri uri = Uri.parse(recipe.photo);
+				ImageView iv = new ImageView(getActivity());
+				
+				if (uri.getScheme().equals("content")) {
+					iv.setImageURI(uri);
+				} else {
+					DownloadImageTask.doDownload(recipe.photo, iv);
 				}
+//					rvphoto.setForeground(new BitmapDrawable(bitmap));
+				iv.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+						PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
+						pd.show(ft, "dialog");
+					}
+				});
+				rvphoto.addView(iv);
 			}	
 			return v;
 		}
-	}
+}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -243,5 +234,6 @@ public class RecipeFlipbook extends FragmentActivity {
 		}
 		startActivity(intent);
 	}
+	
 	
 }

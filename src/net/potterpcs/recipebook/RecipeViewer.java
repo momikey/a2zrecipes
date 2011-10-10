@@ -1,14 +1,9 @@
 package net.potterpcs.recipebook;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -78,24 +73,21 @@ public class RecipeViewer extends FragmentActivity {
 		photoUri = mdc.getString(mdc.getColumnIndex(RecipeData.RT_PHOTO));
 		if (photoUri != null) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
-			try {
-				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(photoUri));
-				ImageView iv = new ImageView(this);
-				iv.setImageBitmap(bitmap);
-				iv.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-						PhotoDialog pd = PhotoDialog.newInstance(photoUri);
-						pd.show(ft, "dialog");
-					}
-				});
-				rvphoto.addView(iv);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			ImageView iv = new ImageView(this);
+			if (Uri.parse(photoUri).getScheme().equals("content")) {
+				iv.setImageURI(Uri.parse(photoUri));
+			} else {
+				DownloadImageTask.doDownload(photoUri, iv);
 			}
+			iv.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					PhotoDialog pd = PhotoDialog.newInstance(photoUri);
+					pd.show(ft, "dialog");
+				}
+			});
+			rvphoto.addView(iv);
 		}
 
 		Cursor dirc = data.getRecipeDirections(rid);

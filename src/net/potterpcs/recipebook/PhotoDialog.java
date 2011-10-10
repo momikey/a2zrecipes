@@ -43,7 +43,12 @@ public class PhotoDialog extends DialogFragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.photodialog, container, false);
 		ImageView photo = (ImageView) v.findViewById(R.id.dialogphoto);
-		photo.setImageURI(photoUri);
+		
+		if (photoUri.getScheme().equals("content")) {
+			photo.setImageURI(photoUri);
+		} else {
+			DownloadImageTask.doDownload(photoUri.toString(), photo);
+		}
 		
 		photo.setOnClickListener(new OnClickListener() {
 			@Override
