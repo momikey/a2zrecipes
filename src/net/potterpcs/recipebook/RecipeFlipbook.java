@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -203,14 +202,6 @@ public class RecipeFlipbook extends FragmentActivity {
 		flip = new FlipAdapter(getSupportFragmentManager());
 		pager = (ViewPager) findViewById(R.id.pager);
 		pager.setAdapter(flip);
-		
-		Button listmode = (Button) findViewById(R.id.recipelistmode);
-		listmode.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				switchToListMode();
-			}
-		});
 	}
 	
 	@Override

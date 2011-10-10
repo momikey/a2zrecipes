@@ -1,5 +1,9 @@
 package net.potterpcs.recipebook;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -47,6 +51,7 @@ public class RecipeData {
 	public static final String[] TAGS_FIELDS = { TT_ID, TT_TAG };
 	
 	public static class Recipe {
+		// these don't really need to be private, because it's just a data class
 		long id;
 		String name;
 		String description;
@@ -59,6 +64,94 @@ public class RecipeData {
 		String[] directions;
 		String[] tags;
 		String photo;
+		
+		public String toJSONString() {
+			JSONObject jo = new JSONObject();
+			try {
+				jo.put(RT_ID, id);
+				jo.put(RT_NAME, name);
+				jo.put(RT_DESCRIPTION, description);
+				jo.put(RT_RATING, rating);
+				jo.put(RT_CREATOR, creator);
+				jo.put(RT_DATE, date);
+				jo.put(RT_SERVING, serving);
+				jo.put(RT_TIME, time);
+				// TODO Base64 photo
+				jo.put(RT_PHOTO, photo);
+				
+				JSONArray ji = new JSONArray();
+				for (int i = 0; i < ingredients.length; i++) {
+					ji.put(ingredients[i]);
+				}
+				jo.put(INGREDIENTS_TABLE, ji);
+				
+				JSONArray jd = new JSONArray();
+				for (int d = 0; d < directions.length; d++) {
+					jd.put(directions[d]);
+				}
+				jo.put(DIRECTIONS_TABLE, jd);
+				
+				JSONArray jt = new JSONArray();
+				for (int t = 0; t < tags.length; t++) {
+					jt.put(tags[t]);
+				}
+				jo.put(TAGS_TABLE, jt);
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return jo.toString();
+		}
+		
+		// Create a Recipe object from a JSON string
+		public static Recipe parseJSON(String json) {
+			Recipe r = new Recipe();
+			JSONObject jo;
+			try {
+				jo = new JSONObject(json);
+
+				// Basic fields
+				r.id = jo.optLong(RT_ID);
+				r.name = jo.optString(RT_NAME);
+				r.description = jo.optString(RT_DESCRIPTION);
+				r.rating = (float) jo.optDouble(RT_RATING);
+				r.creator = jo.optString(RT_CREATOR);
+				r.date = jo.optString(RT_DATE);
+				r.serving = jo.optInt(RT_SERVING);
+				r.time = jo.optInt(RT_TIME);
+				// TODO Base64 photo
+				r.photo = jo.optString(RT_PHOTO);
+
+				JSONArray ji = jo.optJSONArray(INGREDIENTS_TABLE);
+				JSONArray jd = jo.optJSONArray(DIRECTIONS_TABLE);
+				JSONArray jt = jo.optJSONArray(TAGS_TABLE);
+
+				// Ingredients
+				r.ingredients = new String[ji.length()];
+				for (int i = 0; i < r.ingredients.length; i++) {
+					r.ingredients[i] = ji.optString(i);
+				}
+
+				// Directions (remember that these are ordered!)
+				r.directions = new String[jd.length()];
+				for (int d = 0; d < r.directions.length; d++) {
+					r.directions[d] = jd.optString(d);
+				}
+
+				// Tags
+				r.tags = new String[jt.length()];
+				for (int t = 0; t < r.tags.length; t++) {
+					r.tags[t] = jt.optString(t);
+				}
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return r;
+		}
 	}
 	
 	class DbHelper extends SQLiteOpenHelper {

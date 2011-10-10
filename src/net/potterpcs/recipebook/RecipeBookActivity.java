@@ -12,9 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
 public class RecipeBookActivity extends FragmentActivity {
 	
@@ -38,16 +35,8 @@ public class RecipeBookActivity extends FragmentActivity {
         manager = getSupportFragmentManager();
         
         setContentView(R.layout.main);
-        		
-        Button flipbook = (Button) findViewById(R.id.flipbookmode);
-        flipbook.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				switchToFlipBook();
-			}
-		});
-        	lastIntent = getIntent();
-        	handleIntent(lastIntent);
+        lastIntent = getIntent();
+        handleIntent(lastIntent);
     }
     
     @Override

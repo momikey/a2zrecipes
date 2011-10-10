@@ -92,10 +92,8 @@ public class RecipeViewer extends FragmentActivity {
 				});
 				rvphoto.addView(iv);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
