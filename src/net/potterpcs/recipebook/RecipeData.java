@@ -371,6 +371,11 @@ public class RecipeData {
 		return getRecipesByTag(tag, RT_NAME);
 	}
 	
+	public Cursor getAllTags() {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		return db.query(TAGS_TABLE, new String[] { TT_TAG }, null, null, null, null, TT_TAG);
+	}
+	
 	public void insertRecipe(ContentValues values) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		try {

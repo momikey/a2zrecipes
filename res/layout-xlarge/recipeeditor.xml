@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" android:orientation="horizontal">
+    <LinearLayout android:id="@+id/linearLayout1" android:layout_weight="1" android:layout_width="0dip" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dip">
+        <fragment android:layout_width="match_parent" android:layout_height="0dip" android:layout_weight="3" android:name="net.potterpcs.recipebook.MetadataEditor" android:id="@+id/metafragment" android:layout_marginBottom="16dip"></fragment>
+        <fragment android:layout_width="match_parent" android:layout_height="0dip" android:layout_weight="1" android:name="net.potterpcs.recipebook.TagsEditor" android:id="@+id/tagsfragment" android:layout_marginTop="16dip"></fragment>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/linearLayout2" android:layout_weight="2" android:layout_width="0dip" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dip">
+        <fragment android:layout_width="match_parent" android:layout_weight="1" android:layout_height="0dip" android:name="net.potterpcs.recipebook.IngredientsEditor" android:id="@+id/ingredientsfragment" android:layout_marginBottom="16dip"></fragment>
+        <fragment android:layout_width="match_parent" android:layout_weight="1" android:layout_height="0dip" android:name="net.potterpcs.recipebook.DirectionsEditor" android:id="@+id/directionsfragment" android:layout_marginTop="16dip"></fragment>
+    </LinearLayout>
+    
+</LinearLayout>

@@ -35,7 +35,6 @@ public class RecipeFlipbook extends FragmentActivity {
 	ViewPager pager;
 	Intent intent;
 
-	// TODO work with searches
 	public class FlipAdapter extends FragmentPagerAdapter {
 		private static final String TAG = "FlipAdapater";
 		String searchQuery;
@@ -58,6 +57,9 @@ public class RecipeFlipbook extends FragmentActivity {
 			case R.id.menusorttime:
 				sortBy = RecipeData.RT_TIME;
 				break;
+			case R.id.menusortdate:
+				// TODO actually sort by date instead of ID
+				sortBy = RecipeData.RT_ID;
 			case R.id.menusortname:
 			default:
 				sortBy = RecipeData.RT_NAME;

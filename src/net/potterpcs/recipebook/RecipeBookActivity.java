@@ -154,6 +154,7 @@ public class RecipeBookActivity extends FragmentActivity {
     	case R.id.menusortname:
     	case R.id.menusortrating:
     	case R.id.menusorttime:
+    	case R.id.menusortdate:
     		item.setChecked(!item.isChecked());
     		startSortActivity(item.getItemId(), sortDescending);
     		return true;
