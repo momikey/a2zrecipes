@@ -212,7 +212,9 @@ public class RecipeData {
 	}
 	
 	private String createInnerJoin(String left, String right, String left_id, String right_id) {
-		return left + " inner join " + right + " on " + left_id + " = " + right_id;
+		String table1id = left + "." + left_id;
+		String table2id = right + "." + right_id;
+		return left + " inner join " + right + " on " + table1id + " = " + table2id;
 	}
 	
 //	private String createLikePattern(String[] strings) {
@@ -363,7 +365,9 @@ public class RecipeData {
 	
 	public Cursor getRecipesByTag(String tag, String sortBy) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		return db.query(createInnerJoin(RECIPES_TABLE, TAGS_TABLE, RT_ID, TT_ID), RECIPES_FIELDS,
+		String[] fields = RECIPES_FIELDS;
+		fields[0] = RECIPES_TABLE + "." + RT_ID;
+		return db.query(createInnerJoin(RECIPES_TABLE, TAGS_TABLE, RT_ID, TT_RECIPE_ID), fields,
 				TT_TAG + " = ?", new String[] { tag }, null, null, sortBy);
 	}
 	
@@ -373,7 +377,7 @@ public class RecipeData {
 	
 	public Cursor getAllTags() {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		return db.query(TAGS_TABLE, new String[] { TT_TAG }, null, null, null, null, TT_TAG);
+		return db.query(TAGS_TABLE, TAGS_FIELDS, null, null, TT_TAG, null, TT_TAG);
 	}
 	
 	public void insertRecipe(ContentValues values) {

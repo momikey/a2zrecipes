@@ -59,4 +59,5 @@
         <string name="switchtolist">Switch to List Mode</string>
         <string name="switchtoflipbook">Switch to Flipbook Mode</string>
         <string name="menusortdate">Sort by Date</string>
+        <string name="tagsearchtext">Select a Tag</string>
 </resources>

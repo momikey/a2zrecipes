@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
 import android.util.Log;
 import android.view.Menu;
@@ -18,10 +19,12 @@ public class RecipeBookActivity extends FragmentActivity {
 	private final String TAG = RecipeBookActivity.class.getSimpleName();
 
 	FragmentManager manager;
-	Intent lastIntent;
-	String searchQuery;
-	boolean searchMode;
-	boolean sortDescending;
+	private Intent lastIntent;
+	private String searchQuery;
+	private String searchTag;
+	private boolean searchMode;
+	private boolean sortDescending;
+	private boolean tagSearchMode;
 	int sortKey;
 
 	static final String SORT_DESCENDING = " desc";
@@ -69,6 +72,14 @@ public class RecipeBookActivity extends FragmentActivity {
     	} else {
     		sortDescending = searchData.getBoolean(SORT_DESCENDING, false);
     		sortKey = searchData.getInt(SORT_KEY, 0);
+    	}
+    	
+    	if (intent.hasExtra(RecipeBook.TAG_EXTRA)) {
+    		tagSearchMode = true;
+    		searchTag = intent.getStringExtra(RecipeBook.TAG_EXTRA);
+    	} else {
+    		tagSearchMode = false;
+    		searchTag = null;
     	}
     	
 		Log.i(TAG, "Sort descending == " + sortDescending + ", sort key == " + sortKey);
@@ -124,7 +135,8 @@ public class RecipeBookActivity extends FragmentActivity {
     
 	private void hideShowAllItem(Menu menu) {
 		// hide "Show All" option if already showing all recipes
-		menu.findItem(R.id.menushowall).setVisible(searchMode).setEnabled(searchMode);
+		boolean menuStatus = searchMode || tagSearchMode;
+		menu.findItem(R.id.menushowall).setVisible(menuStatus).setEnabled(menuStatus);	
 	}
     
     @Override
@@ -136,6 +148,9 @@ public class RecipeBookActivity extends FragmentActivity {
     		return true;
     	case R.id.menusearch:
     		onSearchRequested();
+    		return true;
+    	case R.id.menusearchtag:
+    		onSearchByTag();
     		return true;
     	case R.id.menushowall:
     		onShowAllRecipes(item);
@@ -170,6 +185,9 @@ public class RecipeBookActivity extends FragmentActivity {
 		intent.putExtra(SORT_DESCENDING, descending);
 		if (searchMode) {
 			intent.putExtra(RecipeBook.SEARCH_EXTRA, searchQuery);
+		}
+		if (tagSearchMode) {
+			intent.putExtra(RecipeBook.TAG_EXTRA, searchTag);
 		}
 		startActivity(intent);
 	}
@@ -214,6 +232,12 @@ public class RecipeBookActivity extends FragmentActivity {
     	intent.putExtra(SORT_KEY, sortKey);
     	startActivity(intent);
     }
+    
+    public void onSearchByTag() {
+    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    	TagSearchDialog tsd = TagSearchDialog.newInstance();
+    	tsd.show(ft, null);
+    }
 
 	public boolean isSearchMode() {
 		return searchMode;
@@ -231,5 +255,15 @@ public class RecipeBookActivity extends FragmentActivity {
 	public int getSortKey() {
 		// returns an ID value
 		return sortKey;
+	}
+
+	public String getSearchTag() {
+		// returns a tag to be used for searching
+		return searchTag;
+	}
+	
+	public boolean isTagSearch() {
+		// true if we are searching for a tag
+		return tagSearchMode;
 	}
 }

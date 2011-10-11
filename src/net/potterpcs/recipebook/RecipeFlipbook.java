@@ -38,6 +38,7 @@ public class RecipeFlipbook extends FragmentActivity {
 	public class FlipAdapter extends FragmentPagerAdapter {
 		private static final String TAG = "FlipAdapater";
 		String searchQuery;
+		String searchTag;
 		int sortKey;
 		boolean sortDescending;
 		Cursor cursor;
@@ -46,6 +47,7 @@ public class RecipeFlipbook extends FragmentActivity {
 		public FlipAdapter(FragmentManager fm) {
 			super(fm);
 			searchQuery = getIntent().getStringExtra(RecipeBook.SEARCH_EXTRA);
+			searchTag = getIntent().getStringExtra(RecipeBook.TAG_EXTRA);
 			sortKey = getIntent().getIntExtra(RecipeBookActivity.SORT_KEY, R.id.menusortname);
 			sortDescending = getIntent().getBooleanExtra(RecipeBookActivity.SORT_DESCENDING, false);
 			
@@ -72,7 +74,10 @@ public class RecipeFlipbook extends FragmentActivity {
 			
 			if (searchQuery != null) {
 				cursor = ((RecipeBook) getApplication()).getData().getMatchingRecipes(searchQuery, sortBy);
-			} else {
+			} else if (searchTag != null) {
+				cursor = ((RecipeBook) getApplication()).getData().getRecipesByTag(searchTag, sortBy);
+			}
+			else {
 				cursor = ((RecipeBook) getApplication()).getData().getAllRecipes(sortBy);
 			}
 

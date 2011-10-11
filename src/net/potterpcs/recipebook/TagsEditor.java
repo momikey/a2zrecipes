@@ -63,7 +63,6 @@ public class TagsEditor extends Fragment {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.ctxdeletetag:
@@ -71,7 +70,8 @@ public class TagsEditor extends Fragment {
 			return true;
 			
 		case R.id.ctxedittag:
-			
+			((EditText) getView().findViewById(R.id.tagsedit)).setText(adapter.getItem(info.position));
+			adapter.remove(adapter.getItem(info.position));
 			return true;
 			
 		default:

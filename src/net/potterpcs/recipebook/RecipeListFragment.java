@@ -127,6 +127,9 @@ public class RecipeListFragment extends ListFragment {
 		if (activity.isSearchMode()) {
 			cursor = data.getMatchingRecipes(activity.getSearchQuery(), sortData);
 			Log.i(TAG, "Searching: " + activity.getSearchQuery() + ", Matches: " + cursor.getCount() + ", Data: " + sortData);
+		} else if (activity.isTagSearch()) {
+			cursor = data.getRecipesByTag(activity.getSearchTag(), sortData);
+			Log.i(TAG, "Showing recipes matching tag: " + activity.getSearchTag());
 		} else {
 			cursor = data.getAllRecipes(sortData);
 			Log.i(TAG, "Showing all recipes, sorted by: " + sortData);
