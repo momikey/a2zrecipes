@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/menunew" android:onClick="onNewItemSelected"
-		android:showAsAction="ifRoom|withText" android:title="@string/recipemenucreate"
-		android:icon="@drawable/menucreate"></item>
+		android:showAsAction="ifRoom|withText" android:title="@string/recipemenucreate" android:icon="@drawable/menu_new"></item>
 
 	<item android:id="@+id/menushowall" android:title="@string/recipemenushowall"
-		android:showAsAction="always|withText" android:onClick="onShowAllRecipes"></item>
-	<item android:id="@+id/submenusort" android:title="@string/recipemenusort">
+		android:onClick="onShowAllRecipes" android:showAsAction="ifRoom|withText" android:icon="@drawable/menu_showall"></item>
+	<item android:id="@+id/submenusort" android:title="@string/recipemenusort" android:icon="@drawable/menu_sort">
 		<menu>
             
             <group android:checkableBehavior="single" android:menuCategory="alternative" android:id="@+id/sorttypes">
@@ -22,7 +21,7 @@
             </group>
         </menu>
     </item>
-    <item android:icon="@drawable/searchicon" android:title="@string/recipemenusearch" android:showAsAction="ifRoom" android:id="@+id/submenusearch">
+    <item android:title="@string/recipemenusearch" android:showAsAction="ifRoom" android:id="@+id/submenusearch" android:icon="@drawable/menu_search">
         <menu>
             <item android:id="@+id/menusearch" android:title="@string/menusearchstring"></item>
             <item android:title="@string/menusearchtag" android:id="@+id/menusearchtag"></item>

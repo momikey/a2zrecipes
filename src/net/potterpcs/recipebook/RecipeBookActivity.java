@@ -103,7 +103,7 @@ public class RecipeBookActivity extends FragmentActivity {
     	MenuCompat.setShowAsAction(menu.findItem(R.id.menunew), 
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     	MenuCompat.setShowAsAction(menu.findItem(R.id.menushowall),
-    			MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
     	hideShowAllItem(menu);
     	setSortOptions(menu);
