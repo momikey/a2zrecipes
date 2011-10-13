@@ -60,4 +60,7 @@
         <string name="switchtoflipbook">Switch to Flipbook Mode</string>
         <string name="menusortdate">Sort by Date</string>
         <string name="tagsearchtext">Select a Tag</string>
+        <string name="timesearchheader">Find recipes that take at least</string>
+        <string name="timesearchmiddle">but no more than</string>
+        <string name="timesearchbutton">Search</string>
 </resources>

@@ -224,6 +224,10 @@ public class RecipeData {
 		return RT_NAME + " like ? or " + RT_DESCRIPTION + " like ?";
 	}
 	
+	private String createTimeComparisonPattern() {
+		return RT_TIME + " <= ? and " + RT_TIME + " >= ?";
+	}
+	
 	public long getLastInsertRecipeId() {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor c = db.query(RECIPES_TABLE, new String[] { "last_insert_rowid() " }, null, null, null, null, null);
@@ -272,6 +276,16 @@ public class RecipeData {
 	
 	public Cursor getMatchingRecipes(String match) {
 		return getMatchingRecipes(match, RT_NAME);
+	}
+	
+	public Cursor getMatchingRecipesByTime(int max, int min, String sortBy) {
+		String[] times = { Integer.toString(max), Integer.toString(min) };
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		return db.query(RECIPES_TABLE, RECIPES_FIELDS, createTimeComparisonPattern(), times, null, null, sortBy);
+	}
+	
+	public Cursor getMatchingRecipesByTime(int max, int min) {
+		return getMatchingRecipesByTime(max, min, RT_NAME);
 	}
 	
 	public Cursor getSingleRecipe(long rid) {

@@ -130,6 +130,10 @@ public class RecipeListFragment extends ListFragment {
 		} else if (activity.isTagSearch()) {
 			cursor = data.getRecipesByTag(activity.getSearchTag(), sortData);
 			Log.i(TAG, "Showing recipes matching tag: " + activity.getSearchTag());
+		} else if (activity.isTimeSearch()) {
+			cursor = data.getMatchingRecipesByTime(activity.getMaxTime(), activity.getMinTime(), sortData);
+			Log.i(TAG, "Showing recipes at least: " + activity.getMinTime() + " but no more than: " + activity.getMaxTime());
+			Log.i(TAG, "Total recipes shown: " + cursor.getCount());
 		} else {
 			cursor = data.getAllRecipes(sortData);
 			Log.i(TAG, "Showing all recipes, sorted by: " + sortData);

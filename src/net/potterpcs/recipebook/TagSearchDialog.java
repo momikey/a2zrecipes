@@ -57,6 +57,14 @@ public class TagSearchDialog extends DialogFragment {
 					if (oldIntent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
 						intent.putExtra(RecipeBook.SEARCH_EXTRA, 
 								oldIntent.getStringExtra(RecipeBook.SEARCH_EXTRA));
+					}			
+					if (oldIntent.hasExtra(RecipeBook.TIME_EXTRA)) {
+						intent.putExtra(RecipeBook.TIME_EXTRA, 
+								oldIntent.getStringExtra(RecipeBook.TIME_EXTRA));
+						intent.putExtra(RecipeBook.TIME_EXTRA_MIN, 
+								oldIntent.getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0));
+						intent.putExtra(RecipeBook.TIME_EXTRA_MAX, 
+								oldIntent.getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0));
 					}
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				}

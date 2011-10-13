@@ -41,6 +41,9 @@ public class RecipeFlipbook extends FragmentActivity {
 		String searchTag;
 		int sortKey;
 		boolean sortDescending;
+		boolean timeSearch;
+		int max;
+		int min;
 		Cursor cursor;
 		int[] ids;
 		
@@ -50,6 +53,9 @@ public class RecipeFlipbook extends FragmentActivity {
 			searchTag = getIntent().getStringExtra(RecipeBook.TAG_EXTRA);
 			sortKey = getIntent().getIntExtra(RecipeBookActivity.SORT_KEY, R.id.menusortname);
 			sortDescending = getIntent().getBooleanExtra(RecipeBookActivity.SORT_DESCENDING, false);
+			timeSearch = getIntent().getBooleanExtra(RecipeBook.TIME_EXTRA, false);
+			max = getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0);
+			min = getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0);
 			
 			String sortBy = "";
 			switch (sortKey) {
@@ -76,8 +82,9 @@ public class RecipeFlipbook extends FragmentActivity {
 				cursor = ((RecipeBook) getApplication()).getData().getMatchingRecipes(searchQuery, sortBy);
 			} else if (searchTag != null) {
 				cursor = ((RecipeBook) getApplication()).getData().getRecipesByTag(searchTag, sortBy);
-			}
-			else {
+			} else if (timeSearch) {
+				cursor = ((RecipeBook) getApplication()).getData().getMatchingRecipesByTime(max, min, sortBy);
+			} else {
 				cursor = ((RecipeBook) getApplication()).getData().getAllRecipes(sortBy);
 			}
 
@@ -237,10 +244,16 @@ public class RecipeFlipbook extends FragmentActivity {
 			if (getIntent().hasExtra(RecipeBook.SEARCH_EXTRA)) {
 				intent.putExtra(RecipeBook.SEARCH_EXTRA, getIntent().getStringExtra(RecipeBook.SEARCH_EXTRA));
 			}
+			if (getIntent().hasExtra(RecipeBook.TAG_EXTRA)) {
+				intent.putExtra(RecipeBook.TAG_EXTRA, getIntent().getStringExtra(RecipeBook.TAG_EXTRA));
+			}
+			if (getIntent().hasExtra(RecipeBook.TIME_EXTRA)) {
+				intent.putExtra(RecipeBook.TIME_EXTRA, true);
+				intent.putExtra(RecipeBook.TIME_EXTRA_MIN, getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0));
+				intent.putExtra(RecipeBook.TIME_EXTRA_MAX, getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0));
+			}
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		}
 		startActivity(intent);
 	}
-	
-	
 }

@@ -1,5 +1,7 @@
 package net.potterpcs.recipebook;
 
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -64,6 +66,8 @@ public class TimerFragment extends Fragment {
 				}
 				startButton.setEnabled(false);
 				stopButton.setEnabled(true);
+				timermin.setEnabled(false);
+				timersec.setEnabled(false);
 				if (display != null) {
 					display.setText(DateUtils.formatElapsedTime(seconds));
 				}
@@ -86,9 +90,18 @@ public class TimerFragment extends Fragment {
 					
 					@Override
 					public void onFinish() {
-						// TODO play a sound or something
+						MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.ding);
+						mp.setOnCompletionListener(new OnCompletionListener() {
+							@Override
+							public void onCompletion(MediaPlayer mp) {
+								mp.release();
+							}
+						});
+						mp.setVolume(10.0f, 10.0f);
 						Log.i(TAG, "timer done");
+
 						Toast.makeText(getActivity(), "Done!", Toast.LENGTH_LONG).show();
+						mp.start();
 						clearToZero();
 					}
 				};
@@ -109,6 +122,8 @@ public class TimerFragment extends Fragment {
 	void clearToZero() {
 		startButton.setEnabled(true);
 		stopButton.setEnabled(false);
+		timermin.setEnabled(true);
+		timersec.setEnabled(true);
 		if (display != null) {
 		display.setText(DateUtils.formatElapsedTime(0));
 		} else {

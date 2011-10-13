@@ -25,6 +25,9 @@ public class RecipeBookActivity extends FragmentActivity {
 	private boolean searchMode;
 	private boolean sortDescending;
 	private boolean tagSearchMode;
+	private int searchMin;
+	private int searchMax;
+	private boolean timeSearchMode;
 	int sortKey;
 
 	static final String SORT_DESCENDING = " desc";
@@ -69,20 +72,36 @@ public class RecipeBookActivity extends FragmentActivity {
     	if (searchData == null) {
 	    	sortDescending = intent.getBooleanExtra(SORT_DESCENDING, false);
 	    	sortKey = intent.getIntExtra(SORT_KEY, 0);
+    		tagSearchMode = intent.hasExtra(RecipeBook.TAG_EXTRA);
+    		searchTag = intent.getStringExtra(RecipeBook.TAG_EXTRA);
+        	searchMin = intent.getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0);
+        	searchMax = intent.getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0);
+        	timeSearchMode = (searchMin != 0 || searchMax != 0);        	
     	} else {
     		sortDescending = searchData.getBoolean(SORT_DESCENDING, false);
     		sortKey = searchData.getInt(SORT_KEY, 0);
+    		tagSearchMode = searchData.containsKey(RecipeBook.TAG_EXTRA);
+    		searchTag = searchData.getString(RecipeBook.TAG_EXTRA);
+        	searchMin = searchData.getInt(RecipeBook.TIME_EXTRA_MIN, 0);
+        	searchMax = searchData.getInt(RecipeBook.TIME_EXTRA_MAX, 0);
+        	timeSearchMode = (searchMin != 0 || searchMax != 0);	    		
     	}
     	
-    	if (intent.hasExtra(RecipeBook.TAG_EXTRA)) {
-    		tagSearchMode = true;
-    		searchTag = intent.getStringExtra(RecipeBook.TAG_EXTRA);
-    	} else {
-    		tagSearchMode = false;
-    		searchTag = null;
+    	// in case max value is left blank
+    	if (searchMax == 0 && searchMin > 0) {
+    		searchMax = Integer.MAX_VALUE;
     	}
     	
-		Log.i(TAG, "Sort descending == " + sortDescending + ", sort key == " + sortKey);
+//    	if (intent.hasExtra(RecipeBook.TAG_EXTRA)) {
+//    		tagSearchMode = true;
+//    		searchTag = intent.getStringExtra(RecipeBook.TAG_EXTRA);
+//    	} else {
+//    		tagSearchMode = false;
+//    		searchTag = null;
+//    	}
+
+		Log.i(TAG, "Sort descending == " + sortDescending + ", sort key == " + sortKey 
+				+ " max time == " + searchMax + " min time == " + searchMin);
     	
     	try {
 			invalidateOptionsMenu();
@@ -135,7 +154,7 @@ public class RecipeBookActivity extends FragmentActivity {
     
 	private void hideShowAllItem(Menu menu) {
 		// hide "Show All" option if already showing all recipes
-		boolean menuStatus = searchMode || tagSearchMode;
+		boolean menuStatus = searchMode || tagSearchMode || timeSearchMode;
 		menu.findItem(R.id.menushowall).setVisible(menuStatus).setEnabled(menuStatus);	
 	}
     
@@ -151,6 +170,9 @@ public class RecipeBookActivity extends FragmentActivity {
     		return true;
     	case R.id.menusearchtag:
     		onSearchByTag();
+    		return true;
+    	case R.id.menusearchtime:
+    		onSearchByTime();
     		return true;
     	case R.id.menushowall:
     		onShowAllRecipes(item);
@@ -189,6 +211,11 @@ public class RecipeBookActivity extends FragmentActivity {
 		if (tagSearchMode) {
 			intent.putExtra(RecipeBook.TAG_EXTRA, searchTag);
 		}
+		if (timeSearchMode) {
+			intent.putExtra(RecipeBook.TIME_EXTRA, timeSearchMode);
+			intent.putExtra(RecipeBook.TIME_EXTRA_MAX, searchMax);
+			intent.putExtra(RecipeBook.TIME_EXTRA_MIN, searchMin);
+		}
 		startActivity(intent);
 	}
 
@@ -205,6 +232,14 @@ public class RecipeBookActivity extends FragmentActivity {
     	Bundle searchData = new Bundle();
     	searchData.putBoolean(SORT_DESCENDING, sortDescending);
     	searchData.putInt(SORT_KEY, sortKey);
+    	if (tagSearchMode) {
+    		searchData.putString(RecipeBook.TAG_EXTRA, searchTag);
+    	}
+    	if (timeSearchMode) {
+    		searchData.putBoolean(RecipeBook.TIME_EXTRA, true);
+    		searchData.putInt(RecipeBook.TIME_EXTRA_MIN, searchMin);
+    		searchData.putInt(RecipeBook.TIME_EXTRA_MAX, searchMax);
+    	}
     	startSearch(null, false, searchData, false);
     	return true;
     }
@@ -239,6 +274,13 @@ public class RecipeBookActivity extends FragmentActivity {
     	tsd.show(ft, null);
     }
 
+
+	private void onSearchByTime() {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		TimeSearchDialog tsd = TimeSearchDialog.newInstance();
+		tsd.show(ft, null);
+	}
+
 	public boolean isSearchMode() {
 		return searchMode;
 	}
@@ -265,5 +307,20 @@ public class RecipeBookActivity extends FragmentActivity {
 	public boolean isTagSearch() {
 		// true if we are searching for a tag
 		return tagSearchMode;
+	}
+	
+	public boolean isTimeSearch() {
+		// true if we are searching by time
+		return timeSearchMode;
+	}
+	
+	public int getMaxTime() {
+		// maximum time from search, in minutes
+		return searchMax;
+	}
+	
+	public int getMinTime() {
+		// minimum time from search, in minutes
+		return searchMin;
 	}
 }
