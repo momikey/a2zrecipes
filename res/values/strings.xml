@@ -63,4 +63,5 @@
         <string name="timesearchheader">Find recipes that take at least</string>
         <string name="timesearchmiddle">but no more than</string>
         <string name="timesearchbutton">Search</string>
+        <string name="recipereplacetext">(Editing)</string>
 </resources>

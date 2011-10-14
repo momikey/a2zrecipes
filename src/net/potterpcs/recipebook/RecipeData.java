@@ -190,7 +190,6 @@ public class RecipeData {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// TODO Change this to properly update db
 			if (newVersion == 5) {
 				db.execSQL("alter table " + RECIPES_TABLE + " add column " + RT_PHOTO + " text");
 			} else if (oldVersion < 4) {
@@ -223,6 +222,7 @@ public class RecipeData {
 	}
 	
 	public Cursor query(String search, String tag, int min, int max, String sortBy) {
+		// this is the "multi-query" method, that searches by name, tag, and time
 		String like = createLikePattern();
 		String time = createTimeComparisonPattern();
 		String searchPart = "(" + like + ")";
@@ -248,7 +248,6 @@ public class RecipeData {
 			args.add(tag);
 		}
 		String selection = TextUtils.join(" and ", parts);	
-//		String[] selectionArgs = { match, match, Integer.toString(max), Integer.toString(min), tag };
 		String[] selectionArgs = (String[]) args.toArray(new String[args.size()]);
 		Log.i(TAG, selection + ", " + selectionArgs + ", " + sortBy);
 		return queryBuilder(selection, selectionArgs, sortBy);
@@ -260,7 +259,6 @@ public class RecipeData {
 		return left + " inner join " + right + " on " + table1id + " = " + table2id;
 	}
 	
-//	private String createLikePattern(String[] strings) {
 	private String createLikePattern() {
 		// FIXME hack until Google fixes query bug #3153
 //		return RT_NAME + " like '%" + strings[0] + "%' or " + RT_DESCRIPTION + " like '%" + strings[1] + "%'";
@@ -558,7 +556,6 @@ public class RecipeData {
 			// until we can figure out a smarter way to update
 			db.delete(INGREDIENTS_TABLE, IT_RECIPE_ID + " = ?", whereArgs);
 			for (String ing : r.ingredients) {
-//				insertIngredients(createIngredientsCV(rid, ing));
 				db.insertWithOnConflict(INGREDIENTS_TABLE, null, createIngredientsCV(rid, ing), 
 						SQLiteDatabase.CONFLICT_IGNORE);
 			}
@@ -566,7 +563,6 @@ public class RecipeData {
 			db.delete(DIRECTIONS_TABLE, DT_RECIPE_ID + " = ?", whereArgs);
 			int step = 1;
 			for (String dir : r.directions) {
-//				insertDirections(createDirectionsCV(rid, step, dir));
 				db.insertWithOnConflict(DIRECTIONS_TABLE, null, createDirectionsCV(rid, step, dir), 
 						SQLiteDatabase.CONFLICT_IGNORE);
 				step++;
@@ -574,7 +570,6 @@ public class RecipeData {
 			
 			db.delete(TAGS_TABLE, TT_RECIPE_ID + " = ?", whereArgs);
 			for (String tag : r.tags) {
-//				insertTags(createTagsCV(rid, tag));
 				db.insertWithOnConflict(TAGS_TABLE, null, createTagsCV(rid, tag), 
 						SQLiteDatabase.CONFLICT_IGNORE);
 			}

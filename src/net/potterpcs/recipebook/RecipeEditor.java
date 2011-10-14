@@ -46,7 +46,6 @@ public class RecipeEditor extends FragmentActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.recipeeditor);
 		
@@ -108,10 +107,7 @@ public class RecipeEditor extends FragmentActivity {
 						if (lastFragment != null) {
 							ft.hide(lastFragment);
 						}
-//						ft.replace(R.id.ssfragment, next);
 						ft.show(nextFragment);
-//						ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//						ft.addToBackStack(null);
 						ft.commit();
 					}
 				}
@@ -173,27 +169,16 @@ public class RecipeEditor extends FragmentActivity {
 			// an edit of an existing recipe
 			recipeData.updateRecipe(recipe);
 		}
-		
-//		Log.i(TAG, "Recipe #" + r.id + ": " + r.name + ", " + r.description + ", by " + r.creator + " on "
-//				+ r.date);
-//		Log.i(TAG, " -- Rating " + r.rating + ", " + r.serving + ", " + r.time);
-//		Log.i(TAG, " -- Ingredients " + Arrays.toString(r.ingredients) + 
-//				" -- Directions " + Arrays.toString(r.directions) + 
-//				" -- Tags " + Arrays.toString(r.tags));
 	}
 	
 	public void onAttachPhoto(MenuItem item) {
 		// TODO
-//		Intent intent = new Intent();
-//		intent.setType("image/*");
-//		intent.setAction(Intent.ACTION_GET_CONTENT);
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, GALLERY_ACTIVITY);
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		if (resultCode == RESULT_OK) {
 			if (requestCode == GALLERY_ACTIVITY) {
 				Uri selectedImage = data.getData();

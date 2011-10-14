@@ -47,26 +47,11 @@ public class RecipeBookActivity extends FragmentActivity {
     
     @Override
     protected void onNewIntent(Intent intent) {
-    	// TODO Auto-generated method stub
-//    	super.onNewIntent(intent);
     	lastIntent = intent;
     	handleIntent(intent);
     }
     
     private void handleIntent(Intent intent) {
-//    	if (Intent.ACTION_SEARCH.equals(intent.getAction()) || intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
-//    		searchMode = true;
-//    		if (intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
-//    			searchQuery = intent.getStringExtra(RecipeBook.SEARCH_EXTRA);
-//    		} else {
-//    			searchQuery = intent.getStringExtra(SearchManager.QUERY);
-//    		}
-//    		Log.i(TAG, "Started as search with query: " + searchQuery);
-//    	} else {
-//    		searchMode = false;
-//    		searchQuery = null;
-//    		Log.i(TAG, "Started as app");
-//    	}
 		if (intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
 			searchQuery = intent.getStringExtra(RecipeBook.SEARCH_EXTRA);
 		} else {
@@ -99,17 +84,11 @@ public class RecipeBookActivity extends FragmentActivity {
     		searchMax = Integer.MAX_VALUE;
     	}
     	
-//    	if (intent.hasExtra(RecipeBook.TAG_EXTRA)) {
-//    		tagSearchMode = true;
-//    		searchTag = intent.getStringExtra(RecipeBook.TAG_EXTRA);
-//    	} else {
-//    		tagSearchMode = false;
-//    		searchTag = null;
-//    	}
-
 		Log.i(TAG, "Sort descending == " + sortDescending + ", sort key == " + sortKey 
 				+ " max time == " + searchMax + " min time == " + searchMin);
     	
+		// Android 3.0+ has the action bar, and requires this call to change menu items.
+		// Earlier versions don't have it, because they don't need it.
     	try {
 			invalidateOptionsMenu();
 		} catch (NoSuchMethodError e) {
@@ -184,9 +163,8 @@ public class RecipeBookActivity extends FragmentActivity {
     	case R.id.menushowall:
     		onShowAllRecipes(item);
     		return true;
-//		case android.R.id.home:
-//			switchToFlipBook();
-//			return true;
+    		
+    	// Sort direction items (only one active at a time)
     	case R.id.menusortdescending:
     		descending = true;
     		// fall-through on purpose
@@ -195,6 +173,7 @@ public class RecipeBookActivity extends FragmentActivity {
     		startSortActivity(sortKey, descending);
     		return true;
     	
+    	// Sort criteria items (only one active at a time)
     	case R.id.menusortname:
     	case R.id.menusortrating:
     	case R.id.menusorttime:
@@ -227,10 +206,8 @@ public class RecipeBookActivity extends FragmentActivity {
 	}
 
     void switchToFlipBook() {
-//    	Intent intent = new Intent(this, RecipeFlipbook.class);
     	Intent intent = new Intent(lastIntent);
     	intent.setClass(this, RecipeFlipbook.class);
-//    	intent.putExtra(RecipeBook.SEARCH_EXTRA, searchQuery);
     	startActivity(intent);
     }
     
@@ -253,12 +230,11 @@ public class RecipeBookActivity extends FragmentActivity {
     
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-    	// TODO Auto-generated method stub
+    	// the various fragments all handle their own context events
     	return false;
     }
     
     public void onNewItemSelected(MenuItem item) {
-    	// TODO
     	Log.i(TAG, "New option selected");
     	Uri uri = new Uri.Builder().scheme("content").authority("net.potterpcs.recipebook").build();
     	uri = ContentUris.withAppendedId(uri, -1);

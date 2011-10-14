@@ -26,16 +26,19 @@ public class IngredientsEditor extends Fragment {
 	ArrayList<String> ingredients;
 	private ArrayAdapter<String> adapter;
 	private RecipeEditor activity;
+	int currentIngredient;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		activity = (RecipeEditor) getActivity();
 		ingredients = new ArrayList<String>();
+		currentIngredient = -1;
 		
 		long rid = activity.getRecipeId();
 		Log.i(TAG, "id=" + rid);
 			
+		// load an existing recipe's ingredients
 		if (rid > 0) {
 			RecipeBook app = (RecipeBook) activity.getApplication();
 			Cursor c = app.getData().getRecipeIngredients(rid);
@@ -51,7 +54,7 @@ public class IngredientsEditor extends Fragment {
 			c.close();
 				
 		} else {
-
+			// creating a new recipe, so no setup required
 		}
 		
 		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, ingredients);
@@ -69,13 +72,28 @@ public class IngredientsEditor extends Fragment {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+		// The Ingredients editor has no "Move Up"/"Move Down" options,
+		// because the list of ingredients is unordered, unlike directions,
+		// which must come in a specific order.
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.ctxdeleteingredient:
+			// "Delete" option
 			adapter.remove(adapter.getItem(info.position));
+			currentIngredient = -1;
 			return true;
-			
+		case R.id.ctxeditingredient:
+			// "Edit" option
+			String selected = adapter.getItem(info.position);
+			currentIngredient = info.position;
+			// replace the editbox text
+			EditText edit = ((EditText) getView().findViewById(R.id.ingredientsedit));
+			edit.setText(selected);
+			edit.requestFocus();
+			// put a placeholder in the list
+			adapter.remove(selected);
+			adapter.insert(getResources().getString(R.string.recipereplacetext), currentIngredient);
+			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -94,17 +112,23 @@ public class IngredientsEditor extends Fragment {
 			public void onClick(View v) {
 				EditText edit = (EditText) getActivity().findViewById(R.id.ingredientsedit);
 				if (edit.getText().length() > 0) {
+					if (currentIngredient == -1) {
 					adapter.add(edit.getText().toString());
+					} else {
+						adapter.insert(edit.getText().toString(), currentIngredient);
+						adapter.remove(getResources().getString(R.string.recipereplacetext));
+						currentIngredient = -1;
+					}
 				}
 				edit.setText("");
 				edit.requestFocus();
 			}
 		});
-		
 		registerForContextMenu(listview);
 	}
 	
 	public String[] getIngredients() {
+		// Ingredients are not sensitive to order, unlike directions.
 		String[] ings = new String[adapter.getCount()];
 		int l = ings.length;
 		for (int i = 0; i < l; i++) {

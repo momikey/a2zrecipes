@@ -24,33 +24,33 @@ public class DirectionsEditor extends Fragment {
 	ListView listview;
 	ArrayList<String> directions;
 	private ArrayAdapter<String> adapter;
+	int currentDirection;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		activity = (RecipeEditor) getActivity();
 		long rid = activity.getRecipeId();
 		directions = new ArrayList<String>();
+		currentDirection = -1;
 		
+		// load an existing recipe's directions
 		if (rid > 0) {
 			RecipeBook app = (RecipeBook) activity.getApplication();
 			Cursor c = app.getData().getRecipeDirections(rid);
 			
 			c.moveToFirst();
 			while (!c.isAfterLast()) {
-//				int key = c.getInt(c.getColumnIndex(RecipeData.DT_SEQUENCE));
 				String value = c.getString(c.getColumnIndex(RecipeData.DT_STEP));
 				directions.add(value);
 				c.moveToNext();
 			}
 			c.close();
 		} else {
-			
+			// this is a new recipe, so no setup required (yet?)
 		}
 
 		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, directions);
-
 		return inflater.inflate(R.layout.directionsedit, container, false);
 	}
 	
@@ -64,25 +64,40 @@ public class DirectionsEditor extends Fragment {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		String selected = adapter.getItem(info.position);
 		switch (item.getItemId()) {
 		case R.id.ctxdeletedirection:
+			// "Delete" option
 			adapter.remove(selected);
+			currentDirection = -1;
 			return true;
 		case R.id.ctxeditdirection:
-			// TODO finish dialog box, etc.
+			// "Edit" option
+			currentDirection = info.position;
+			// set the editor box to have the old text
+			EditText edit = ((EditText) getView().findViewById(R.id.directionsedit));
+			edit.setText(selected);
+			edit.requestFocus();
+			adapter.remove(selected);
+			// put a placeholder into the list
+			adapter.insert(getResources().getString(R.string.recipereplacetext), currentDirection);
 			return true;
 		case R.id.ctxmovedowndirection:
+			// "Move Down" option
+			currentDirection = -1;
 			if (info.position < adapter.getCount()) {
+				// can't move down the last direction
 				adapter.remove(selected);
 				adapter.insert(selected, info.position + 1);
 				return true;
 			}
 			return false;
 		case R.id.ctxmoveupdirection:
+			// "Move Up" option
+			currentDirection = -1;
 			if (info.position > 0) {
+				// can't move up the first direction
 				adapter.remove(selected);
 				adapter.insert(selected, info.position - 1);
 				return true;
@@ -96,28 +111,7 @@ public class DirectionsEditor extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-//		RecipeEditor activity = (RecipeEditor) getActivity();
-//		long rid = activity.getRecipeId();
-		// TODO: restore state on resume
-//		directions = new ArrayList<String>();
-//		
-//		if (rid > 0) {
-//			RecipeBook app = (RecipeBook) activity.getApplication();
-//			Cursor c = app.getData().getRecipeDirections(rid);
-//			
-//			c.moveToFirst();
-//			while (!c.isAfterLast()) {
-////				int key = c.getInt(c.getColumnIndex(RecipeData.DT_SEQUENCE));
-//				String value = c.getString(c.getColumnIndex(RecipeData.DT_STEP));
-//				directions.add(value);
-//				c.moveToNext();
-//			}
-//			c.close();
-//		} else {
-//			
-//		}
-//
-//		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, directions);
+
 		listview = (ListView) activity.findViewById(R.id.directionslist);
 		listview.setAdapter(adapter);
 
@@ -125,20 +119,28 @@ public class DirectionsEditor extends Fragment {
 		add.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				EditText edit = (EditText) getActivity().findViewById(R.id.directionsedit);
+				EditText edit = (EditText) getView().findViewById(R.id.directionsedit);
 				if (edit.getText().length() > 0) {
-					adapter.add(edit.getText().toString());
-					((EditText) getActivity().findViewById(R.id.directionsedit)).setText(null);
+					if (currentDirection == -1) {
+						adapter.add(edit.getText().toString());
+					} else {
+						adapter.insert(edit.getText().toString(), currentDirection);
+						adapter.remove(getResources().getString(R.string.recipereplacetext));
+						currentDirection = -1;
+					}
+					((EditText) getView().findViewById(R.id.directionsedit)).setText(null);
 				}
 				edit.setText("");
 				edit.requestFocus();
 			}
 		});
-		
 		registerForContextMenu(listview);
 	}
 
 	public String[] getDirections() {
+		// Directions are intended to be in a set order, and they are stored in
+		// the database with sequence numbers. In code, we just use the index in
+		// an array.
 		String[] dirs = new String[adapter.getCount()];
 		int l = dirs.length;
 		for (int i = 0; i < l; i++) {

@@ -66,10 +66,10 @@ public class RecipeViewer extends FragmentActivity {
 		rvname.setText(mdc.getString(mdc.getColumnIndex(RecipeData.RT_NAME)));
 		rvcreator.setText(mdc.getString(mdc.getColumnIndex(RecipeData.RT_CREATOR)));
 		rvserving.setText(mdc.getString(mdc.getColumnIndex(RecipeData.RT_SERVING)));
-		rvtime.setText(DateUtils.formatElapsedTime(mdc.getLong(mdc.getColumnIndex(RecipeData.RT_TIME))));
+		rvtime.setText(DateUtils.formatElapsedTime(
+				mdc.getLong(mdc.getColumnIndex(RecipeData.RT_TIME))));
 		rvrating.setRating(mdc.getFloat(mdc.getColumnIndex(RecipeData.RT_RATING)));
 		
-		// TODO: use fragments instead
 		photoUri = mdc.getString(mdc.getColumnIndex(RecipeData.RT_PHOTO));
 		if (photoUri != null) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
@@ -92,7 +92,6 @@ public class RecipeViewer extends FragmentActivity {
 
 		Cursor dirc = data.getRecipeDirections(rid);
 		startManagingCursor(dirc);
-//		Log.i(TAG, dirc.getCount() + ", " + dirc.getColumnNames().toString());
 		SimpleCursorAdapter directions = new SimpleCursorAdapter(this, R.layout.recipedirectionrow,
 				dirc, DIRECTIONS_FIELDS, DIRECTIONS_IDS);
 		lvdirections.setAdapter(directions);
@@ -132,10 +131,8 @@ public class RecipeViewer extends FragmentActivity {
 	}
 	
 	public void onTimerSelected(MenuItem item) {
-//		Log.i(TAG, "Timer menu item selected");
     	FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     	Fragment timerFragment = new TimerFragment();
-//    	transaction.setCustomAnimations(R.animator.slidein, R.animator.slideout);
     	transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
     	transaction.replace(R.id.timerfragment, timerFragment);
     	transaction.addToBackStack(null);

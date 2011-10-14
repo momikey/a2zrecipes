@@ -97,21 +97,11 @@ public class RecipeFlipbook extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			// TODO Auto-generated method stub
-//			if (searchQuery == null) {
-//				return FlipperFragment.newInstance(position + 1);
-//			} else {
-//				Log.i(TAG, "Moving to position: " + position + " with ID " + cursor.getInt(cursor.getColumnIndex(RecipeData.RT_ID)));
-//				cursor.moveToPosition(position);
-//				return FlipperFragment.newInstance(cursor.getInt(cursor.getColumnIndex(RecipeData.RT_ID)));
-//				return FlipperFragment.newInstance(ids[position]);
-//			}
 			return FlipperFragment.newInstance(ids[position]);
 		}
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return ids.length;
 		}
 
@@ -143,7 +133,6 @@ public class RecipeFlipbook extends FragmentActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-//			return super.onCreateView(inflater, container, savedInstanceState);
 			View v = inflater.inflate(R.layout.recipeviewer, container, false);
 			
 			TextView rvname = (TextView) v.findViewById(R.id.rvname);
@@ -180,7 +169,6 @@ public class RecipeFlipbook extends FragmentActivity {
 				} else {
 					DownloadImageTask.doDownload(recipe.photo, iv);
 				}
-//					rvphoto.setForeground(new BitmapDrawable(bitmap));
 				iv.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {

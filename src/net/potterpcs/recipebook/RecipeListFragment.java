@@ -59,7 +59,6 @@ public class RecipeListFragment extends ListFragment {
 	
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		registerForContextMenu(getListView());
 	}
@@ -124,20 +123,7 @@ public class RecipeListFragment extends ListFragment {
 	}
 
 	void getRecipes(RecipeBookActivity activity, RecipeData data, String sortData) {
-//		if (activity.isSearchMode()) {
-//			cursor = data.getMatchingRecipes(activity.getSearchQuery(), sortData);
-//			Log.i(TAG, "Searching: " + activity.getSearchQuery() + ", Matches: " + cursor.getCount() + ", Data: " + sortData);
-//		} else if (activity.isTagSearch()) {
-//			cursor = data.getRecipesByTag(activity.getSearchTag(), sortData);
-//			Log.i(TAG, "Showing recipes matching tag: " + activity.getSearchTag());
-//		} else if (activity.isTimeSearch()) {
-//			cursor = data.getMatchingRecipesByTime(activity.getMaxTime(), activity.getMinTime(), sortData);
-//			Log.i(TAG, "Showing recipes at least: " + activity.getMinTime() + " but no more than: " + activity.getMaxTime());
-//			Log.i(TAG, "Total recipes shown: " + cursor.getCount());
-//		} else {
-//			cursor = data.getAllRecipes(sortData);
-//			Log.i(TAG, "Showing all recipes, sorted by: " + sortData);
-//		}
+		// this uses the "multi-query" method so filtering previous searches works
 		cursor = data.query(activity.getSearchQuery(), activity.getSearchTag(), 
 				activity.getMinTime(), activity.getMaxTime(), sortData);
 	}
@@ -150,7 +136,8 @@ public class RecipeListFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.listviewmenu, menu);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtoflipbook), MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtoflipbook), 
+				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	}
 	
 	@Override
@@ -163,7 +150,10 @@ public class RecipeListFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Uri uri = new Uri.Builder().scheme("content").authority("net.potterpcs.recipebook").build();
+		Uri uri = new Uri.Builder()
+			.scheme("content")
+			.authority("net.potterpcs.recipebook")
+			.build();
 		uri = ContentUris.withAppendedId(uri, id);
 		Log.i(TAG, uri.toString());
 		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -198,7 +188,10 @@ public class RecipeListFragment extends ListFragment {
 
 	public void onEditItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Uri uri = new Uri.Builder().scheme("content").authority("net.potterpcs.recipebook").build();
+		Uri uri = new Uri.Builder()
+			.scheme("content")
+			.authority("net.potterpcs.recipebook")
+			.build();
 		uri = ContentUris.withAppendedId(uri, info.id);
 		Log.i(TAG, "edit option selected, id=" + info.id);
 		Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, uri);

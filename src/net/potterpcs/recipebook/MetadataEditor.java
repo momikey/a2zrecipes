@@ -21,7 +21,6 @@ public class MetadataEditor extends Fragment {
 	
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
 		super.onStart();
 		
 		activity = (RecipeEditor) getActivity();
@@ -72,15 +71,3 @@ public class MetadataEditor extends Fragment {
 		return r;
 	}
 }
-//
-//import android.app.Activity;
-//import android.os.Bundle;
-//
-//public class CreateRecipe extends Activity {
-//	@Override
-//	public void onCreate(Bundle savedInstanceState) {
-//		super.onCreate(savedInstanceState);
-//		
-//		setContentView(R.layout.recipemetadata);
-//	}
-//}

@@ -27,15 +27,15 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 	
 	@Override
 	protected Bitmap doInBackground(String... params) {
-		// TODO Auto-generated method stub
 		return downloadImage(params);
 	}
 
 	private Bitmap downloadImage(String... urls) {
-		// TODO Auto-generated method stub
+		// TODO change the user-agent to something sensible
 		AndroidHttpClient client = AndroidHttpClient.newInstance("net.potterpcs.recipebook");
 		Bitmap bitmap = null;
 		try {
+			// TODO cache the image to lower data usage
 			HttpGet request = new HttpGet(urls[0]);
 			HttpParams params = new BasicHttpParams();
 			HttpConnectionParams.setSoTimeout(params, 60000);
@@ -51,7 +51,6 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 			bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
 			publishProgress(100);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
