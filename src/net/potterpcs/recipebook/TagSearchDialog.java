@@ -47,27 +47,18 @@ public class TagSearchDialog extends DialogFragment {
 		grid.setAdapter(adapter);
 		grid.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				Intent intent = null;
-				Intent oldIntent = getActivity().getIntent();
-				if (!Intent.ACTION_MAIN.equals(oldIntent.getAction())) {
-					intent = new Intent(oldIntent);
-					intent.setClass(getActivity(), RecipeBookActivity.class);
-				} else {
-					intent = new Intent(getActivity(), RecipeBookActivity.class);
-					if (oldIntent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
-						intent.putExtra(RecipeBook.SEARCH_EXTRA, 
-								oldIntent.getStringExtra(RecipeBook.SEARCH_EXTRA));
-					}			
-					if (oldIntent.hasExtra(RecipeBook.TIME_EXTRA)) {
-						intent.putExtra(RecipeBook.TIME_EXTRA, 
-								oldIntent.getStringExtra(RecipeBook.TIME_EXTRA));
-						intent.putExtra(RecipeBook.TIME_EXTRA_MIN, 
-								oldIntent.getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0));
-						intent.putExtra(RecipeBook.TIME_EXTRA_MAX, 
-								oldIntent.getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0));
-					}
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				RecipeBookActivity activity = (RecipeBookActivity) getActivity();
+				Intent intent = new Intent(activity, RecipeBookActivity.class);
+				if (activity.isSearchMode()) {
+					intent.putExtra(RecipeBook.SEARCH_EXTRA, activity.getSearchQuery());
+				}			
+				if (activity.isTimeSearch()) {
+					intent.putExtra(RecipeBook.TIME_EXTRA, true);
+					intent.putExtra(RecipeBook.TIME_EXTRA_MIN, activity.getMinTime());
+					intent.putExtra(RecipeBook.TIME_EXTRA_MAX, activity.getMaxTime());
 				}
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 				adapter.getCursor().moveToPosition(position);
 				intent.putExtra(RecipeBook.TAG_EXTRA, 
 						adapter.getCursor().getString(adapter.getCursor().getColumnIndex(RecipeData.TT_TAG)));

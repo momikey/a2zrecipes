@@ -54,20 +54,27 @@ public class RecipeBookActivity extends FragmentActivity {
     }
     
     private void handleIntent(Intent intent) {
-    	if (Intent.ACTION_SEARCH.equals(intent.getAction()) || intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
-    		searchMode = true;
-    		if (intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
-    			searchQuery = intent.getStringExtra(RecipeBook.SEARCH_EXTRA);
-    		} else {
-    			searchQuery = intent.getStringExtra(SearchManager.QUERY);
-    		}
-    		Log.i(TAG, "Started as search with query: " + searchQuery);
-    	} else {
-    		searchMode = false;
-    		searchQuery = null;
-    		Log.i(TAG, "Started as app");
-    	}
-    	
+//    	if (Intent.ACTION_SEARCH.equals(intent.getAction()) || intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
+//    		searchMode = true;
+//    		if (intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
+//    			searchQuery = intent.getStringExtra(RecipeBook.SEARCH_EXTRA);
+//    		} else {
+//    			searchQuery = intent.getStringExtra(SearchManager.QUERY);
+//    		}
+//    		Log.i(TAG, "Started as search with query: " + searchQuery);
+//    	} else {
+//    		searchMode = false;
+//    		searchQuery = null;
+//    		Log.i(TAG, "Started as app");
+//    	}
+		if (intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
+			searchQuery = intent.getStringExtra(RecipeBook.SEARCH_EXTRA);
+		} else {
+			searchQuery = intent.getStringExtra(SearchManager.QUERY);
+		}
+
+		searchMode = (searchQuery != null); 
+			
     	Bundle searchData = intent.getBundleExtra(SearchManager.APP_DATA);
     	if (searchData == null) {
 	    	sortDescending = intent.getBooleanExtra(SORT_DESCENDING, false);

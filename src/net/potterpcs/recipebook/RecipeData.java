@@ -1,5 +1,7 @@
 package net.potterpcs.recipebook;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class RecipeData {
@@ -209,6 +212,46 @@ public class RecipeData {
 	
 	public void close() {
 		dbHelper.close();
+	}
+	
+	private Cursor queryBuilder(String selection, String[] selectionArgs, String sortBy) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		String innerJoin = createInnerJoin(RECIPES_TABLE, TAGS_TABLE, RT_ID, TT_RECIPE_ID);
+		String[] fields = RECIPES_FIELDS;
+		fields[0] = RECIPES_TABLE + "." + RT_ID;
+		return db.query(innerJoin, fields, selection, selectionArgs, fields[0], null, sortBy);
+	}
+	
+	public Cursor query(String search, String tag, int min, int max, String sortBy) {
+		String like = createLikePattern();
+		String time = createTimeComparisonPattern();
+		String searchPart = "(" + like + ")";
+		String timePart = "(" + time + ")";
+		String tagPart = "(" + TT_TAG + " = ?)";
+		// FIXME Android bug 3153
+		String match = "%" + search + "%";
+				
+		ArrayList<String> parts = new ArrayList<String>();
+		ArrayList<String> args = new ArrayList<String>();
+		if (search != null) {
+			parts.add(searchPart);
+			args.add(match);
+			args.add(match);
+		}
+		if (!(min == 0 && max == 0)) {
+			parts.add(timePart);
+			args.add(Integer.toString(max));
+			args.add(Integer.toString(min));
+		}
+		if (tag != null) {
+			parts.add(tagPart);
+			args.add(tag);
+		}
+		String selection = TextUtils.join(" and ", parts);	
+//		String[] selectionArgs = { match, match, Integer.toString(max), Integer.toString(min), tag };
+		String[] selectionArgs = (String[]) args.toArray(new String[args.size()]);
+		Log.i(TAG, selection + ", " + selectionArgs + ", " + sortBy);
+		return queryBuilder(selection, selectionArgs, sortBy);
 	}
 	
 	private String createInnerJoin(String left, String right, String left_id, String right_id) {

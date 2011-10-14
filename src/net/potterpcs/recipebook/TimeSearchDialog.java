@@ -1,8 +1,10 @@
 package net.potterpcs.recipebook;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,23 +71,15 @@ public class TimeSearchDialog extends DialogFragment {
 					maxm = 0;
 				}
 				
-				Intent intent = null;
-				Intent oldIntent = getActivity().getIntent();
-				if (!Intent.ACTION_MAIN.equals(oldIntent.getAction())) {
-					intent = new Intent(oldIntent);
-					intent.setClass(getActivity(), RecipeBookActivity.class);
-				} else {
-					intent = new Intent(getActivity(), RecipeBookActivity.class);
-					if (oldIntent.hasExtra(RecipeBook.TAG_EXTRA)) {
-						intent.putExtra(RecipeBook.TAG_EXTRA, 
-								oldIntent.getStringExtra(RecipeBook.TAG_EXTRA));
-					}
-					if (oldIntent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
-						intent.putExtra(RecipeBook.SEARCH_EXTRA, 
-								oldIntent.getStringExtra(RecipeBook.SEARCH_EXTRA));
-					}
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				RecipeBookActivity activity = (RecipeBookActivity) getActivity();
+				Intent intent = new Intent(activity, RecipeBookActivity.class);
+				if (activity.isTagSearch()) {
+					intent.putExtra(RecipeBook.TAG_EXTRA, activity.getSearchTag());
 				}
+				if (activity.isSearchMode()) {
+					intent.putExtra(RecipeBook.SEARCH_EXTRA, activity.getSearchQuery());
+				}
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				
 				intent.putExtra(RecipeBook.TIME_EXTRA, true);
 				intent.putExtra(RecipeBook.TIME_EXTRA_MIN, minh * 60 + minm);

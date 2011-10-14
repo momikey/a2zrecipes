@@ -124,20 +124,22 @@ public class RecipeListFragment extends ListFragment {
 	}
 
 	void getRecipes(RecipeBookActivity activity, RecipeData data, String sortData) {
-		if (activity.isSearchMode()) {
-			cursor = data.getMatchingRecipes(activity.getSearchQuery(), sortData);
-			Log.i(TAG, "Searching: " + activity.getSearchQuery() + ", Matches: " + cursor.getCount() + ", Data: " + sortData);
-		} else if (activity.isTagSearch()) {
-			cursor = data.getRecipesByTag(activity.getSearchTag(), sortData);
-			Log.i(TAG, "Showing recipes matching tag: " + activity.getSearchTag());
-		} else if (activity.isTimeSearch()) {
-			cursor = data.getMatchingRecipesByTime(activity.getMaxTime(), activity.getMinTime(), sortData);
-			Log.i(TAG, "Showing recipes at least: " + activity.getMinTime() + " but no more than: " + activity.getMaxTime());
-			Log.i(TAG, "Total recipes shown: " + cursor.getCount());
-		} else {
-			cursor = data.getAllRecipes(sortData);
-			Log.i(TAG, "Showing all recipes, sorted by: " + sortData);
-		}
+//		if (activity.isSearchMode()) {
+//			cursor = data.getMatchingRecipes(activity.getSearchQuery(), sortData);
+//			Log.i(TAG, "Searching: " + activity.getSearchQuery() + ", Matches: " + cursor.getCount() + ", Data: " + sortData);
+//		} else if (activity.isTagSearch()) {
+//			cursor = data.getRecipesByTag(activity.getSearchTag(), sortData);
+//			Log.i(TAG, "Showing recipes matching tag: " + activity.getSearchTag());
+//		} else if (activity.isTimeSearch()) {
+//			cursor = data.getMatchingRecipesByTime(activity.getMaxTime(), activity.getMinTime(), sortData);
+//			Log.i(TAG, "Showing recipes at least: " + activity.getMinTime() + " but no more than: " + activity.getMaxTime());
+//			Log.i(TAG, "Total recipes shown: " + cursor.getCount());
+//		} else {
+//			cursor = data.getAllRecipes(sortData);
+//			Log.i(TAG, "Showing all recipes, sorted by: " + sortData);
+//		}
+		cursor = data.query(activity.getSearchQuery(), activity.getSearchTag(), 
+				activity.getMinTime(), activity.getMaxTime(), sortData);
 	}
 	
 	@Override

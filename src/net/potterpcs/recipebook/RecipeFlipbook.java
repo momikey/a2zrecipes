@@ -56,6 +56,9 @@ public class RecipeFlipbook extends FragmentActivity {
 			timeSearch = getIntent().getBooleanExtra(RecipeBook.TIME_EXTRA, false);
 			max = getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0);
 			min = getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0);
+			if (max == 0 && min != 0) {
+				max = Integer.MAX_VALUE;
+			}
 			
 			String sortBy = "";
 			switch (sortKey) {
@@ -78,16 +81,8 @@ public class RecipeFlipbook extends FragmentActivity {
 				sortBy += RecipeBookActivity.SORT_DESCENDING;
 			}
 			
-			if (searchQuery != null) {
-				cursor = ((RecipeBook) getApplication()).getData().getMatchingRecipes(searchQuery, sortBy);
-			} else if (searchTag != null) {
-				cursor = ((RecipeBook) getApplication()).getData().getRecipesByTag(searchTag, sortBy);
-			} else if (timeSearch) {
-				cursor = ((RecipeBook) getApplication()).getData().getMatchingRecipesByTime(max, min, sortBy);
-			} else {
-				cursor = ((RecipeBook) getApplication()).getData().getAllRecipes(sortBy);
-			}
-
+			cursor = ((RecipeBook) getApplication()).getData().query(searchQuery, searchTag, min, max, sortBy);
+					
 			ids = new int[cursor.getCount()];
 			cursor.moveToFirst();
 			for (int i = 0 ; i < cursor.getCount(); ++i) {
@@ -234,26 +229,19 @@ public class RecipeFlipbook extends FragmentActivity {
 	}
 
 	void switchToListMode() {
-		Log.i(TAG, getIntent().toString());
-		Intent intent;
-		if (!Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-			intent = new Intent(getIntent());
-			intent.setClass(this, RecipeBookActivity.class);
-		} else {
-			intent = new Intent(this, RecipeBookActivity.class);
-			if (getIntent().hasExtra(RecipeBook.SEARCH_EXTRA)) {
-				intent.putExtra(RecipeBook.SEARCH_EXTRA, getIntent().getStringExtra(RecipeBook.SEARCH_EXTRA));
-			}
-			if (getIntent().hasExtra(RecipeBook.TAG_EXTRA)) {
-				intent.putExtra(RecipeBook.TAG_EXTRA, getIntent().getStringExtra(RecipeBook.TAG_EXTRA));
-			}
-			if (getIntent().hasExtra(RecipeBook.TIME_EXTRA)) {
-				intent.putExtra(RecipeBook.TIME_EXTRA, true);
-				intent.putExtra(RecipeBook.TIME_EXTRA_MIN, getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MIN, 0));
-				intent.putExtra(RecipeBook.TIME_EXTRA_MAX, getIntent().getIntExtra(RecipeBook.TIME_EXTRA_MAX, 0));
-			}
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		Intent intent = new Intent(this, RecipeBookActivity.class);
+		if (flip.searchQuery != null) {
+			intent.putExtra(RecipeBook.SEARCH_EXTRA, flip.searchQuery);
 		}
+		if (flip.searchTag != null) {
+			intent.putExtra(RecipeBook.TAG_EXTRA, flip.searchTag);
+		}
+		if (flip.timeSearch) {
+			intent.putExtra(RecipeBook.TIME_EXTRA, true);
+			intent.putExtra(RecipeBook.TIME_EXTRA_MIN, flip.min);
+			intent.putExtra(RecipeBook.TIME_EXTRA_MAX, flip.max);
+		}
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 	}
 }
