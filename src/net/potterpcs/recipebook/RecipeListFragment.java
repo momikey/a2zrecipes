@@ -1,10 +1,12 @@
 package net.potterpcs.recipebook;
 
+import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -85,7 +87,6 @@ public class RecipeListFragment extends ListFragment {
 		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 		RecipeBook app = (RecipeBook) activity.getApplication();
 		RecipeData data = app.getData();
-		TextView footer = (TextView) activity.findViewById(R.id.footertext);
 		
 		String sort;
 		switch (activity.getSortKey()) {
@@ -111,21 +112,24 @@ public class RecipeListFragment extends ListFragment {
 		}
 
     	getRecipes(activity, data, sort);    	
-    	
-    	@SuppressWarnings("deprecation")
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO);
-    	
-    	adapter.setViewBinder(VIEW_BINDER);
-    	setListAdapter(adapter);
-    	
-    	int nr = cursor.getCount();
-    	footer.setText(String.format(activity.getResources().getString(R.string.numrecipes), nr));
+
 	}
 
 	void getRecipes(RecipeBookActivity activity, RecipeData data, String sortData) {
 		// this uses the "multi-query" method so filtering previous searches works
 		cursor = data.query(activity.getSearchQuery(), activity.getSearchTag(), 
 				activity.getMinTime(), activity.getMaxTime(), sortData);
+
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO);
+
+		adapter.setViewBinder(VIEW_BINDER);
+		setListAdapter(adapter);
+
+		int nr = cursor.getCount();
+		
+		TextView footer = (TextView) activity.findViewById(R.id.footertext);
+		footer.setText(String.format(activity.getResources().getString(R.string.numrecipes), nr));
 	}
 	
 	@Override
@@ -169,6 +173,8 @@ public class RecipeListFragment extends ListFragment {
 		case R.id.ctxmenudelete:
 			onDeleteItemSelected(item);
 			return true;
+		case R.id.ctxmenurate:
+			onRateItemSelected(item);
 		default:
 			return super.onContextItemSelected(item);			
 		}
@@ -204,6 +210,20 @@ public class RecipeListFragment extends ListFragment {
 		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 		RecipeData data = ((RecipeBook) activity.getApplication()).getData();
 		data.deleteRecipe(info.id);
+		retrieveRecipes();
+	}
+	
+	public void onRateItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		Log.i(TAG, "rate option selected, id=" + info.id);
+		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
+		FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+		Recipe r = ((RecipeBook) activity.getApplication()).getData().getSingleRecipeObject(info.id);
+		RateRecipeDialog rrd = RateRecipeDialog.newInstance(this, r.id, r.name, r.rating);
+		rrd.show(ft, "dialog");
+	}
+	
+	public void onRateDialogDismissed() {
 		retrieveRecipes();
 	}
 }

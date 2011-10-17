@@ -215,14 +215,15 @@ public class RecipeData {
 	
 	private Cursor queryBuilder(String selection, String[] selectionArgs, String sortBy) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		String innerJoin = createInnerJoin(RECIPES_TABLE, TAGS_TABLE, RT_ID, TT_RECIPE_ID);
+		String outerJoin = createOuterJoin(RECIPES_TABLE, TAGS_TABLE, RT_ID, TT_RECIPE_ID);
 		String[] fields = RECIPES_FIELDS;
 		fields[0] = RECIPES_TABLE + "." + RT_ID;
-		return db.query(innerJoin, fields, selection, selectionArgs, fields[0], null, sortBy);
+		return db.query(outerJoin, fields, selection, selectionArgs, fields[0], null, sortBy);
 	}
 	
 	public Cursor query(String search, String tag, int min, int max, String sortBy) {
 		// this is the "multi-query" method, that searches by name, tag, and time
+		Log.i(TAG, "multi-query: search = " + search + ", tag = " + tag + ", time = " + min + " to " + max + ", sort by = " + sortBy);
 		String like = createLikePattern();
 		String time = createTimeComparisonPattern();
 		String searchPart = "(" + like + ")";
@@ -250,13 +251,20 @@ public class RecipeData {
 		String selection = TextUtils.join(" and ", parts);	
 		String[] selectionArgs = (String[]) args.toArray(new String[args.size()]);
 		Log.i(TAG, selection + ", " + selectionArgs + ", " + sortBy);
-		return queryBuilder(selection, selectionArgs, sortBy);
+		Cursor c = queryBuilder(selection, selectionArgs, sortBy);
+		return c;
 	}
 	
 	private String createInnerJoin(String left, String right, String left_id, String right_id) {
 		String table1id = left + "." + left_id;
 		String table2id = right + "." + right_id;
 		return left + " inner join " + right + " on " + table1id + " = " + table2id;
+	}
+	
+	private String createOuterJoin(String left, String right, String left_id, String right_id) {
+		String table1id = left + "." + left_id;
+		String table2id = right + "." + right_id;
+		return left + " left outer join " + right + " on " + table1id + " = " + table2id;
 	}
 	
 	private String createLikePattern() {

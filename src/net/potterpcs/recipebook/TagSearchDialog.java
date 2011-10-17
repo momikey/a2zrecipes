@@ -27,6 +27,7 @@ public class TagSearchDialog extends DialogFragment {
 	
 	public TagSearchDialog() {
 		adapter = null;
+		setStyle(STYLE_NO_TITLE, getTheme());
 	}
 	
 	@SuppressWarnings("deprecation")

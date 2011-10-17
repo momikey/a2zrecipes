@@ -64,4 +64,7 @@
         <string name="timesearchmiddle">but no more than</string>
         <string name="timesearchbutton">Search</string>
         <string name="recipereplacetext">(Editing)</string>
+        <string name="raterecipetext">Rate Recipe \"%s\"</string>
+        <string name="raterecipebutton">Rate It!</string>
+        <string name="recipelistrate">Rate This Recipe</string>
 </resources>
