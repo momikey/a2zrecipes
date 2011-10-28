@@ -1,5 +1,11 @@
 package net.potterpcs.recipebook;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -11,14 +17,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
 public class RecipeData {
 
-	private final String TAG = RecipeData.class.getSimpleName();
+	private static final String TAG = RecipeData.class.getSimpleName();
 	
-	static final int DB_VERSION = 5;
+	static final int DB_VERSION = 6;
 	static final String DB_FILENAME = "recipebook.db";
 	
 	static final String RECIPES_TABLE = "recipes";
@@ -69,6 +76,11 @@ public class RecipeData {
 		String photo;
 		
 		public String toJSONString() {
+			return toJSON().toString();
+		}
+		
+		// create a JSON object from a Recipe
+		public JSONObject toJSON() {
 			JSONObject jo = new JSONObject();
 			try {
 				jo.put(RT_ID, id);
@@ -104,108 +116,208 @@ public class RecipeData {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return jo.toString();
+			return jo;
 		}
 		
 		// Create a Recipe object from a JSON string
 		public static Recipe parseJSON(String json) {
-			Recipe r = new Recipe();
-			JSONObject jo;
 			try {
-				jo = new JSONObject(json);
+				return Recipe.parseJSON(new JSONObject(json));
+			} catch (JSONException e) {
+				Log.i(TAG, e.toString());
+				return null;
+			}
+		}
+			
+		public static Recipe parseJSON(JSONObject jo) {
+			Recipe r = new Recipe();
+			// Basic fields
+			r.id = jo.optLong(RT_ID);
+			r.name = jo.optString(RT_NAME);
+			r.description = jo.optString(RT_DESCRIPTION);
+			r.rating = (float) jo.optDouble(RT_RATING);
+			r.creator = jo.optString(RT_CREATOR);
+			r.date = jo.optString(RT_DATE);
+			r.serving = jo.optInt(RT_SERVING);
+			r.time = jo.optInt(RT_TIME);
+			// TODO Base64 photo
+			r.photo = jo.optString(RT_PHOTO);
 
-				// Basic fields
-				r.id = jo.optLong(RT_ID);
-				r.name = jo.optString(RT_NAME);
-				r.description = jo.optString(RT_DESCRIPTION);
-				r.rating = (float) jo.optDouble(RT_RATING);
-				r.creator = jo.optString(RT_CREATOR);
-				r.date = jo.optString(RT_DATE);
-				r.serving = jo.optInt(RT_SERVING);
-				r.time = jo.optInt(RT_TIME);
-				// TODO Base64 photo
-				r.photo = jo.optString(RT_PHOTO);
+			JSONArray ji = jo.optJSONArray(INGREDIENTS_TABLE);
+			JSONArray jd = jo.optJSONArray(DIRECTIONS_TABLE);
+			JSONArray jt = jo.optJSONArray(TAGS_TABLE);
 
-				JSONArray ji = jo.optJSONArray(INGREDIENTS_TABLE);
-				JSONArray jd = jo.optJSONArray(DIRECTIONS_TABLE);
-				JSONArray jt = jo.optJSONArray(TAGS_TABLE);
-
-				// Ingredients
+			// Ingredients
+			if (ji != null) {
 				r.ingredients = new String[ji.length()];
 				for (int i = 0; i < r.ingredients.length; i++) {
 					r.ingredients[i] = ji.optString(i);
 				}
+			}
 
-				// Directions (remember that these are ordered!)
+			// Directions (remember that these are ordered!)
+			if (jd != null) {
 				r.directions = new String[jd.length()];
 				for (int d = 0; d < r.directions.length; d++) {
 					r.directions[d] = jd.optString(d);
 				}
+			}
 
-				// Tags
+			// Tags
+			if (jt != null) {
 				r.tags = new String[jt.length()];
 				for (int t = 0; t < r.tags.length; t++) {
 					r.tags[t] = jt.optString(t);
 				}
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-
 			return r;
 		}
 	}
 	
 	class DbHelper extends SQLiteOpenHelper {
 		private static final String RT_FOREIGN_KEY = " integer references " + RECIPES_TABLE + "("
-							+ RT_ID + ") on delete restrict deferrable initially deferred)";
+							+ RT_ID + ") deferrable initially deferred";
+		private Context app;
 
 		public DbHelper(Context context) {
 			super(context, DB_FILENAME, null, DB_VERSION);
+			app = context;
 		}
-
+		
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			Log.i(TAG, "Creating database: " + DB_FILENAME);
 			
-			// create main table
-			db.execSQL("create table " + RECIPES_TABLE + " (" + RT_ID + " integer primary key, "
-					+ RT_NAME + " text, " + RT_DESCRIPTION + " text, " + RT_RATING + " real, "
-					+ RT_CREATOR + " text, " + RT_DATE + " text, " + RT_SERVING + " integer, " 
-					+ RT_PHOTO + " text, " + RT_TIME + " integer)");
+			createRecipeTable(db);
+			createSecondaryTables(db);
 			
-			// create ingredients table
-			db.execSQL("create table " + INGREDIENTS_TABLE + " (" + IT_ID + " integer primary key, " 
-					+ IT_NAME + " text, " + IT_RECIPE_ID + RT_FOREIGN_KEY);
-			
-			// create directions table
-			db.execSQL("create table " + DIRECTIONS_TABLE + " (" + DT_ID + " integer primary key, "
-					+ DT_STEP + " text, " + DT_SEQUENCE + " int, " + DT_RECIPE_ID + RT_FOREIGN_KEY);
-			
-			// create tags table
-			db.execSQL("create table " + TAGS_TABLE + " (" + TT_ID + " integer primary key, "
-					+ TT_TAG + " text, " + TT_RECIPE_ID + RT_FOREIGN_KEY);
+			// import starter recipes
+			InputStream is = null;
+			try {
+				is = app.getResources().openRawResource(R.raw.starter);
+				byte[] buffer = new byte[is.available()];
+				is.read(buffer);
+				JSONArray ja = new JSONArray(new String(buffer));
+				for (int i = 0; i < ja.length(); i++) {
+					Recipe r = Recipe.parseJSON(ja.getJSONObject(i));
+		
+					ContentValues values = createRecipeForInsert(r);
+					long rowid = db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+					
+					if (r.ingredients != null) {
+						for (String ing : r.ingredients) {
+							ContentValues cvi = createIngredientsCV(rowid, ing);
+							db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
+						}
+					}
+
+					if (r.directions != null) {
+						int step = 1;
+						for (String dir : r.directions) {
+							ContentValues cdirs = createDirectionsCV(rowid, step, dir);
+							db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
+							step++;
+						}
+					}
+
+					if (r.tags != null) {
+						for (String tag : r.tags) {
+							ContentValues ctags = createTagsCV(rowid, tag);
+							db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
+						}
+					}
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.toString());
+			} catch (JSONException e) {
+				Log.e(TAG, e.toString());
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						Log.e(TAG, e.toString());
+					}
+				}
+			}
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			if (newVersion == 5) {
-				db.execSQL("alter table " + RECIPES_TABLE + " add column " + RT_PHOTO + " text");
-			} else if (oldVersion < 4) {
-				db.execSQL("drop table " + RECIPES_TABLE);
+			if (oldVersion == 5) {
+				// move records over to new table with unique constraints
+				// (SQLite doesn't have "add constraint", so we can't just alter the tables
+				// also, we have to copy out the other tables because of foreign keys
+				db.beginTransaction();
+				db.execSQL("create temp table temprecipes as select * from " + RECIPES_TABLE);
+				db.execSQL("create temp table tempingredients as select * from " + INGREDIENTS_TABLE);
+				db.execSQL("create temp table tempdiresctions as select * from " + DIRECTIONS_TABLE);
+				db.execSQL("create temp table temptags as select * from " + TAGS_TABLE);
+				
 				db.execSQL("drop table " + INGREDIENTS_TABLE);
 				db.execSQL("drop table " + DIRECTIONS_TABLE);
 				db.execSQL("drop table " + TAGS_TABLE);
-				this.onCreate(db);			
+				db.execSQL("drop table " + RECIPES_TABLE);
+
+				createRecipeTable(db);
+				createSecondaryTables(db);
+				
+				db.execSQL("insert into " + RECIPES_TABLE + " select * from temprecipes");
+				db.execSQL("insert into " + INGREDIENTS_TABLE + " select * from tempingredients");
+				db.execSQL("insert into " + DIRECTIONS_TABLE + " select * from tempdirections");
+				db.execSQL("insert into " + TAGS_TABLE + " select * from temptags");
+				db.endTransaction();
+			} else if (oldVersion == 4) {
+				db.execSQL("alter table " + RECIPES_TABLE + " add column " + RT_PHOTO + " text");
+			} else if (oldVersion < 4) {
+				db.beginTransaction();
+				db.execSQL("drop table " + INGREDIENTS_TABLE);
+				db.execSQL("drop table " + DIRECTIONS_TABLE);
+				db.execSQL("drop table " + TAGS_TABLE);
+				db.execSQL("drop table " + RECIPES_TABLE);
+				this.onCreate(db);
+				db.endTransaction();
 			}
+		}
+
+		private void createRecipeTable(SQLiteDatabase db) {
+			// create main table
+			db.execSQL("create table " + RECIPES_TABLE + " (" + RT_ID + " integer primary key, "
+					+ RT_NAME + " text, " + RT_DESCRIPTION + " text, " + RT_RATING + " real, "
+					+ RT_CREATOR + " text, " + RT_DATE + " text, " + RT_SERVING + " integer, " 
+					+ RT_PHOTO + " text, " + RT_TIME + " integer, "
+					+ createUnique(RT_NAME, RT_DESCRIPTION) + ")");
+		}
+		
+		private void createSecondaryTables(SQLiteDatabase db) {
+			// create ingredients table
+			db.execSQL("create table " + INGREDIENTS_TABLE + " (" + IT_ID + " integer primary key, " 
+					+ IT_NAME + " text, " + IT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+			
+			// create directions table
+			db.execSQL("create table " + DIRECTIONS_TABLE + " (" + DT_ID + " integer primary key, "
+					+ DT_STEP + " text, " + DT_SEQUENCE + " int, " + DT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+			
+			// create tags table
+			db.execSQL("create table " + TAGS_TABLE + " (" + TT_ID + " integer primary key, "
+					+ TT_TAG + " text, " + TT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+		}
+
+		private String createUnique(String... args) {
+			return "unique (" + TextUtils.join(",", args) + ")";
 		}
 	}
 	
 	private final DbHelper dbHelper;
-	
+
 	public RecipeData(Context context) {
 		dbHelper = new DbHelper(context);
+//		if (dbHelper.needStarter) {
+//			Log.i(TAG, "Importing starter recipes");
+//			importRecipesFromResource(R.raw.starter);
+//			dbHelper.needStarter = false;
+//		}
 		Log.i(TAG, "Initialized database");
 	}
 	
@@ -484,37 +596,42 @@ public class RecipeData {
 		try {
 			ContentValues values = createRecipeForInsert(r);
 			long rowid = db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
-			
-			for (String ing : r.ingredients) {
-				ContentValues cvi = createIngredientsCV(rowid, ing);
-				db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
+
+			if (r.ingredients != null) {
+				for (String ing : r.ingredients) {
+					ContentValues cvi = createIngredientsCV(rowid, ing);
+					db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
+				}
 			}
-			
-			int step = 1;
-			for (String dir : r.directions) {
-				ContentValues cdirs = createDirectionsCV(rowid, step, dir);
-				db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
-				step++;
+
+			if (r.directions != null) {
+				int step = 1;
+				for (String dir : r.directions) {
+					ContentValues cdirs = createDirectionsCV(rowid, step, dir);
+					db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
+					step++;
+				}
 			}
-			
-			for (String tag : r.tags) {
-				ContentValues ctags = createTagsCV(rowid, tag);
-				db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
+
+			if (r.tags != null) {
+				for (String tag : r.tags) {
+					ContentValues ctags = createTagsCV(rowid, tag);
+					db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
+				}
 			}
-			
 		} finally {
 			db.close();
 		}
 	}
 
-	public ContentValues createTagsCV(long rowid, String tag) {
+	public static ContentValues createTagsCV(long rowid, String tag) {
 		ContentValues ctags = new ContentValues();
 		ctags.put(TT_TAG, tag);
 		ctags.put(TT_RECIPE_ID, rowid);
 		return ctags;
 	}
 
-	public ContentValues createDirectionsCV(long rowid, int step, String dir) {
+	public static ContentValues createDirectionsCV(long rowid, int step, String dir) {
 		ContentValues cdirs = new ContentValues();
 		cdirs.put(DT_STEP, dir);
 		cdirs.put(DT_SEQUENCE, step);
@@ -522,14 +639,14 @@ public class RecipeData {
 		return cdirs;
 	}
 
-	public ContentValues createIngredientsCV(long rowid, String ing) {
+	public static ContentValues createIngredientsCV(long rowid, String ing) {
 		ContentValues cvi = new ContentValues();
 		cvi.put(IT_NAME, ing);
 		cvi.put(IT_RECIPE_ID, rowid);
 		return cvi;
 	}
 
-	public ContentValues createRecipeForInsert(Recipe r) {
+	public static ContentValues createRecipeForInsert(Recipe r) {
 		ContentValues values = new ContentValues();
 		values.put(RT_NAME, r.name);
 		values.put(RT_DESCRIPTION, r.description);
@@ -624,6 +741,54 @@ public class RecipeData {
 					new String[] { Long.toString(rid) }, SQLiteDatabase.CONFLICT_IGNORE);
 		} finally {
 			db.close();
+		}
+	}
+	
+	public void importRecipes(String path) throws IOException {
+		File f = new File(path);
+		FileInputStream fis = new FileInputStream(f);
+		byte[] buffer = new byte[fis.available()];
+		fis.read(buffer);
+		String st = new String(buffer);
+		parseJsonRecipes(st);
+	}
+
+	private void parseJsonRecipes(String st) {
+		try {
+			JSONArray ja = new JSONArray(st);
+			for (int i = 0; i < ja.length(); i++) {
+				JSONObject jo = ja.getJSONObject(i);
+				Recipe r = Recipe.parseJSON(jo);
+				if (r != null) {
+					insertRecipe(r);
+				}
+			}
+		} catch (JSONException e) {
+			Log.e(TAG, e.toString());
+		}
+	}
+	
+	public void exportRecipes(long[] ids) throws IOException {
+		// TODO file selection, sharing, etc.
+		String filename = "exported-recipes-" + System.currentTimeMillis() + ".txt";
+		File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+		File export = new File(sd, filename);
+		FileOutputStream fos = null;
+		sd.mkdirs();
+		try {
+			fos = new FileOutputStream(export);
+			JSONArray ja = new JSONArray();
+			for (long i : ids) {
+				ja.put(getSingleRecipeObject(i).toJSON());
+			}
+			byte[] buffer = ja.toString().getBytes();
+			fos.write(buffer);
+		} catch (FileNotFoundException e) {
+			Log.e(TAG, e.toString());
+		} finally {
+			if (fos != null) {
+				fos.close();
+			}
 		}
 	}
 }

@@ -238,7 +238,6 @@ public class RecipeBookActivity extends FragmentActivity {
     	Log.i(TAG, "New option selected");
     	Uri uri = new Uri.Builder().scheme("content").authority("net.potterpcs.recipebook").build();
     	uri = ContentUris.withAppendedId(uri, -1);
-    	Log.i(TAG, "new option selected");
     	Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, uri);
     	startActivity(intent);
     }
