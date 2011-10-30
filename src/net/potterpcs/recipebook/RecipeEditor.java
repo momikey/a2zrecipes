@@ -3,9 +3,13 @@ package net.potterpcs.recipebook;
 import java.util.Date;
 
 import net.potterpcs.recipebook.RecipeData.Recipe;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +33,7 @@ public class RecipeEditor extends FragmentActivity {
 	private static final int INGREDIENTS = 1;
 	private static final int DIRECTIONS = 2;
 	private static final int TAGS = 3;
+	private static final String[] ALL_FRAGMENT_NAMES = { "meta", "ingredients", "directions", "tags" };
 	
 	private Recipe recipe;
 	private long recipeId;
@@ -68,20 +73,45 @@ public class RecipeEditor extends FragmentActivity {
 		}
 		
 		if (sslistview != null) {
-			meta = new MetadataEditor();
-			ingredients = new IngredientsEditor();
-			directions = new DirectionsEditor();
-			tags = new TagsEditor();
-			
 			FragmentTransaction setup = manager.beginTransaction();
-			setup.add(R.id.ssfragment, meta, "meta");
+			Log.v(TAG, "creating fragments");
+
+			meta = (MetadataEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[0]);
+			if (meta == null) {
+				Log.v(TAG, "creating meta");
+				meta = new MetadataEditor();
+				setup.add(R.id.ssfragment, meta, "meta");
+			}
+			Log.v(TAG, meta.toString());
 			setup.hide(meta);
-			setup.add(R.id.ssfragment, ingredients, "ingredients");
+
+			ingredients = (IngredientsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[1]);
+			if (ingredients == null) {
+				Log.v(TAG, "creating ingredients");
+				ingredients = new IngredientsEditor();
+				setup.add(R.id.ssfragment, ingredients, "ingredients");
+			}
+			Log.v(TAG, ingredients.toString());
 			setup.hide(ingredients);
-			setup.add(R.id.ssfragment, directions, "directions");
+
+			directions = (DirectionsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[2]);
+			if (directions == null) {
+				Log.v(TAG, "creating directions");
+				directions = new DirectionsEditor();
+				setup.add(R.id.ssfragment, directions, "directions");
+			}
+			Log.v(TAG, directions.toString());
 			setup.hide(directions);
-			setup.add(R.id.ssfragment, tags, "tags");
+
+			tags = (TagsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[3]);
+			if (tags == null) {
+				Log.v(TAG, "creating tags");
+				tags = new TagsEditor();
+				setup.add(R.id.ssfragment, tags, "tags");
+			}
+			Log.v(TAG, tags.toString());
 			setup.hide(tags);
+			
 			setup.commit();
 			
 			sslistview.setOnItemClickListener(new OnItemClickListener() {
@@ -113,6 +143,47 @@ public class RecipeEditor extends FragmentActivity {
 				}
 			});
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+//		if (sslistview != null) {
+//			FragmentTransaction ft = manager.beginTransaction();
+//			for (String s : ALL_FRAGMENT_NAMES) {
+//				Fragment f = manager.findFragmentByTag(s);
+//				Log.i(TAG, f.toString() + f.isVisible());
+//				if (f != null) {
+//					if (f.isVisible()) {
+//						nextFragment = f;
+//					}
+//					ft.hide(f);
+//				}
+//				Log.i(TAG, f.toString() + f.isVisible());
+//			}
+//			ft.commit();
+//		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+//		FragmentTransaction ft = manager.beginTransaction();
+//		for (String s: ALL_FRAGMENT_NAMES) {
+//			Fragment f = manager.findFragmentByTag(s);
+//			if (f != null && sslistview != null) {
+//				// if the fragment exists and is not the one that should be shown
+//				// (two-pane mode only, large-screen mode can show all fragments at once)
+//				Log.i(TAG, f.toString() + f.isVisible());
+//				if (f.equals(nextFragment)) {
+//					ft.show(f);
+//				} else {
+//					ft.hide(f);
+//				}
+//				Log.i(TAG, f.toString() + f.isVisible());
+//			}
+//		}
+//		ft.commit();
 	}
 	
 	@Override
@@ -163,11 +234,17 @@ public class RecipeEditor extends FragmentActivity {
 		
 		if (recipe.id == -1) {
 			// an insert of a new recipe
-			recipeData.insertRecipe(recipe);
-			recipeId = recipeData.getLastInsertRecipeId();
+			recipeId = recipeData.insertRecipe(recipe);
+//			recipeId = recipeData.getLastInsertRecipeId();
 		} else {
 			// an edit of an existing recipe
-			recipeData.updateRecipe(recipe);
+			recipeId = recipeData.updateRecipe(recipe);
+		}
+		
+		if (recipeId == -1) {
+			// Conflict error
+			AlertDialogFragment adf = AlertDialogFragment.newInstance(this);
+			adf.show(getSupportFragmentManager(), "alert");
 		}
 	}
 	
@@ -185,6 +262,39 @@ public class RecipeEditor extends FragmentActivity {
 				Log.i(TAG, selectedImage.toString());
 				recipe.photo = selectedImage.toString();
 			}
+		}
+	}
+	
+	void alertDismissed() {
+		// do nothing for now
+	}
+	
+	private static class AlertDialogFragment extends DialogFragment {
+		RecipeEditor editor;
+		
+		public static AlertDialogFragment newInstance(RecipeEditor editor) {
+			AlertDialogFragment adf = new AlertDialogFragment(editor);
+			return adf;
+		}
+		
+		public AlertDialogFragment(RecipeEditor e) {
+			super();
+			editor = e;
+		}
+		
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			return new AlertDialog.Builder(getActivity())
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setTitle(R.string.recipeeditoralert)
+				.setPositiveButton(android.R.string.ok, 
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								editor.alertDismissed();
+							}
+						})
+				.create();
 		}
 	}
 }

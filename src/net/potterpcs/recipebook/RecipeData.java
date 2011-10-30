@@ -252,7 +252,7 @@ public class RecipeData {
 				db.beginTransaction();
 				db.execSQL("create temp table temprecipes as select * from " + RECIPES_TABLE);
 				db.execSQL("create temp table tempingredients as select * from " + INGREDIENTS_TABLE);
-				db.execSQL("create temp table tempdiresctions as select * from " + DIRECTIONS_TABLE);
+				db.execSQL("create temp table tempdirections as select * from " + DIRECTIONS_TABLE);
 				db.execSQL("create temp table temptags as select * from " + TAGS_TABLE);
 				
 				db.execSQL("drop table " + INGREDIENTS_TABLE);
@@ -391,7 +391,8 @@ public class RecipeData {
 	
 	public long getLastInsertRecipeId() {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor c = db.query(RECIPES_TABLE, new String[] { "last_insert_rowid() " }, null, null, null, null, null);
+//		Cursor c = db.query(RECIPES_TABLE, new String[] { "last_insert_rowid() " }, null, null, null, null, null);
+		Cursor c = db.rawQuery("select max(_id) from " + RECIPES_TABLE, null);
 		c.moveToFirst();
 		long id = c.getLong(0);
 		c.close();
@@ -555,13 +556,15 @@ public class RecipeData {
 		return db.query(TAGS_TABLE, TAGS_FIELDS, null, null, TT_TAG, null, TT_TAG);
 	}
 	
-	public void insertRecipe(ContentValues values) {
+	public int insertRecipe(ContentValues values) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		int ret = -1;
 		try {
-			db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+			ret = (int) db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_ROLLBACK);
 		} finally {
 			db.close();
 		}
+		return ret;
 	}
 	
 	public void insertIngredients(ContentValues values) {
@@ -591,37 +594,44 @@ public class RecipeData {
 		}
 	}
 	
-	public void insertRecipe(Recipe r) {
+	public int insertRecipe(Recipe r) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		int ret = -1;
 		try {
+			db.beginTransaction();
 			ContentValues values = createRecipeForInsert(r);
-			long rowid = db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+			long rowid = db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_ROLLBACK);
 
-			if (r.ingredients != null) {
-				for (String ing : r.ingredients) {
-					ContentValues cvi = createIngredientsCV(rowid, ing);
-					db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
+			if (db.inTransaction()) {
+				if (r.ingredients != null) {
+					for (String ing : r.ingredients) {
+						ContentValues cvi = createIngredientsCV(rowid, ing);
+						db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
+					}
 				}
-			}
 
-			if (r.directions != null) {
-				int step = 1;
-				for (String dir : r.directions) {
-					ContentValues cdirs = createDirectionsCV(rowid, step, dir);
-					db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
-					step++;
+				if (r.directions != null) {
+					int step = 1;
+					for (String dir : r.directions) {
+						ContentValues cdirs = createDirectionsCV(rowid, step, dir);
+						db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
+						step++;
+					}
 				}
-			}
 
-			if (r.tags != null) {
-				for (String tag : r.tags) {
-					ContentValues ctags = createTagsCV(rowid, tag);
-					db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
+				if (r.tags != null) {
+					for (String tag : r.tags) {
+						ContentValues ctags = createTagsCV(rowid, tag);
+						db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
+					}
 				}
+				db.endTransaction();
 			}
+			ret = (int) rowid;
 		} finally {
 			db.close();
 		}
+		return ret;
 	}
 
 	public static ContentValues createTagsCV(long rowid, String tag) {
@@ -670,48 +680,54 @@ public class RecipeData {
 		}
 	}
 	
-	public void updateRecipe(Recipe r) {
+	public int updateRecipe(Recipe r) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		int ret = -1;
 		try {
+			db.beginTransaction();
 			long rid = r.id;
 			String[] whereArgs = { Long.toString(rid) };
-			db.updateWithOnConflict(RECIPES_TABLE, createRecipeForInsert(r), RT_ID + " = ?", 
-					new String[] { Long.toString(r.id) }, SQLiteDatabase.CONFLICT_IGNORE);
-			
-			// until we can figure out a smarter way to update
-			db.delete(INGREDIENTS_TABLE, IT_RECIPE_ID + " = ?", whereArgs);
-			for (String ing : r.ingredients) {
-				db.insertWithOnConflict(INGREDIENTS_TABLE, null, createIngredientsCV(rid, ing), 
-						SQLiteDatabase.CONFLICT_IGNORE);
+			ret = db.updateWithOnConflict(RECIPES_TABLE, createRecipeForInsert(r), RT_ID + " = ?", 
+					new String[] { Long.toString(r.id) }, SQLiteDatabase.CONFLICT_ROLLBACK);
+
+			if (db.inTransaction()) {
+				// until we can figure out a smarter way to update
+				db.delete(INGREDIENTS_TABLE, IT_RECIPE_ID + " = ?", whereArgs);
+				for (String ing : r.ingredients) {
+					db.insertWithOnConflict(INGREDIENTS_TABLE, null, createIngredientsCV(rid, ing), 
+							SQLiteDatabase.CONFLICT_IGNORE);
+				}
+
+				db.delete(DIRECTIONS_TABLE, DT_RECIPE_ID + " = ?", whereArgs);
+				int step = 1;
+				for (String dir : r.directions) {
+					db.insertWithOnConflict(DIRECTIONS_TABLE, null, createDirectionsCV(rid, step, dir), 
+							SQLiteDatabase.CONFLICT_IGNORE);
+					step++;
+				}
+
+				db.delete(TAGS_TABLE, TT_RECIPE_ID + " = ?", whereArgs);
+				for (String tag : r.tags) {
+					db.insertWithOnConflict(TAGS_TABLE, null, createTagsCV(rid, tag), 
+							SQLiteDatabase.CONFLICT_IGNORE);
+				}
 			}
-			
-			db.delete(DIRECTIONS_TABLE, DT_RECIPE_ID + " = ?", whereArgs);
-			int step = 1;
-			for (String dir : r.directions) {
-				db.insertWithOnConflict(DIRECTIONS_TABLE, null, createDirectionsCV(rid, step, dir), 
-						SQLiteDatabase.CONFLICT_IGNORE);
-				step++;
-			}
-			
-			db.delete(TAGS_TABLE, TT_RECIPE_ID + " = ?", whereArgs);
-			for (String tag : r.tags) {
-				db.insertWithOnConflict(TAGS_TABLE, null, createTagsCV(rid, tag), 
-						SQLiteDatabase.CONFLICT_IGNORE);
-			}
-			
 		} finally {
 			db.close();
 		}
+		return ret;
 	}
 	
-	public void updateRecipe(long rid, ContentValues values) {
+	public int updateRecipe(long rid, ContentValues values) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		int ret = -1;
 		try {
-			db.updateWithOnConflict(RECIPES_TABLE, values, RT_ID + " = ?", 
-					new String[] { Long.toString(rid) }, SQLiteDatabase.CONFLICT_IGNORE);
+			ret = db.updateWithOnConflict(RECIPES_TABLE, values, RT_ID + " = ?", 
+					new String[] { Long.toString(rid) }, SQLiteDatabase.CONFLICT_ROLLBACK);
 		} finally {
 			db.close();
 		}
+		return ret;
 	}
 	
 	public void updateIngredients(long rid, ContentValues values) {

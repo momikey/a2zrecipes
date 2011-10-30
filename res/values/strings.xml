@@ -67,4 +67,5 @@
         <string name="raterecipetext">Rate Recipe \"%s\"</string>
         <string name="raterecipebutton">Rate It!</string>
         <string name="recipelistrate">Rate This Recipe</string>
+        <string name="recipeeditoralert">The name and description for this recipe are the same as those of another recipe. Please change either the name or the description.</string>
 </resources>

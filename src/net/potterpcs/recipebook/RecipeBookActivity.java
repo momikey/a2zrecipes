@@ -1,5 +1,8 @@
 package net.potterpcs.recipebook;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -33,7 +36,6 @@ public class RecipeBookActivity extends FragmentActivity {
 	static final String SORT_DESCENDING = " desc";
 	static final String SORT_KEY = "sort_key";
 	
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +92,17 @@ public class RecipeBookActivity extends FragmentActivity {
 		// Android 3.0+ has the action bar, and requires this call to change menu items.
 		// Earlier versions don't have it, because they don't need it.
     	try {
-			invalidateOptionsMenu();
-		} catch (NoSuchMethodError e) {
-			Log.i(TAG, "Invalidate method not available");
+    		Method m = getClass().getMethod("invalidateOptionsMenu", (Class[]) null);
+    		m.invoke(this, (Object[]) null);
+//			invalidateOptionsMenu();
+		} catch (SecurityException e) {
+			Log.e(TAG, e.toString());
+		} catch (NoSuchMethodException e) {
+			Log.e(TAG, e.toString());
+		} catch (IllegalAccessException e) {
+			Log.e(TAG, e.toString());
+		} catch (InvocationTargetException e) {
+			Log.e(TAG, e.toString());
 		}
     }
     
