@@ -25,7 +25,7 @@ public class RecipeData {
 
 	private static final String TAG = RecipeData.class.getSimpleName();
 	
-	static final int DB_VERSION = 6;
+	static final int DB_VERSION = 7;
 	static final String DB_FILENAME = "recipebook.db";
 	
 	static final String RECIPES_TABLE = "recipes";
@@ -245,39 +245,16 @@ public class RecipeData {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			if (oldVersion == 5) {
-				// move records over to new table with unique constraints
-				// (SQLite doesn't have "add constraint", so we can't just alter the tables
-				// also, we have to copy out the other tables because of foreign keys
-				db.beginTransaction();
-				db.execSQL("create temp table temprecipes as select * from " + RECIPES_TABLE);
-				db.execSQL("create temp table tempingredients as select * from " + INGREDIENTS_TABLE);
-				db.execSQL("create temp table tempdirections as select * from " + DIRECTIONS_TABLE);
-				db.execSQL("create temp table temptags as select * from " + TAGS_TABLE);
-				
-				db.execSQL("drop table " + INGREDIENTS_TABLE);
-				db.execSQL("drop table " + DIRECTIONS_TABLE);
-				db.execSQL("drop table " + TAGS_TABLE);
-				db.execSQL("drop table " + RECIPES_TABLE);
-
-				createRecipeTable(db);
-				createSecondaryTables(db);
-				
-				db.execSQL("insert into " + RECIPES_TABLE + " select * from temprecipes");
-				db.execSQL("insert into " + INGREDIENTS_TABLE + " select * from tempingredients");
-				db.execSQL("insert into " + DIRECTIONS_TABLE + " select * from tempdirections");
-				db.execSQL("insert into " + TAGS_TABLE + " select * from temptags");
-				db.endTransaction();
-			} else if (oldVersion == 4) {
-				db.execSQL("alter table " + RECIPES_TABLE + " add column " + RT_PHOTO + " text");
-			} else if (oldVersion < 4) {
-				db.beginTransaction();
-				db.execSQL("drop table " + INGREDIENTS_TABLE);
-				db.execSQL("drop table " + DIRECTIONS_TABLE);
-				db.execSQL("drop table " + TAGS_TABLE);
-				db.execSQL("drop table " + RECIPES_TABLE);
-				this.onCreate(db);
-				db.endTransaction();
+			if (!db.isReadOnly()) {
+				if (oldVersion < 7) {
+					db.beginTransaction();
+					db.execSQL("drop table " + INGREDIENTS_TABLE);
+					db.execSQL("drop table " + DIRECTIONS_TABLE);
+					db.execSQL("drop table " + TAGS_TABLE);
+					db.execSQL("drop table " + RECIPES_TABLE);
+					this.onCreate(db);
+					db.endTransaction();
+				}
 			}
 		}
 
@@ -318,7 +295,7 @@ public class RecipeData {
 //			importRecipesFromResource(R.raw.starter);
 //			dbHelper.needStarter = false;
 //		}
-		Log.i(TAG, "Initialized database");
+		Log.i(TAG, "Initialized database version " + dbHelper.getReadableDatabase().getVersion());
 	}
 	
 	public void close() {
@@ -560,7 +537,7 @@ public class RecipeData {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int ret = -1;
 		try {
-			ret = (int) db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_ROLLBACK);
+			ret = (int) db.insert(RECIPES_TABLE, null, values);
 		} finally {
 			db.close();
 		}
@@ -584,7 +561,7 @@ public class RecipeData {
 			db.close();
 		}
 	}
-	
+
 	public void insertTags(ContentValues values) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		try {
@@ -593,39 +570,35 @@ public class RecipeData {
 			db.close();
 		}
 	}
-	
+
 	public int insertRecipe(Recipe r) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int ret = -1;
 		try {
-			db.beginTransaction();
 			ContentValues values = createRecipeForInsert(r);
-			long rowid = db.insertWithOnConflict(RECIPES_TABLE, null, values, SQLiteDatabase.CONFLICT_ROLLBACK);
+			long rowid = db.insert(RECIPES_TABLE, null, values);
 
-			if (db.inTransaction()) {
-				if (r.ingredients != null) {
-					for (String ing : r.ingredients) {
-						ContentValues cvi = createIngredientsCV(rowid, ing);
-						db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
-					}
+			if (r.ingredients != null) {
+				for (String ing : r.ingredients) {
+					ContentValues cvi = createIngredientsCV(rowid, ing);
+					db.insertWithOnConflict(INGREDIENTS_TABLE, null, cvi, SQLiteDatabase.CONFLICT_IGNORE);
 				}
+			}
 
-				if (r.directions != null) {
-					int step = 1;
-					for (String dir : r.directions) {
-						ContentValues cdirs = createDirectionsCV(rowid, step, dir);
-						db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
-						step++;
-					}
+			if (r.directions != null) {
+				int step = 1;
+				for (String dir : r.directions) {
+					ContentValues cdirs = createDirectionsCV(rowid, step, dir);
+					db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
+					step++;
 				}
+			}
 
-				if (r.tags != null) {
-					for (String tag : r.tags) {
-						ContentValues ctags = createTagsCV(rowid, tag);
-						db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
-					}
+			if (r.tags != null) {
+				for (String tag : r.tags) {
+					ContentValues ctags = createTagsCV(rowid, tag);
+					db.insertWithOnConflict(TAGS_TABLE, null, ctags, SQLiteDatabase.CONFLICT_IGNORE);
 				}
-				db.endTransaction();
 			}
 			ret = (int) rowid;
 		} finally {
@@ -684,13 +657,11 @@ public class RecipeData {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int ret = -1;
 		try {
-			db.beginTransaction();
 			long rid = r.id;
 			String[] whereArgs = { Long.toString(rid) };
-			ret = db.updateWithOnConflict(RECIPES_TABLE, createRecipeForInsert(r), RT_ID + " = ?", 
-					new String[] { Long.toString(r.id) }, SQLiteDatabase.CONFLICT_ROLLBACK);
+			ret = db.update(RECIPES_TABLE, createRecipeForInsert(r), RT_ID + " = ?", 
+					new String[] { Long.toString(r.id) });
 
-			if (db.inTransaction()) {
 				// until we can figure out a smarter way to update
 				db.delete(INGREDIENTS_TABLE, IT_RECIPE_ID + " = ?", whereArgs);
 				for (String ing : r.ingredients) {
@@ -711,7 +682,6 @@ public class RecipeData {
 					db.insertWithOnConflict(TAGS_TABLE, null, createTagsCV(rid, tag), 
 							SQLiteDatabase.CONFLICT_IGNORE);
 				}
-			}
 		} finally {
 			db.close();
 		}
@@ -722,8 +692,8 @@ public class RecipeData {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int ret = -1;
 		try {
-			ret = db.updateWithOnConflict(RECIPES_TABLE, values, RT_ID + " = ?", 
-					new String[] { Long.toString(rid) }, SQLiteDatabase.CONFLICT_ROLLBACK);
+			ret = db.update(RECIPES_TABLE, values, RT_ID + " = ?", 
+					new String[] { Long.toString(rid) });
 		} finally {
 			db.close();
 		}

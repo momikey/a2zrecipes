@@ -1,6 +1,7 @@
 package net.potterpcs.recipebook;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 public class TagsEditor extends Fragment {
+	static final String STATE = "tags";
 	GridView gridview;
 	ArrayList<String> tags;
 	private ArrayAdapter<String> adapter;
@@ -30,6 +32,13 @@ public class TagsEditor extends Fragment {
 			Bundle savedInstanceState) {
 		activity = (RecipeEditor) getActivity();
 		tags = new ArrayList<String>();
+		
+		if (savedInstanceState != null) {
+			String[] saved = savedInstanceState.getStringArray(STATE);
+			if (saved != null) {
+				tags.addAll(Arrays.asList(saved));
+			}
+		}
 		
 		long rid = activity.getRecipeId();
 			
@@ -109,5 +118,11 @@ public class TagsEditor extends Fragment {
 			insts[i] = adapter.getItem(i);
 		}
 		return insts;
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putStringArray(STATE, getTags());
 	}
 }

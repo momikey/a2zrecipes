@@ -1,6 +1,7 @@
 package net.potterpcs.recipebook;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.ListView;
 
 public class IngredientsEditor extends Fragment {
 	static final String TAG = "IngredientsEditor";
+	static final String STATE = "ingredients";
 	ListView listview;
 	ArrayList<String> ingredients;
 	private ArrayAdapter<String> adapter;
@@ -34,6 +36,13 @@ public class IngredientsEditor extends Fragment {
 		activity = (RecipeEditor) getActivity();
 		ingredients = new ArrayList<String>();
 		currentIngredient = -1;
+		
+		if (savedInstanceState != null) {
+			String[] saved = savedInstanceState.getStringArray(STATE);
+			if (saved != null) {
+				ingredients.addAll(Arrays.asList(saved));
+			}
+		}
 		
 		long rid = activity.getRecipeId();
 		Log.i(TAG, "id=" + rid);
@@ -135,5 +144,11 @@ public class IngredientsEditor extends Fragment {
 			ings[i] = adapter.getItem(i);
 		}
 		return ings;
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putStringArray(STATE, getIngredients());
 	}
 }

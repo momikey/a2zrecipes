@@ -1,6 +1,7 @@
 package net.potterpcs.recipebook;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class DirectionsEditor extends Fragment {
+	static final String STATE = "directions";
 	private RecipeEditor activity;
 	ListView listview;
 	ArrayList<String> directions;
@@ -33,6 +35,13 @@ public class DirectionsEditor extends Fragment {
 		long rid = activity.getRecipeId();
 		directions = new ArrayList<String>();
 		currentDirection = -1;
+		
+		if (savedInstanceState != null) {
+			String[] saved = savedInstanceState.getStringArray(STATE);
+			if (saved != null) {
+				directions.addAll(Arrays.asList(saved));
+			}
+		}
 		
 		// load an existing recipe's directions
 		if (rid > 0) {
@@ -147,5 +156,11 @@ public class DirectionsEditor extends Fragment {
 			dirs[i] = adapter.getItem(i);
 		}
 		return dirs;
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putStringArray(STATE, getDirections());
 	}
 }
