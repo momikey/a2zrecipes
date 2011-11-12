@@ -1,5 +1,7 @@
 package net.potterpcs.recipebook;
 
+import java.io.IOException;
+
 import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -22,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -132,6 +135,25 @@ public class RecipeListFragment extends ListFragment {
 		footer.setText(String.format(activity.getResources().getString(R.string.numrecipes), nr));
 	}
 	
+	long[] getItemIds() {
+		ListAdapter adapter = getListAdapter();
+		long[] ids = new long[adapter.getCount()];
+		for (int i = 0; i < ids.length; i++) {
+			ids[i] = adapter.getItemId(i);
+		}
+		return ids;
+	}
+
+
+	public void onExportItemSelected(MenuItem item) {
+		RecipeData data = ((RecipeBook) getActivity().getApplication()).getData();
+		try {
+			data.exportRecipes(getItemIds());
+		} catch (IOException e) {
+			Log.e(TAG, e.toString());
+		}
+	}
+	
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
@@ -187,6 +209,9 @@ public class RecipeListFragment extends ListFragment {
 			RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 			activity.switchToFlipBook();
 			return true;
+    	case R.id.menuexport:
+    		onExportItemSelected(item);
+    		return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

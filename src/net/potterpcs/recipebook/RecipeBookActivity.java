@@ -3,11 +3,14 @@ package net.potterpcs.recipebook;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.potterpcs.recipebook.R.id;
+
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -35,6 +38,8 @@ public class RecipeBookActivity extends FragmentActivity {
 
 	static final String SORT_DESCENDING = " desc";
 	static final String SORT_KEY = "sort_key";
+
+	private static final String HELP_FILENAME = "recipebook";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,8 @@ public class RecipeBookActivity extends FragmentActivity {
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     	MenuCompat.setShowAsAction(menu.findItem(R.id.menushowall),
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    	MenuCompat.setShowAsAction(menu.findItem(R.id.menuhelp),
+    			MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
     	hideShowAllItem(menu);
     	setSortOptions(menu);
@@ -161,6 +168,9 @@ public class RecipeBookActivity extends FragmentActivity {
     	case R.id.menunew:
     		onNewItemSelected(item);
     		return true;
+    	case R.id.menuhelp:
+    		onHelpItemSelected(item);
+    		return true;
     	case R.id.menusearch:
     		onSearchRequested();
     		return true;
@@ -196,6 +206,13 @@ public class RecipeBookActivity extends FragmentActivity {
     		return super.onOptionsItemSelected(item);
     	}
     }
+
+
+	public void onHelpItemSelected(MenuItem item) {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
+		helpFragment.show(ft, "help");
+	}
 
 	private void startSortActivity(int key, boolean descending) {
 		Intent intent = new Intent(this, this.getClass());

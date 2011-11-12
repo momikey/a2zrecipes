@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -40,6 +41,7 @@ public class RecipeViewer extends FragmentActivity {
 	static final String[] DIRECTIONS_FIELDS = { RecipeData.DT_STEP, RecipeData.DT_SEQUENCE };
 	static final int[] INGREDIENTS_IDS = { android.R.id.text1 };
 	static final int[] DIRECTIONS_IDS = { R.id.direction, R.id.number };
+	private static final String HELP_FILENAME = "viewer";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,8 @@ public class RecipeViewer extends FragmentActivity {
 		inflater.inflate(R.menu.viewermenu, menu);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.viewertimer), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.viewerhelp), 
+				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
 	
@@ -119,6 +123,9 @@ public class RecipeViewer extends FragmentActivity {
 		switch (item.getItemId()) {
 		case R.id.viewertimer:
 			onTimerSelected(item);
+			return true;
+		case R.id.viewerhelp:
+			onHelpItemSelected(item);
 			return true;
 		case android.R.id.home:
 			Intent intent = new Intent(this, RecipeBookActivity.class);
@@ -130,6 +137,12 @@ public class RecipeViewer extends FragmentActivity {
 		}
 	}
 	
+	public void onHelpItemSelected(MenuItem item) {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
+		helpFragment.show(ft, "help");
+	}
+
 	public void onTimerSelected(MenuItem item) {
     	FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     	Fragment timerFragment = new TimerFragment();

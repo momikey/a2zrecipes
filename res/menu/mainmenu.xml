@@ -28,6 +28,7 @@
             <item android:title="@string/menusearchtime" android:id="@+id/menusearchtime"></item>
         </menu>
     </item>
+    <item android:id="@+id/menuhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
     
     
     

@@ -2,5 +2,6 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/viewertimer" android:showAsAction="ifRoom|withText" android:onClick="onTimerSelected" android:title="@string/viewermenutimer" android:icon="@drawable/menu_timer"></item>
+    <item android:id="@+id/viewerhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
     
 </menu>

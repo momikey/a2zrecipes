@@ -2,5 +2,6 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/switchtolist" android:showAsAction="ifRoom" android:title="@string/switchtolist" android:icon="@drawable/menu_listmode"></item>
+    <item android:id="@+id/flipbookhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
     
 </menu>

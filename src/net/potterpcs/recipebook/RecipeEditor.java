@@ -34,6 +34,7 @@ public class RecipeEditor extends FragmentActivity {
 	private static final int DIRECTIONS = 2;
 	private static final int TAGS = 3;
 	private static final String[] ALL_FRAGMENT_NAMES = { "meta", "ingredients", "directions", "tags" };
+	private static final String HELP_FILENAME = "editor";
 	
 	private Recipe recipe;
 	private long recipeId;
@@ -194,6 +195,8 @@ public class RecipeEditor extends FragmentActivity {
 				MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuattach), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuhelp),
+				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
 	
@@ -206,6 +209,9 @@ public class RecipeEditor extends FragmentActivity {
 		case R.id.editormenuattach:
 			onAttachPhoto(item);
 			return true;
+		case R.id.editormenuhelp:
+			onHelpItemSelected(item);
+			return true;
 		case android.R.id.home:
 			Intent intent = new Intent(this, RecipeBookActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -216,6 +222,12 @@ public class RecipeEditor extends FragmentActivity {
 		}
 	}
 	
+	public void onHelpItemSelected(MenuItem item) {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
+		helpFragment.show(ft, "help");
+	}
+
 	public long getRecipeId() {
 		return recipeId;
 	}
@@ -249,7 +261,6 @@ public class RecipeEditor extends FragmentActivity {
 	}
 	
 	public void onAttachPhoto(MenuItem item) {
-		// TODO
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, GALLERY_ACTIVITY);
 	}

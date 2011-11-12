@@ -754,7 +754,7 @@ public class RecipeData {
 		}
 	}
 	
-	public void exportRecipes(long[] ids) throws IOException {
+	public String exportRecipes(long[] ids) throws IOException {
 		// TODO file selection, sharing, etc.
 		String filename = "exported-recipes-" + System.currentTimeMillis() + ".txt";
 		File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
@@ -769,8 +769,10 @@ public class RecipeData {
 			}
 			byte[] buffer = ja.toString().getBytes();
 			fos.write(buffer);
+			return filename;
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, e.toString());
+			return null;
 		} finally {
 			if (fos != null) {
 				fos.close();

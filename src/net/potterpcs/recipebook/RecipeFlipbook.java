@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 
 public class RecipeFlipbook extends FragmentActivity {
 	private static final String TAG = "RecipeFlipbook";
+	private static final String HELP_FILENAME = "flipbook";
 	FlipAdapter flip;
 	ViewPager pager;
 	Intent intent;
@@ -197,6 +199,7 @@ public class RecipeFlipbook extends FragmentActivity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.flippermenu, menu);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtolist), MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.flipbookhelp), MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
 	
@@ -211,9 +214,18 @@ public class RecipeFlipbook extends FragmentActivity {
 		case R.id.switchtolist:
 			switchToListMode();
 			return true;
+		case R.id.flipbookhelp:
+			onHelpItemSelected(item);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	public void onHelpItemSelected(MenuItem item) {
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
+		helpFragment.show(ft, "help");
 	}
 
 	void switchToListMode() {
