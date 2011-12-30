@@ -6,8 +6,10 @@ import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuCompat;
@@ -123,8 +125,8 @@ public class RecipeListFragment extends ListFragment {
 		cursor = data.query(activity.getSearchQuery(), activity.getSearchTag(), 
 				activity.getMinTime(), activity.getMaxTime(), sortData);
 
-		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO);
+//		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO, 0);
 
 		adapter.setViewBinder(VIEW_BINDER);
 		setListAdapter(adapter);
@@ -148,7 +150,16 @@ public class RecipeListFragment extends ListFragment {
 	public void onExportItemSelected(MenuItem item) {
 		RecipeData data = ((RecipeBook) getActivity().getApplication()).getData();
 		try {
-			data.exportRecipes(getItemIds());
+			String filename = data.exportRecipes(getItemIds());
+			if (filename != null) {
+				Log.v(TAG, "Exported to " + filename);
+				MediaScannerConnection.scanFile(getActivity(), new String[] { filename }, null, null);
+//				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//				intent.setType("text/plain");
+//				startActivity(Intent.createChooser(intent, ""));
+			} else {
+				Log.e(TAG, "Unable to export recipes");
+			}
 		} catch (IOException e) {
 			Log.e(TAG, e.toString());
 		}
@@ -197,6 +208,10 @@ public class RecipeListFragment extends ListFragment {
 			return true;
 		case R.id.ctxmenurate:
 			onRateItemSelected(item);
+			return true;
+		case R.id.ctxmenutag:
+			onTagItemSelected(item);
+			return true;
 		default:
 			return super.onContextItemSelected(item);			
 		}
@@ -246,6 +261,14 @@ public class RecipeListFragment extends ListFragment {
 		Recipe r = ((RecipeBook) activity.getApplication()).getData().getSingleRecipeObject(info.id);
 		RateRecipeDialog rrd = RateRecipeDialog.newInstance(this, r.id, r.name, r.rating);
 		rrd.show(ft, "dialog");
+	}
+	
+	public void onTagItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		Log.i(TAG, "tag option selected, id=" + info.id);
+		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
+		FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+		Recipe r = ((RecipeBook) activity.getApplication()).getData().getSingleRecipeObject(info.id);
 	}
 	
 	public void onRateDialogDismissed() {

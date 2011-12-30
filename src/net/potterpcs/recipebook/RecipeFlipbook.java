@@ -166,7 +166,7 @@ public class RecipeFlipbook extends FragmentActivity {
 				Uri uri = Uri.parse(recipe.photo);
 				ImageView iv = new ImageView(getActivity());
 				
-				if (uri.getScheme().equals("content")) {
+				if (!uri.getScheme().contains("http")) {
 					iv.setImageURI(uri);
 				} else {
 					DownloadImageTask.doDownload(recipe.photo, iv);

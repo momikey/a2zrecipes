@@ -25,7 +25,7 @@ public class RecipeData {
 
 	private static final String TAG = RecipeData.class.getSimpleName();
 	
-	static final int DB_VERSION = 7;
+	static final int DB_VERSION = 8;
 	static final String DB_FILENAME = "recipebook.db";
 	
 	static final String RECIPES_TABLE = "recipes";
@@ -51,8 +51,9 @@ public class RecipeData {
 	public static final String DT_ID = "_id";
 	public static final String DT_STEP = "step";
 	public static final String DT_SEQUENCE = "sequence";
+	public static final String DT_PHOTO = "photo";
 	public static final String DT_RECIPE_ID = "recipe_id";
-	public static final String[] DIRECTIONS_FIELDS = { DT_ID, DT_STEP, DT_SEQUENCE };
+	public static final String[] DIRECTIONS_FIELDS = { DT_ID, DT_STEP, DT_SEQUENCE, DT_PHOTO };
 	
 	static final String TAGS_TABLE = "tags";
 	public static final String TT_ID = "_id";
@@ -72,6 +73,7 @@ public class RecipeData {
 		int time;
 		String[] ingredients;
 		String[] directions;
+		String[] directions_photos;
 		String[] tags;
 		String photo;
 		
@@ -102,7 +104,10 @@ public class RecipeData {
 				
 				JSONArray jd = new JSONArray();
 				for (int d = 0; d < directions.length; d++) {
-					jd.put(directions[d]);
+//					jd.put(directions[d]);
+					JSONObject diro = new JSONObject();
+					diro.put(DT_STEP, directions[d]);
+					diro.put(DT_PHOTO, directions_photos[d]);
 				}
 				jo.put(DIRECTIONS_TABLE, jd);
 				
@@ -158,8 +163,16 @@ public class RecipeData {
 			// Directions (remember that these are ordered!)
 			if (jd != null) {
 				r.directions = new String[jd.length()];
+				r.directions_photos = new String[jd.length()];
 				for (int d = 0; d < r.directions.length; d++) {
-					r.directions[d] = jd.optString(d);
+					JSONObject diro = jd.optJSONObject(d);
+					if (diro != null) {
+						r.directions[d] = diro.optString(DT_STEP);
+						r.directions_photos[d] = diro.optString(DT_PHOTO);
+					} else {
+						r.directions[d] = jd.optString(d);
+						r.directions_photos[d] = null;
+					}
 				}
 			}
 
@@ -245,8 +258,15 @@ public class RecipeData {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			if (!db.isReadOnly()) {
-				if (oldVersion < 7) {
+			if (db.isReadOnly()) {
+				db = SQLiteDatabase.openDatabase(db.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
+				Log.i(TAG, "Successfully opened read-write database");
+			} else {
+				if (oldVersion == 7) {
+					Log.i(TAG, "Upgrading DB version 7 to version " + DB_VERSION);
+					db.execSQL("alter table " + DIRECTIONS_TABLE + " add column " + DT_PHOTO + " text");
+					Log.i(TAG, "Successfully upgraded database");
+				} else if (oldVersion < 7) {
 					db.beginTransaction();
 					db.execSQL("drop table " + INGREDIENTS_TABLE);
 					db.execSQL("drop table " + DIRECTIONS_TABLE);
@@ -260,25 +280,39 @@ public class RecipeData {
 
 		private void createRecipeTable(SQLiteDatabase db) {
 			// create main table
-			db.execSQL("create table " + RECIPES_TABLE + " (" + RT_ID + " integer primary key, "
-					+ RT_NAME + " text, " + RT_DESCRIPTION + " text, " + RT_RATING + " real, "
-					+ RT_CREATOR + " text, " + RT_DATE + " text, " + RT_SERVING + " integer, " 
-					+ RT_PHOTO + " text, " + RT_TIME + " integer, "
+			db.execSQL("create table " + RECIPES_TABLE + " (" 
+					+ RT_ID + " integer primary key, "
+					+ RT_NAME + " text, " 
+					+ RT_DESCRIPTION + " text, " 
+					+ RT_RATING + " real, "
+					+ RT_CREATOR + " text, " 
+					+ RT_DATE + " text, " 
+					+ RT_SERVING + " integer, " 
+					+ RT_PHOTO + " text, " 
+					+ RT_TIME + " integer, "
 					+ createUnique(RT_NAME, RT_DESCRIPTION) + ")");
 		}
 		
 		private void createSecondaryTables(SQLiteDatabase db) {
 			// create ingredients table
-			db.execSQL("create table " + INGREDIENTS_TABLE + " (" + IT_ID + " integer primary key, " 
-					+ IT_NAME + " text, " + IT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+			db.execSQL("create table " + INGREDIENTS_TABLE + " (" 
+					+ IT_ID + " integer primary key, " 
+					+ IT_NAME + " text, " 
+					+ IT_RECIPE_ID + RT_FOREIGN_KEY + ")");
 			
 			// create directions table
-			db.execSQL("create table " + DIRECTIONS_TABLE + " (" + DT_ID + " integer primary key, "
-					+ DT_STEP + " text, " + DT_SEQUENCE + " int, " + DT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+			db.execSQL("create table " + DIRECTIONS_TABLE + " (" 
+					+ DT_ID + " integer primary key, "
+					+ DT_STEP + " text, " 
+					+ DT_SEQUENCE + " int, " 
+					+ DT_PHOTO + " text, "
+					+ DT_RECIPE_ID + RT_FOREIGN_KEY + ")");
 			
 			// create tags table
-			db.execSQL("create table " + TAGS_TABLE + " (" + TT_ID + " integer primary key, "
-					+ TT_TAG + " text, " + TT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+			db.execSQL("create table " + TAGS_TABLE + " (" 
+					+ TT_ID + " integer primary key, "
+					+ TT_TAG + " text, " 
+					+ TT_RECIPE_ID + RT_FOREIGN_KEY + ")");
 		}
 
 		private String createUnique(String... args) {
@@ -449,6 +483,7 @@ public class RecipeData {
 		
 		r.ingredients = getRecipeIngredientStrings(rid);
 		r.directions = getRecipeDirectionStrings(rid);
+		r.directions_photos = getRecipeDirectionPhotoStrings(rid);
 		r.tags = getRecipeTagStrings(rid);
 		
 		c.close();
@@ -496,6 +531,21 @@ public class RecipeData {
 		return dirs;
 	}
 	
+	private String[] getRecipeDirectionPhotoStrings(long rid) {
+		// NOTE: the returned array is in database sequential order
+		Cursor c = getRecipeDirections(rid);
+		String[] dirs = new String[c.getCount()];
+		
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			dirs[c.getPosition()] = c.getString(c.getColumnIndex(DT_PHOTO));
+			c.moveToNext();
+		}
+		
+		c.close();
+		return dirs;
+	}
+
 	public Cursor getRecipeTags(long rid) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		return db.query(TAGS_TABLE, TAGS_FIELDS, TT_RECIPE_ID + " = ?", 
@@ -769,7 +819,7 @@ public class RecipeData {
 			}
 			byte[] buffer = ja.toString().getBytes();
 			fos.write(buffer);
-			return filename;
+			return export.toString();
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, e.toString());
 			return null;

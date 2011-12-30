@@ -6,6 +6,7 @@ import java.util.Arrays;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -14,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,6 +28,7 @@ public class DirectionsEditor extends Fragment {
 	private RecipeEditor activity;
 	ListView listview;
 	ArrayList<String> directions;
+	ArrayList<String> photoUris;
 	private ArrayAdapter<String> adapter;
 	int currentDirection;
 	
@@ -34,6 +38,7 @@ public class DirectionsEditor extends Fragment {
 		activity = (RecipeEditor) getActivity();
 		long rid = activity.getRecipeId();
 		directions = new ArrayList<String>();
+		photoUris = new ArrayList<String>();
 		currentDirection = -1;
 		
 		if (savedInstanceState != null) {
@@ -52,6 +57,9 @@ public class DirectionsEditor extends Fragment {
 			while (!c.isAfterLast()) {
 				String value = c.getString(c.getColumnIndex(RecipeData.DT_STEP));
 				directions.add(value);
+				
+				String photo = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
+				photoUris.add(photo);
 				c.moveToNext();
 			}
 			c.close();
@@ -112,6 +120,8 @@ public class DirectionsEditor extends Fragment {
 				return true;
 			}
 			return false;
+		case R.id.ctxphotodirection:
+			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -141,6 +151,18 @@ public class DirectionsEditor extends Fragment {
 				}
 				edit.setText("");
 				edit.requestFocus();
+			}
+		});
+		
+		listview.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (photoUris.get(position) != null) {
+					FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+					PhotoDialog pd = PhotoDialog.newInstance(photoUris.get(position));
+					pd.show(ft, "dialog");
+				}
 			}
 		});
 		registerForContextMenu(listview);

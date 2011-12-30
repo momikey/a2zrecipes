@@ -30,7 +30,7 @@ public class TagSearchDialog extends DialogFragment {
 		setStyle(STYLE_NO_TITLE, getTheme());
 	}
 	
-	@SuppressWarnings("deprecation")
+//	@SuppressWarnings("deprecation")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class TagSearchDialog extends DialogFragment {
 		
 		adapter = new SimpleCursorAdapter(getActivity(), 
 				android.R.layout.simple_list_item_1, cursor, new String[] { RecipeData.TT_TAG }, 
-				new int[] { android.R.id.text1 });
+				new int[] { android.R.id.text1 }, 0);
 		
 		grid.setAdapter(adapter);
 		grid.setOnItemClickListener(new OnItemClickListener() {

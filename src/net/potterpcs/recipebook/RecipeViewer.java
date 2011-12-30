@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -38,10 +40,12 @@ public class RecipeViewer extends FragmentActivity {
 	static final String TAG = "RecipeViewer";
 	
 	static final String[] INGREDIENTS_FIELDS = { RecipeData.IT_NAME };
-	static final String[] DIRECTIONS_FIELDS = { RecipeData.DT_STEP, RecipeData.DT_SEQUENCE };
+	static final String[] DIRECTIONS_FIELDS = { RecipeData.DT_STEP, RecipeData.DT_SEQUENCE, RecipeData.DT_PHOTO };
 	static final int[] INGREDIENTS_IDS = { android.R.id.text1 };
-	static final int[] DIRECTIONS_IDS = { R.id.direction, R.id.number };
+	static final int[] DIRECTIONS_IDS = { R.id.direction, R.id.number, R.id.directionphoto };
 	private static final String HELP_FILENAME = "viewer";
+	private RecipeData data;
+	private long rid;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,7 @@ public class RecipeViewer extends FragmentActivity {
 		setContentView(R.layout.recipeviewer);
 
 		app = (RecipeBook) getApplication();
-		RecipeData data = app.getData();
+		data = app.getData();
 
 		rvname = (TextView) findViewById(R.id.rvname);
 		rvcreator = (TextView) findViewById(R.id.rvcreator);
@@ -60,7 +64,7 @@ public class RecipeViewer extends FragmentActivity {
 		lvingredients = (GridView) findViewById(R.id.ingredients);
 		lvdirections = (ListView) findViewById(R.id.directions);
 		
-		long rid = Long.parseLong(getIntent().getData().getLastPathSegment());
+		rid = Long.parseLong(getIntent().getData().getLastPathSegment());
 		
 		Cursor mdc = data.getSingleRecipe(rid);
 		startManagingCursor(mdc);
@@ -76,7 +80,7 @@ public class RecipeViewer extends FragmentActivity {
 		if (photoUri != null) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
 			ImageView iv = new ImageView(this);
-			if (Uri.parse(photoUri).getScheme().equals("content")) {
+			if (!Uri.parse(photoUri).getScheme().contains("http")) {
 				iv.setImageURI(Uri.parse(photoUri));
 			} else {
 				DownloadImageTask.doDownload(photoUri, iv);
@@ -105,6 +109,27 @@ public class RecipeViewer extends FragmentActivity {
 				ingc, INGREDIENTS_FIELDS, INGREDIENTS_IDS);
 		lvingredients.setAdapter(ingredients);
 		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		lvdirections.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Cursor c = data.getRecipeDirections(rid);
+				c.moveToPosition(position);
+				String uri = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
+				if (uri != null) {
+					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					PhotoDialog pd = PhotoDialog.newInstance(uri);
+					pd.show(ft, "dialog");
+				}
+				c.close();
+				
+			}
+		});
 	}
 	
 	@Override

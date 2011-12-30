@@ -44,7 +44,7 @@ public class PhotoDialog extends DialogFragment {
 		View v = inflater.inflate(R.layout.photodialog, container, false);
 		ImageView photo = (ImageView) v.findViewById(R.id.dialogphoto);
 		
-		if (photoUri.getScheme().equals("content")) {
+		if (!photoUri.getScheme().contains("http")) {
 			photo.setImageURI(photoUri);
 		} else {
 			DownloadImageTask.doDownload(photoUri.toString(), photo);

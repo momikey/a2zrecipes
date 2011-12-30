@@ -70,4 +70,6 @@
         <string name="recipeeditoralert">A recipe already exists with this name and description. Please rename this recipe or rewrite its description.</string>
         <string name="recipemenuexport">Export Recipes</string>
         <string name="recipemenuhelp">Help</string>
+        <string name="recipelisttag">Tag This Recipe</string>
+        <string name="ctxphotodirection">Add Photo</string>
 </resources>
