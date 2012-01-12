@@ -47,7 +47,7 @@ public class PhotoDialog extends DialogFragment {
 		if (!photoUri.getScheme().contains("http")) {
 			photo.setImageURI(photoUri);
 		} else {
-			DownloadImageTask.doDownload(photoUri.toString(), photo);
+			DownloadImageTask.doDownload(getActivity(), photoUri.toString(), photo);
 		}
 		
 		photo.setOnClickListener(new OnClickListener() {

@@ -25,7 +25,7 @@ public class RecipeData {
 
 	private static final String TAG = RecipeData.class.getSimpleName();
 	
-	static final int DB_VERSION = 8;
+	static final int DB_VERSION = 9;
 	static final String DB_FILENAME = "recipebook.db";
 	
 	static final String RECIPES_TABLE = "recipes";
@@ -61,6 +61,12 @@ public class RecipeData {
 	public static final String TT_RECIPE_ID = "recipe_id";
 	public static final String[] TAGS_FIELDS = { TT_ID, TT_TAG };
 	
+	static final String CACHE_TABLE = "imagecache";
+	public static final String CT_ID = "_id";
+	public static final String CT_URI = "uri";
+	public static final String CT_CACHED = "cached";
+	public static final String[] CACHE_FIELDS = { CT_URI, CT_CACHED };
+	
 	public static class Recipe {
 		// these don't really need to be private, because it's just a data class
 		long id;
@@ -93,7 +99,6 @@ public class RecipeData {
 				jo.put(RT_DATE, date);
 				jo.put(RT_SERVING, serving);
 				jo.put(RT_TIME, time);
-				// TODO Base64 photo
 				jo.put(RT_PHOTO, photo);
 				
 				JSONArray ji = new JSONArray();
@@ -118,7 +123,6 @@ public class RecipeData {
 				jo.put(TAGS_TABLE, jt);
 				
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return jo;
@@ -145,7 +149,6 @@ public class RecipeData {
 			r.date = jo.optString(RT_DATE);
 			r.serving = jo.optInt(RT_SERVING);
 			r.time = jo.optInt(RT_TIME);
-			// TODO Base64 photo
 			r.photo = jo.optString(RT_PHOTO);
 
 			JSONArray ji = jo.optJSONArray(INGREDIENTS_TABLE);
@@ -203,6 +206,7 @@ public class RecipeData {
 			
 			createRecipeTable(db);
 			createSecondaryTables(db);
+			createCacheTable(db);
 			
 			// import starter recipes
 			InputStream is = null;
@@ -249,7 +253,6 @@ public class RecipeData {
 					try {
 						is.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						Log.e(TAG, e.toString());
 					}
 				}
@@ -262,10 +265,11 @@ public class RecipeData {
 				db = SQLiteDatabase.openDatabase(db.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
 				Log.i(TAG, "Successfully opened read-write database");
 			} else {
+				if (oldVersion == 8) {
+					createCacheTable(db);
+				}
 				if (oldVersion == 7) {
-					Log.i(TAG, "Upgrading DB version 7 to version " + DB_VERSION);
 					db.execSQL("alter table " + DIRECTIONS_TABLE + " add column " + DT_PHOTO + " text");
-					Log.i(TAG, "Successfully upgraded database");
 				} else if (oldVersion < 7) {
 					db.beginTransaction();
 					db.execSQL("drop table " + INGREDIENTS_TABLE);
@@ -313,6 +317,13 @@ public class RecipeData {
 					+ TT_ID + " integer primary key, "
 					+ TT_TAG + " text, " 
 					+ TT_RECIPE_ID + RT_FOREIGN_KEY + ")");
+		}
+		
+		private void createCacheTable(SQLiteDatabase db) {
+			db.execSQL("create table " + CACHE_TABLE + " ("
+					+ CT_ID + " integer primary key, "
+					+ CT_URI + " text, "
+					+ CT_CACHED + ")");
 		}
 
 		private String createUnique(String... args) {
@@ -583,6 +594,15 @@ public class RecipeData {
 		return db.query(TAGS_TABLE, TAGS_FIELDS, null, null, TT_TAG, null, TT_TAG);
 	}
 	
+	public boolean recipeHasTag(long rid, String tag) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(TAGS_TABLE, TAGS_FIELDS, "(" + TT_TAG + " = ?) and (" + TT_RECIPE_ID + " = ?)", 
+				new String[] { tag, Long.toString(rid) }, null, null, null);
+		boolean hasTag = c.getCount() != 0;
+		c.close();
+		return hasTag;
+	}
+	
 	public int insertRecipe(ContentValues values) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		int ret = -1;
@@ -777,6 +797,38 @@ public class RecipeData {
 					new String[] { Long.toString(rid) }, SQLiteDatabase.CONFLICT_IGNORE);
 		} finally {
 			db.close();
+		}
+	}
+	
+	public String findCacheEntry(String uri) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(CACHE_TABLE, CACHE_FIELDS, CT_URI + " = ?", 
+				new String[] { uri }, null, null, null);
+		if (c.getCount() > 0) {
+			c.moveToFirst();
+			String s = c.getString(c.getColumnIndex(CT_CACHED));
+			c.close();
+			return s;
+		} else {
+			c.close();
+			return null;
+		}
+	}
+	
+	public boolean isCached(String uri) {
+		return findCacheEntry(uri) != null;
+	}
+	
+	public void insertCacheEntry(String uri, String cached) {
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(CT_URI, uri);
+		values.put(CT_CACHED, cached);
+		
+		if (isCached(uri)) {
+			db.update(CACHE_TABLE, values, CT_URI + " = ?", new String[] { cached });
+		} else {
+			db.insert(CACHE_TABLE, null, values);
 		}
 	}
 	

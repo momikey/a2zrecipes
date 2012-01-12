@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +24,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class RecipeViewer extends FragmentActivity {
@@ -80,11 +81,7 @@ public class RecipeViewer extends FragmentActivity {
 		if (photoUri != null) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
 			ImageView iv = new ImageView(this);
-			if (!Uri.parse(photoUri).getScheme().contains("http")) {
-				iv.setImageURI(Uri.parse(photoUri));
-			} else {
-				DownloadImageTask.doDownload(photoUri, iv);
-			}
+			setOrDownloadImage(iv, photoUri);
 			iv.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -99,14 +96,26 @@ public class RecipeViewer extends FragmentActivity {
 		Cursor dirc = data.getRecipeDirections(rid);
 		startManagingCursor(dirc);
 		SimpleCursorAdapter directions = new SimpleCursorAdapter(this, R.layout.recipedirectionrow,
-				dirc, DIRECTIONS_FIELDS, DIRECTIONS_IDS);
+				dirc, DIRECTIONS_FIELDS, DIRECTIONS_IDS, 0);
+		directions.setViewBinder(new ViewBinder() {
+			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+				if (columnIndex != cursor.getColumnIndex(RecipeData.DT_PHOTO)) {
+					return false;
+				} else {
+					ImageView iv = (ImageView) view;
+					setOrDownloadImage(iv, cursor.getString(columnIndex));
+					return true;
+				}
+			}
+		});
+		
 		lvdirections.setAdapter(directions);
 		lvdirections.setDividerHeight(0);
 		
 		Cursor ingc = data.getRecipeIngredients(rid);
 		startManagingCursor(ingc);
 		SimpleCursorAdapter ingredients = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, 
-				ingc, INGREDIENTS_FIELDS, INGREDIENTS_IDS);
+				ingc, INGREDIENTS_FIELDS, INGREDIENTS_IDS, 0);
 		lvingredients.setAdapter(ingredients);
 		
 	}
@@ -175,5 +184,13 @@ public class RecipeViewer extends FragmentActivity {
     	transaction.replace(R.id.timerfragment, timerFragment);
     	transaction.addToBackStack(null);
     	transaction.commit();
+	}
+	
+	private void setOrDownloadImage(ImageView iv, String photoUri) {
+		if (!Uri.parse(photoUri).getScheme().contains("http")) {
+			iv.setImageURI(Uri.parse(photoUri));
+		} else {
+			DownloadImageTask.doDownload(this, photoUri, iv);
+		}
 	}
 }

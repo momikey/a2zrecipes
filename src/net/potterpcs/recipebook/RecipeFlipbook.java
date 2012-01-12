@@ -169,7 +169,7 @@ public class RecipeFlipbook extends FragmentActivity {
 				if (!uri.getScheme().contains("http")) {
 					iv.setImageURI(uri);
 				} else {
-					DownloadImageTask.doDownload(recipe.photo, iv);
+					DownloadImageTask.doDownload(getActivity(), recipe.photo, iv);
 				}
 				iv.setOnClickListener(new OnClickListener() {
 					@Override

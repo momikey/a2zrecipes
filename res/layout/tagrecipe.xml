@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tagrecipetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dip"
+        android:text="@string/tagrecipeheader"
+        android:textAppearance="?android:attr/textAppearanceLarge" >
+</TextView>
+
+    <LinearLayout
+        android:id="@+id/createtaglayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/tagrecipenew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="24dip"
+            android:layout_weight="1"
+            android:hint="@string/tagrecipecreatehint"
+            android:inputType="text"
+            android:singleLine="true" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/tagrecipecreatebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tagrecipenew" />
+
+    </LinearLayout>
+
+    <GridView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tagrecipegrid" android:numColumns="auto_fit" android:choiceMode="singleChoice" android:columnWidth="160dip" android:gravity="center_horizontal"></GridView>
+    
+</LinearLayout>

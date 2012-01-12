@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, RecipeBookActivity!</string>
-    <string name="app_name">RecipeBook</string>
+    <string name="app_name">A to Z Recipes</string>
     <string name="recipename">Recipe Name</string>
     <string name="recipedescription">Description</string>
     <string name="recipecreator">"Creator's Name"</string>
@@ -72,4 +71,7 @@
         <string name="recipemenuhelp">Help</string>
         <string name="recipelisttag">Tag This Recipe</string>
         <string name="ctxphotodirection">Add Photo</string>
+        <string name="tagrecipeheader">Tag Recipe</string>
+        <string name="tagrecipenew">Create New Tag</string>
+        <string name="tagrecipecreatehint">Add a new tag or select an existing tag below</string>
 </resources>

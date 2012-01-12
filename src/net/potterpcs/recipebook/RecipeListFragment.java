@@ -269,6 +269,8 @@ public class RecipeListFragment extends ListFragment {
 		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 		FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
 		Recipe r = ((RecipeBook) activity.getApplication()).getData().getSingleRecipeObject(info.id);
+		TagRecipeDialog trd = TagRecipeDialog.newInstance(r.id);
+		trd.show(ft, "dialog");
 	}
 	
 	public void onRateDialogDismissed() {
