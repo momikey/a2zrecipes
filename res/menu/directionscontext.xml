@@ -3,8 +3,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/ctxeditdirection" android:title="@string/ctxeditdirection"></item>
     <item android:id="@+id/ctxdeletedirection" android:title="@string/ctxdeletedirection"></item>
-    <item android:id="@+id/ctxphotodirection" android:title="@string/ctxphotodirection"></item><item android:id="@+id/ctxmoveupdirection" android:title="@string/ctxmoveupdirection"></item>
+    <item android:id="@+id/ctxphotodirection" android:title="@string/ctxphotodirection"></item><item android:id="@+id/ctxremovephotodirection" android:title="@string/ctxremovephotodirection"></item><item android:id="@+id/ctxmoveupdirection" android:title="@string/ctxmoveupdirection"></item>
     <item android:id="@+id/ctxmovedowndirection" android:title="@string/ctxmovedowndirection"></item>
+    
     
     
 </menu>

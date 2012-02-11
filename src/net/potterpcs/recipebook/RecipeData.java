@@ -732,7 +732,7 @@ public class RecipeData {
 			ret = db.update(RECIPES_TABLE, createRecipeForInsert(r), RT_ID + " = ?", 
 					new String[] { Long.toString(r.id) });
 
-				// until we can figure out a smarter way to update
+				// TODO until we can figure out a smarter way to update
 				db.delete(INGREDIENTS_TABLE, IT_RECIPE_ID + " = ?", whereArgs);
 				for (String ing : r.ingredients) {
 					db.insertWithOnConflict(INGREDIENTS_TABLE, null, createIngredientsCV(rid, ing), 
@@ -819,6 +819,20 @@ public class RecipeData {
 		return findCacheEntry(uri) != null;
 	}
 	
+	public String getOldestCacheEntry() {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(CACHE_TABLE, CACHE_FIELDS, null, null, null, null, CT_CACHED, "1");
+		if (c.getCount() > 0) {
+			c.moveToFirst();
+			String s = c.getString(c.getColumnIndex(CT_URI));
+			c.close();
+			return s;
+		} else {
+			c.close();
+			return null;
+		}
+	}
+	
 	public void insertCacheEntry(String uri, String cached) {
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -832,33 +846,59 @@ public class RecipeData {
 		}
 	}
 	
-	public void importRecipes(String path) throws IOException {
+	public void removeCacheEntry(String uri) {
+		// TODO actually remove the cached file
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		if (isCached(uri)) {
+			db.delete(CACHE_TABLE, CT_URI + "= ?", new String[] { uri });
+		}
+	}
+	
+	public void clearCache() {
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		db.delete(CACHE_TABLE, null, null);
+	}
+	
+	// TODO rewrite the import/export to allow user choices
+	public ArrayList<Recipe> importRecipes(String path) throws IOException {
 		File f = new File(path);
 		FileInputStream fis = new FileInputStream(f);
 		byte[] buffer = new byte[fis.available()];
 		fis.read(buffer);
 		String st = new String(buffer);
-		parseJsonRecipes(st);
+		return parseJsonRecipes(st);
 	}
 
-	private void parseJsonRecipes(String st) {
+	private ArrayList<Recipe> parseJsonRecipes(String st) {
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 		try {
 			JSONArray ja = new JSONArray(st);
 			for (int i = 0; i < ja.length(); i++) {
 				JSONObject jo = ja.getJSONObject(i);
 				Recipe r = Recipe.parseJSON(jo);
 				if (r != null) {
-					insertRecipe(r);
+//					insertRecipe(r);
+					recipes.add(r);
 				}
 			}
 		} catch (JSONException e) {
 			Log.e(TAG, e.toString());
 		}
+		return recipes;
+	}
+	
+	public void insertImportedRecipes(ArrayList<Recipe> recipes) {
+		for (Recipe r : recipes) {
+			if (r != null) {
+				insertRecipe(r);
+			}
+		}
 	}
 	
 	public String exportRecipes(long[] ids) throws IOException {
 		// TODO file selection, sharing, etc.
-		String filename = "exported-recipes-" + System.currentTimeMillis() + ".txt";
+		String filename = "exported-recipes-" + System.currentTimeMillis() + ".rcp";
 		File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		File export = new File(sd, filename);
 		FileOutputStream fos = null;

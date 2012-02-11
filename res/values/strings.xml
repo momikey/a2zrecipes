@@ -40,6 +40,7 @@
         <item>Ingredients</item>
         <item>Directions</item>
         <item>Tags</item>
+        <item >Recipe Photo</item>
     </string-array>
         <string name="flipbookswitch">Switch to Flipbook Mode</string>
         <string name="recipelistswitch">Switch to Recipe List Mode</string>
@@ -74,4 +75,9 @@
         <string name="tagrecipeheader">Tag Recipe</string>
         <string name="tagrecipenew">Create New Tag</string>
         <string name="tagrecipecreatehint">Add a new tag or select an existing tag below</string>
+        <string name="photoattach">Attach Photo</string>
+        <string name="ctxremovephotodirection">Remove Photo</string>
+        <string name="photoeditattach">Attach Photo</string>
+        <string name="photoeditremove">Remove Photo</string>
+        <string name="recipephoto">Recipe Photo</string>
 </resources>

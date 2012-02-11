@@ -2,7 +2,6 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/editormenusave" android:onClick="onSaveItem" android:showAsAction="always|withText" android:title="@string/editormenusave" android:icon="@drawable/menu_save"></item>
-    <item android:id="@+id/editormenuattach" android:title="@string/editormenuattach" android:showAsAction="ifRoom|withText" android:onClick="onAttachPhoto" android:icon="@drawable/menu_attach"></item>
     <item android:id="@+id/editormenuhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
     
 </menu>

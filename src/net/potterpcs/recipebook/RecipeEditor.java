@@ -33,7 +33,8 @@ public class RecipeEditor extends FragmentActivity {
 	private static final int INGREDIENTS = 1;
 	private static final int DIRECTIONS = 2;
 	private static final int TAGS = 3;
-	private static final String[] ALL_FRAGMENT_NAMES = { "meta", "ingredients", "directions", "tags" };
+	private static final int PHOTO = 4;
+	private static final String[] ALL_FRAGMENT_NAMES = { "meta", "ingredients", "directions", "tags", "photo" };
 	private static final String HELP_FILENAME = "editor";
 	
 	private Recipe recipe;
@@ -42,6 +43,7 @@ public class RecipeEditor extends FragmentActivity {
 	MetadataEditor meta;
 	IngredientsEditor ingredients;
 	DirectionsEditor directions;
+	PhotoEditor photo;
 	TagsEditor tags;
 	RecipeData recipeData;
 	ListView sslistview;
@@ -61,10 +63,11 @@ public class RecipeEditor extends FragmentActivity {
 		
 		recipeId = Long.parseLong(getIntent().getData().getLastPathSegment());
 		manager = getSupportFragmentManager();
-		meta = (MetadataEditor) manager.findFragmentById(R.id.metafragment);
-		ingredients = (IngredientsEditor) manager.findFragmentById(R.id.ingredientsfragment);
-		directions = (DirectionsEditor) manager.findFragmentById(R.id.directionsfragment);
-		tags = (TagsEditor) manager.findFragmentById(R.id.tagsfragment);
+//		meta = (MetadataEditor) manager.findFragmentById(R.id.metafragment);
+//		ingredients = (IngredientsEditor) manager.findFragmentById(R.id.ingredientsfragment);
+//		directions = (DirectionsEditor) manager.findFragmentById(R.id.directionsfragment);
+//		tags = (TagsEditor) manager.findFragmentById(R.id.tagsfragment);
+//		photo = (PhotoEditor) manager.findFragmentById(R.id.photoeditfragment);
 		recipeData = ((RecipeBook) getApplication()).getData();
 		
 		if (recipeId != -1) {
@@ -77,41 +80,50 @@ public class RecipeEditor extends FragmentActivity {
 			FragmentTransaction setup = manager.beginTransaction();
 			Log.v(TAG, "creating fragments");
 
-			meta = (MetadataEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[0]);
+			meta = (MetadataEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[METADATA]);
 			if (meta == null) {
 				Log.v(TAG, "creating meta");
 				meta = new MetadataEditor();
-				setup.add(R.id.ssfragment, meta, "meta");
+				setup.add(R.id.ssfragment, meta, ALL_FRAGMENT_NAMES[METADATA]);
 			}
 			Log.v(TAG, meta.toString());
 			setup.hide(meta);
 
-			ingredients = (IngredientsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[1]);
+			ingredients = (IngredientsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[INGREDIENTS]);
 			if (ingredients == null) {
 				Log.v(TAG, "creating ingredients");
 				ingredients = new IngredientsEditor();
-				setup.add(R.id.ssfragment, ingredients, "ingredients");
+				setup.add(R.id.ssfragment, ingredients, ALL_FRAGMENT_NAMES[INGREDIENTS]);
 			}
 			Log.v(TAG, ingredients.toString());
 			setup.hide(ingredients);
 
-			directions = (DirectionsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[2]);
+			directions = (DirectionsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[DIRECTIONS]);
 			if (directions == null) {
 				Log.v(TAG, "creating directions");
 				directions = new DirectionsEditor();
-				setup.add(R.id.ssfragment, directions, "directions");
+				setup.add(R.id.ssfragment, directions, ALL_FRAGMENT_NAMES[DIRECTIONS]);
 			}
 			Log.v(TAG, directions.toString());
 			setup.hide(directions);
 
-			tags = (TagsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[3]);
+			tags = (TagsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[TAGS]);
 			if (tags == null) {
 				Log.v(TAG, "creating tags");
 				tags = new TagsEditor();
-				setup.add(R.id.ssfragment, tags, "tags");
+				setup.add(R.id.ssfragment, tags, ALL_FRAGMENT_NAMES[TAGS]);
 			}
 			Log.v(TAG, tags.toString());
 			setup.hide(tags);
+			
+			photo = (PhotoEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[PHOTO]);
+			if (photo == null) {
+				Log.v(TAG, "creating photo");
+				photo = new PhotoEditor();
+				setup.add(R.id.ssfragment, photo, ALL_FRAGMENT_NAMES[PHOTO]);
+			}
+			Log.v(TAG, photo.toString());
+			setup.hide(photo);
 			
 			setup.commit();
 			
@@ -129,6 +141,8 @@ public class RecipeEditor extends FragmentActivity {
 						nextFragment = directions;
 					} else if (itemText.equals(fragmentnames[TAGS])) {
 						nextFragment = tags;
+					} else if (itemText.equals(fragmentnames[PHOTO])) {
+						nextFragment = photo;
 					} else {
 						nextFragment = null;
 					}
@@ -193,8 +207,8 @@ public class RecipeEditor extends FragmentActivity {
 		inflater.inflate(R.menu.editormenu, menu);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenusave), 
 				MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuattach), 
-				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuattach), 
+//				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuhelp),
 				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
@@ -206,9 +220,9 @@ public class RecipeEditor extends FragmentActivity {
 		case R.id.editormenusave:
 			onSaveItem(item);
 			return true;
-		case R.id.editormenuattach:
-			onAttachPhoto(item);
-			return true;
+//		case R.id.editormenuattach:
+//			onAttachPhoto(item);
+//			return true;
 		case R.id.editormenuhelp:
 			onHelpItemSelected(item);
 			return true;
@@ -227,7 +241,7 @@ public class RecipeEditor extends FragmentActivity {
 		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
 		helpFragment.show(ft, "help");
 	}
-
+	
 	public long getRecipeId() {
 		return recipeId;
 	}
@@ -243,6 +257,7 @@ public class RecipeEditor extends FragmentActivity {
 		recipe.ingredients = ingredients.getIngredients();
 		recipe.directions = directions.getDirections();
 		recipe.tags = tags.getTags();
+		recipe.photo = photo.getPhotoUri();
 		
 		if (recipe.id == -1) {
 			// an insert of a new recipe
@@ -264,7 +279,7 @@ public class RecipeEditor extends FragmentActivity {
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, GALLERY_ACTIVITY);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {

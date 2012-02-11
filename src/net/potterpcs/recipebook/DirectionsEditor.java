@@ -3,6 +3,8 @@ package net.potterpcs.recipebook;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,7 +26,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class DirectionsEditor extends Fragment {
-	static final String STATE = "directions";
+	static final String STATE_DIRS = "directions";
+	static final String STATE_PHOTOS = "direction-photos";
 	private RecipeEditor activity;
 	ListView listview;
 	ArrayList<String> directions;
@@ -42,9 +45,13 @@ public class DirectionsEditor extends Fragment {
 		currentDirection = -1;
 		
 		if (savedInstanceState != null) {
-			String[] saved = savedInstanceState.getStringArray(STATE);
-			if (saved != null) {
-				directions.addAll(Arrays.asList(saved));
+			String[] savedDirections = savedInstanceState.getStringArray(STATE_DIRS);
+			String[] savedUris = savedInstanceState.getStringArray(STATE_PHOTOS);
+			if (savedDirections != null) {
+				directions.addAll(Arrays.asList(savedDirections));
+			}
+			if (savedUris != null) {
+				photoUris.addAll(Arrays.asList(savedUris));
 			}
 		}
 		
@@ -77,16 +84,21 @@ public class DirectionsEditor extends Fragment {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.directionscontext, menu);
+		if (photoUris.get(((AdapterContextMenuInfo) menuInfo).position) == null) {
+			menu.removeItem(R.id.ctxremovephotodirection);
+		}
 	}
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		String selected = adapter.getItem(info.position);
+		String selectedPhoto = photoUris.get(info.position);
 		switch (item.getItemId()) {
 		case R.id.ctxdeletedirection:
 			// "Delete" option
 			adapter.remove(selected);
+			photoUris.remove(info.position);
 			currentDirection = -1;
 			return true;
 		case R.id.ctxeditdirection:
@@ -97,6 +109,7 @@ public class DirectionsEditor extends Fragment {
 			edit.setText(selected);
 			edit.requestFocus();
 			adapter.remove(selected);
+			photoUris.remove(info.position);
 			// put a placeholder into the list
 			adapter.insert(getResources().getString(R.string.recipereplacetext), currentDirection);
 			return true;
@@ -107,6 +120,9 @@ public class DirectionsEditor extends Fragment {
 				// can't move down the last direction
 				adapter.remove(selected);
 				adapter.insert(selected, info.position + 1);
+				
+				photoUris.remove(info.position);
+				photoUris.add(info.position + 1, selectedPhoto);
 				return true;
 			}
 			return false;
@@ -117,10 +133,17 @@ public class DirectionsEditor extends Fragment {
 				// can't move up the first direction
 				adapter.remove(selected);
 				adapter.insert(selected, info.position - 1);
+				
+				photoUris.remove(info.position);
+				photoUris.add(info.position - 1, selectedPhoto);
 				return true;
 			}
 			return false;
 		case R.id.ctxphotodirection:
+			attachPhoto(info.position);
+			return true;
+		case R.id.ctxremovephotodirection:
+			photoUris.set(info.position, null);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -142,8 +165,10 @@ public class DirectionsEditor extends Fragment {
 				if (edit.getText().length() > 0) {
 					if (currentDirection == -1) {
 						adapter.add(edit.getText().toString());
+						photoUris.add(null);
 					} else {
 						adapter.insert(edit.getText().toString(), currentDirection);
+						photoUris.add(currentDirection, edit.getText().toString());
 						adapter.remove(getResources().getString(R.string.recipereplacetext));
 						currentDirection = -1;
 					}
@@ -175,14 +200,39 @@ public class DirectionsEditor extends Fragment {
 		String[] dirs = new String[adapter.getCount()];
 		int l = dirs.length;
 		for (int i = 0; i < l; i++) {
-			dirs[i] = adapter.getItem(i);
+			if (!adapter.getItem(i).contentEquals(getResources().getString(R.string.recipereplacetext))) {
+				dirs[i] = adapter.getItem(i);
+			}
 		}
 		return dirs;
+	}
+	
+	public String[] getPhotos() {
+		// Photos are stored with each direction, but are handled separately.
+		String[] photos = new String[photoUris.size()];
+		for (int i = 0; i < photos.length; i++) {
+			photos[i] = photoUris.get(i);
+		}
+		return photos;
+	}
+	
+	private void attachPhoto(int position) {
+		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		startActivityForResult(intent, position);		
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == Activity.RESULT_OK) {
+			String selectedImageUri = data.getData().toString();
+			photoUris.set(requestCode, selectedImageUri);
+		}
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putStringArray(STATE, getDirections());
+		outState.putStringArray(STATE_DIRS, getDirections());
+		outState.putStringArray(STATE_PHOTOS, getPhotos());
 	}
 }

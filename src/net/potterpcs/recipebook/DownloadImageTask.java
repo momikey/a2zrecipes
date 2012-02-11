@@ -1,5 +1,7 @@
 package net.potterpcs.recipebook;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
@@ -42,7 +44,6 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 			bitmap = BitmapFactory.decodeFile(data.findCacheEntry(urls[0]));
 		} else {
 			try {
-				// TODO cache the image to lower data usage
 				HttpGet request = new HttpGet(urls[0]);
 				HttpParams params = new BasicHttpParams();
 				HttpConnectionParams.setSoTimeout(params, 60000);
@@ -56,6 +57,14 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 				publishProgress(75);
 
 				bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+				
+				// cache file for offline use
+				File cachePath = parent.getExternalCacheDir();
+				String cacheFile = "recipecache-" + Long.toString(System.currentTimeMillis());
+				bitmap.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(new File(cachePath, cacheFile)));
+				RecipeData appData = ((RecipeBook) parent.getApplication()).getData();
+				appData.insertCacheEntry(urls[0], cacheFile);
+				
 				publishProgress(100);
 			} catch (IOException e) {
 				e.printStackTrace();
