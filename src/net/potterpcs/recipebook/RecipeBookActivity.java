@@ -3,8 +3,6 @@ package net.potterpcs.recipebook;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import net.potterpcs.recipebook.R.id;
-
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -117,6 +115,13 @@ public class RecipeBookActivity extends FragmentActivity {
     }
     
     @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	Intent intent = new Intent(this, CacheService.class);
+    	startService(intent);
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.mainmenu, menu);
@@ -126,6 +131,8 @@ public class RecipeBookActivity extends FragmentActivity {
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     	MenuCompat.setShowAsAction(menu.findItem(R.id.menuhelp),
     			MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    	MenuCompat.setShowAsAction(menu.findItem(R.id.menuexport), 
+    			MenuItem.SHOW_AS_ACTION_NEVER);
 
     	hideShowAllItem(menu);
     	setSortOptions(menu);
@@ -183,6 +190,8 @@ public class RecipeBookActivity extends FragmentActivity {
     	case R.id.menushowall:
     		onShowAllRecipes(item);
     		return true;
+    	case R.id.menuexport:
+    		onExportRecipes(item);
     		
     	// Sort direction items (only one active at a time)
     	case R.id.menusortdescending:
@@ -207,6 +216,10 @@ public class RecipeBookActivity extends FragmentActivity {
     	}
     }
 
+    public void onExportRecipes(MenuItem item) {
+    	Intent intent = new Intent(this, ExporterActivity.class);
+    	startActivity(intent);
+    }
 
 	public void onHelpItemSelected(MenuItem item) {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

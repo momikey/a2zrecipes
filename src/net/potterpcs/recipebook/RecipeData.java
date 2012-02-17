@@ -847,12 +847,19 @@ public class RecipeData {
 	}
 	
 	public void removeCacheEntry(String uri) {
-		// TODO actually remove the cached file
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		if (isCached(uri)) {
 			db.delete(CACHE_TABLE, CT_URI + "= ?", new String[] { uri });
 		}
+	}
+	
+	public String removeOldestCacheEntry() {
+		// returns the filename of the (now-deleted) oldest cache entry
+		String uri = getOldestCacheEntry();
+		String filename = findCacheEntry(uri);
+		removeCacheEntry(uri);
+		return filename;
 	}
 	
 	public void clearCache() {

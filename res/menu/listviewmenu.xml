@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/switchtoflipbook" android:showAsAction="ifRoom" android:title="@string/switchtoflipbook" android:icon="@drawable/menu_flipbook"></item><item android:id="@+id/menuexport" android:title="@string/recipemenuexport" android:icon="@drawable/menu_export"></item>
+    <item android:id="@+id/switchtoflipbook" android:showAsAction="ifRoom" android:title="@string/switchtoflipbook" android:icon="@drawable/menu_flipbook"></item>
     
 </menu>

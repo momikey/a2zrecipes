@@ -45,7 +45,6 @@ public class PhotoEditor extends Fragment {
 
 		}
 		
-		Log.v(TAG, photo);
 		return inflater.inflate(R.layout.photoedit, container, false); 
 	}
 	

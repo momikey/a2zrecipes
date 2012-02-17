@@ -80,4 +80,6 @@
         <string name="photoeditattach">Attach Photo</string>
         <string name="photoeditremove">Remove Photo</string>
         <string name="recipephoto">Recipe Photo</string>
+        <string name="exportrecipes">Exported Selected Recipes</string>
+        <string name="menuexportrecipes">Export Recipes</string>
 </resources>

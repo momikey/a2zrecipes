@@ -37,7 +37,7 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 
 	private Bitmap downloadImage(String... urls) {
 		// TODO change the user-agent to something sensible
-		AndroidHttpClient client = AndroidHttpClient.newInstance("net.potterpcs.recipebook");
+		AndroidHttpClient client = AndroidHttpClient.newInstance("A to Z Recipes for Android");
 		Bitmap bitmap = null;
 		RecipeData data = ((RecipeBook) parent.getApplication()).getData();
 		if (data.isCached(urls[0])) {
@@ -59,7 +59,7 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 				bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
 				
 				// cache file for offline use
-				File cachePath = parent.getExternalCacheDir();
+				File cachePath = parent.getCacheDir();
 				String cacheFile = "recipecache-" + Long.toString(System.currentTimeMillis());
 				bitmap.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(new File(cachePath, cacheFile)));
 				RecipeData appData = ((RecipeBook) parent.getApplication()).getData();
