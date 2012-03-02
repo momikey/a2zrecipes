@@ -82,4 +82,5 @@
         <string name="recipephoto">Recipe Photo</string>
         <string name="exportrecipes">Exported Selected Recipes</string>
         <string name="menuexportrecipes">Export Recipes</string>
+        <string name="importrecipes">Import Recipes</string>
 </resources>
