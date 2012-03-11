@@ -193,7 +193,7 @@ public class RecipeListFragment extends ListFragment {
 			.build();
 		uri = ContentUris.withAppendedId(uri, id);
 		Log.i(TAG, uri.toString());
-		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+		Intent intent = new Intent(RecipeBook.OPEN_RECIPE_ACTION, uri);
 		startActivity(intent);
 	}
 	

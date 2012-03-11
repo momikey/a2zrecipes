@@ -35,14 +35,15 @@ public class PhotoEditor extends Fragment {
 		
 		if (savedInstanceState != null) {
 			photo = savedInstanceState.getString(STATE);
-		}
-		
-		if (rid > 0 && photo == null) {
-			RecipeBook app = (RecipeBook) activity.getApplication();
-			Recipe r = app.getData().getSingleRecipeObject(rid);
-			photo = r.photo;
 		} else {
 
+			if (rid > 0 && photo == null) {
+				RecipeBook app = (RecipeBook) activity.getApplication();
+				Recipe r = app.getData().getSingleRecipeObject(rid);
+				photo = r.photo;
+			} else {
+
+			}
 		}
 		
 		return inflater.inflate(R.layout.photoedit, container, false); 

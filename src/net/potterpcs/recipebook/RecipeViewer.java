@@ -187,10 +187,12 @@ public class RecipeViewer extends FragmentActivity {
 	}
 	
 	private void setOrDownloadImage(ImageView iv, String photoUri) {
-		if (!Uri.parse(photoUri).getScheme().contains("http")) {
-			iv.setImageURI(Uri.parse(photoUri));
-		} else {
-			DownloadImageTask.doDownload(this, photoUri, iv);
+		if (photoUri != null) {
+			if (!Uri.parse(photoUri).getScheme().contains("http")) {
+				iv.setImageURI(Uri.parse(photoUri));
+			} else {
+				DownloadImageTask.doDownload(this, photoUri, iv);
+			}
 		}
 	}
 }

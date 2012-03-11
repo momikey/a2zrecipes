@@ -42,28 +42,29 @@ public class IngredientsEditor extends Fragment {
 			if (saved != null) {
 				ingredients.addAll(Arrays.asList(saved));
 			}
-		}
-		
-		long rid = activity.getRecipeId();
-		Log.i(TAG, "id=" + rid);
-			
-		// load an existing recipe's ingredients
-		if (rid > 0) {
-			RecipeBook app = (RecipeBook) activity.getApplication();
-			Cursor c = app.getData().getRecipeIngredients(rid);
-			Log.i(TAG, "count=" + c.getCount());
-			
-			c.moveToFirst();
-			while (!c.isAfterLast()) {
-				Log.i(TAG, c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
-				ingredients.add(c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
-				c.moveToNext();
-			}
-			
-			c.close();
-				
 		} else {
-			// creating a new recipe, so no setup required
+
+			long rid = activity.getRecipeId();
+			Log.i(TAG, "id=" + rid);
+
+			// load an existing recipe's ingredients
+			if (rid > 0) {
+				RecipeBook app = (RecipeBook) activity.getApplication();
+				Cursor c = app.getData().getRecipeIngredients(rid);
+				Log.i(TAG, "count=" + c.getCount());
+
+				c.moveToFirst();
+				while (!c.isAfterLast()) {
+					Log.i(TAG, c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
+					ingredients.add(c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
+					c.moveToNext();
+				}
+
+				c.close();
+
+			} else {
+				// creating a new recipe, so no setup required
+			}
 		}
 		
 		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, ingredients);

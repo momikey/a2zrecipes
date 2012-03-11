@@ -14,7 +14,7 @@ import android.widget.ListAdapter;
 public class ImporterActivity extends ListActivity {
 	public static final String IMPORT_PATH_EXTRA = "import-path";
 	RecipeData data;
-	ArrayList<Recipe> selectedRecipes;
+	ArrayList<Recipe> importedRecipes;
 	String[] recipeNames;
 	
 	@Override
@@ -24,13 +24,13 @@ public class ImporterActivity extends ListActivity {
 		data = ((RecipeBook) getApplication()).getData();
 		String path = savedInstanceState.getString(IMPORT_PATH_EXTRA);
 		try {
-			selectedRecipes = data.importRecipes(path);
+			importedRecipes = data.importRecipes(path);
 		} catch (IOException e) {
-			e.printStackTrace();
+			// TODO logging
 		}
 
 		ArrayList<String> als = new ArrayList<String>();
-		for ( Recipe r : selectedRecipes ) {
+		for ( Recipe r : importedRecipes ) {
 			als.add(r.name);
 		}
 		recipeNames = (String[]) als.toArray(new String[als.size()]);
@@ -48,5 +48,11 @@ public class ImporterActivity extends ListActivity {
 	public void onImportButton(View v) {
 		long[] ids = getListView().getCheckedItemIds();
 		// TODO import
+		ArrayList<Recipe> selectedRecipes = new ArrayList<Recipe>(); 
+		for (int i = 0; i < ids.length; i++) {
+			selectedRecipes.add(importedRecipes.get((int) ids[i]));
+		}
+		data.insertImportedRecipes(selectedRecipes);
+		finish();
 	}
 }

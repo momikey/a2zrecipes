@@ -38,24 +38,25 @@ public class TagsEditor extends Fragment {
 			if (saved != null) {
 				tags.addAll(Arrays.asList(saved));
 			}
-		}
-		
-		long rid = activity.getRecipeId();
-			
-		if (rid > 0) {
-			RecipeBook app = (RecipeBook) activity.getApplication();
-			Cursor c = app.getData().getRecipeTags(rid);
-			
-			c.moveToFirst();
-			while (!c.isAfterLast()) {
-				tags.add(c.getString(c.getColumnIndex(RecipeData.TT_TAG)));
-				c.moveToNext();
-			}
-			
-			c.close();
-				
 		} else {
 
+			long rid = activity.getRecipeId();
+
+			if (rid > 0) {
+				RecipeBook app = (RecipeBook) activity.getApplication();
+				Cursor c = app.getData().getRecipeTags(rid);
+
+				c.moveToFirst();
+				while (!c.isAfterLast()) {
+					tags.add(c.getString(c.getColumnIndex(RecipeData.TT_TAG)));
+					c.moveToNext();
+				}
+
+				c.close();
+
+			} else {
+
+			}
 		}
 		
 		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, tags);

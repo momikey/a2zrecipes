@@ -36,6 +36,7 @@ public class RecipeEditor extends FragmentActivity {
 	private static final int PHOTO = 4;
 	private static final String[] ALL_FRAGMENT_NAMES = { "meta", "ingredients", "directions", "tags", "photo" };
 	private static final String HELP_FILENAME = "editor";
+	private static final String SAVED_RECIPE_ID = "saved-recipe-id";
 	
 	private Recipe recipe;
 	private long recipeId;
@@ -57,24 +58,35 @@ public class RecipeEditor extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.recipeeditor);
 		
+		recipeData = ((RecipeBook) getApplication()).getData();
+		
+		manager = getSupportFragmentManager();
 		sslistview = (ListView) findViewById(R.id.ssfragmentlist);
 		ssfragmentframe = (FrameLayout) findViewById(R.id.ssfragment);
 		fragmentnames = getResources().getStringArray(R.array.fragmentnames);
 		
-		recipeId = Long.parseLong(getIntent().getData().getLastPathSegment());
-		manager = getSupportFragmentManager();
+		if (recipe == null) {
+			recipeId = Long.parseLong(getIntent().getData().getLastPathSegment());
+			
+			if (savedInstanceState != null) {
+				recipeId = savedInstanceState.getLong(SAVED_RECIPE_ID, recipeId);
+			}
+			
+			if (recipeId != -1) {
+				recipe = recipeData.getSingleRecipeObject(recipeId);
+			} else {
+				recipe = new Recipe();
+				recipe.id = -1;
+			}
+		} else {
+			recipeId = recipe.id;
+		}
+		
 //		meta = (MetadataEditor) manager.findFragmentById(R.id.metafragment);
 //		ingredients = (IngredientsEditor) manager.findFragmentById(R.id.ingredientsfragment);
 //		directions = (DirectionsEditor) manager.findFragmentById(R.id.directionsfragment);
 //		tags = (TagsEditor) manager.findFragmentById(R.id.tagsfragment);
 //		photo = (PhotoEditor) manager.findFragmentById(R.id.photoeditfragment);
-		recipeData = ((RecipeBook) getApplication()).getData();
-		
-		if (recipeId != -1) {
-			recipe = recipeData.getSingleRecipeObject(recipeId);
-		} else {
-			recipe = new Recipe();
-		}
 		
 		if (sslistview != null) {
 			FragmentTransaction setup = manager.beginTransaction();
@@ -158,6 +170,12 @@ public class RecipeEditor extends FragmentActivity {
 				}
 			});
 		}
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putLong(SAVED_RECIPE_ID, recipeId);
 	}
 	
 	@Override
@@ -265,7 +283,7 @@ public class RecipeEditor extends FragmentActivity {
 //			recipeId = recipeData.getLastInsertRecipeId();
 		} else {
 			// an edit of an existing recipe
-			recipeId = recipeData.updateRecipe(recipe);
+			recipeData.updateRecipe(recipe);
 		}
 		
 		if (recipeId == -1) {
@@ -312,7 +330,7 @@ public class RecipeEditor extends FragmentActivity {
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			return new AlertDialog.Builder(getActivity())
 				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setTitle(R.string.recipeeditoralert)
+				.setMessage(R.string.recipeeditoralert)
 				.setPositiveButton(android.R.string.ok, 
 						new DialogInterface.OnClickListener() {
 							@Override

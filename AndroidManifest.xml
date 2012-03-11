@@ -32,14 +32,17 @@
             android:name=".RecipeBookActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-<!--             <intent-filter >
+            <!--
+                 <intent-filter >
                 <data
                     android:host="net.potterpcs.recipebook"
                     android:scheme="content" >
                 </data>
-            </intent-filter> -->
+            </intent-filter>
+            -->
             <intent-filter >
                 <action android:name="android.intent.action.SEARCH" >
                 </action>
@@ -59,11 +62,12 @@
 
                 <data
                     android:host="net.potterpcs.recipebook"
-                    android:scheme="content" >
+                    android:scheme="content">
                 </data>
 
                 <category android:name="android.intent.category.DEFAULT" >
                 </category>
+                <action android:name="net.potterpcs.recipebook.OPEN_RECIPE"/>
             </intent-filter>
         </activity>
         <activity
@@ -90,8 +94,29 @@
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".RecipeBookActivity" />
-        <activity android:name=".ExporterActivity" android:label="@string/app_name"></activity>
-        <service android:name=".CacheService"></service>
+
+        <activity
+            android:label="@string/app_name"
+            android:name=".ExporterActivity" >
+        </activity>
+
+        <service android:name=".CacheService" >
+        </service>
+
+        <activity
+            android:label="@string/app_name"
+            android:name=".ImporterActivity" >
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="*"
+                    android:path=".*\\.rcp"
+                    android:scheme="file" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

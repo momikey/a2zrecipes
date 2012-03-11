@@ -53,25 +53,26 @@ public class DirectionsEditor extends Fragment {
 			if (savedUris != null) {
 				photoUris.addAll(Arrays.asList(savedUris));
 			}
-		}
-		
-		// load an existing recipe's directions
-		if (rid > 0) {
-			RecipeBook app = (RecipeBook) activity.getApplication();
-			Cursor c = app.getData().getRecipeDirections(rid);
-			
-			c.moveToFirst();
-			while (!c.isAfterLast()) {
-				String value = c.getString(c.getColumnIndex(RecipeData.DT_STEP));
-				directions.add(value);
-				
-				String photo = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
-				photoUris.add(photo);
-				c.moveToNext();
-			}
-			c.close();
 		} else {
-			// this is a new recipe, so no setup required (yet?)
+
+			// load an existing recipe's directions
+			if (rid > 0) {
+				RecipeBook app = (RecipeBook) activity.getApplication();
+				Cursor c = app.getData().getRecipeDirections(rid);
+
+				c.moveToFirst();
+				while (!c.isAfterLast()) {
+					String value = c.getString(c.getColumnIndex(RecipeData.DT_STEP));
+					directions.add(value);
+
+					String photo = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
+					photoUris.add(photo);
+					c.moveToNext();
+				}
+				c.close();
+			} else {
+				// this is a new recipe, so no setup required (yet?)
+			}
 		}
 
 		adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1, directions);

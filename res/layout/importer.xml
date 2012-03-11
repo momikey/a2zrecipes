@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="24dip"
-        android:onClick="onExportButton"
+        android:onClick="onImportButton"
         android:text="@string/importrecipes" />
 
 </LinearLayout>

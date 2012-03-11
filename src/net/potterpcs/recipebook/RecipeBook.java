@@ -9,6 +9,7 @@ public class RecipeBook extends Application {
 	static final String TIME_EXTRA = "time-search";
 	static final String TIME_EXTRA_MAX = "time-search-maximum";
 	static final String TIME_EXTRA_MIN = "time-search-minimum";
+	public static final String OPEN_RECIPE_ACTION = "net.potterpcs.recipebook.OPEN_RECIPE";
 
 	public void onCreate() {
 		super.onCreate();
