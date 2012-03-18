@@ -16,13 +16,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
+	// Tag for logging
 	private static final String TAG = "DownloadImageTask";
 
+	// Handle for the parent activity
 	Activity parent;
+	
+	// Handle for the ImageView that we will fill
 	ImageView view;
 
 	public DownloadImageTask(Activity a, ImageView v) {
@@ -36,38 +39,46 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 	}
 
 	private Bitmap downloadImage(String... urls) {
-		// TODO change the user-agent to something sensible
-		AndroidHttpClient client = AndroidHttpClient.newInstance("A to Z Recipes for Android");
 		Bitmap bitmap = null;
 		RecipeData data = ((RecipeBook) parent.getApplication()).getData();
+
+		AndroidHttpClient client = AndroidHttpClient.newInstance("A to Z Recipes for Android");
+
 		if (data.isCached(urls[0])) {
+			// Retrieve a cached image if we have one
 			bitmap = BitmapFactory.decodeFile(data.findCacheEntry(urls[0]));
 		} else {
 			try {
+				// If the image isn't in the cache, we have to go and get it.
+				// First, we set up the HTTP request.
 				HttpGet request = new HttpGet(urls[0]);
 				HttpParams params = new BasicHttpParams();
 				HttpConnectionParams.setSoTimeout(params, 60000);
 				request.setParams(params);
+				
+				// Let the UI know we're working.
 				publishProgress(25);
 
+				// Retrieve the image from the network.
 				HttpResponse response = client.execute(request);
 				publishProgress(50);
 
+				// Create a bitmap to put in the ImageView.
 				byte[] image = EntityUtils.toByteArray(response.getEntity());
-				publishProgress(75);
-
 				bitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
+				publishProgress(75);
 				
-				// cache file for offline use
+				// Cache the file for offline use, and to lower data usage.
 				File cachePath = parent.getCacheDir();
 				String cacheFile = "recipecache-" + Long.toString(System.currentTimeMillis());
 				bitmap.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(new File(cachePath, cacheFile)));
 				RecipeData appData = ((RecipeBook) parent.getApplication()).getData();
 				appData.insertCacheEntry(urls[0], cacheFile);
 				
+				// We're done!
 				publishProgress(100);
 			} catch (IOException e) {
-				e.printStackTrace();
+				// TODO Maybe a dialog?
 			}
 
 			client.close();
@@ -77,12 +88,13 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 
 	@Override
 	protected void onPostExecute(Bitmap result) {
+		// UI changes happen here
 		view.setImageBitmap(result);
 	}
 
 	@Override
 	protected void onProgressUpdate(Integer... values) {
-		Log.i(TAG, values[0].toString());
+		// TODO If the download is going to take a while, pop up a dialog
 	}
 
 	public static void doDownload(Activity a, String url, ImageView view) {

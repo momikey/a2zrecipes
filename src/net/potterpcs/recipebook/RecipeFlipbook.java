@@ -162,25 +162,27 @@ public class RecipeFlipbook extends FragmentActivity {
 			lvingredients.setAdapter(ingredients);
 			lvdirections.setAdapter(directions);
 			
-			if (recipe.photo != null) {
-				Uri uri = Uri.parse(recipe.photo);
-				ImageView iv = new ImageView(getActivity());
-				
-				if (!uri.getScheme().contains("http")) {
-					iv.setImageURI(uri);
-				} else {
-					DownloadImageTask.doDownload(getActivity(), recipe.photo, iv);
+			ImageView iv = new ImageView(getActivity());
+			RecipeBook.setImageViewBitmapDecoded(getActivity(), iv, recipe.photo);
+//			if (recipe.photo != null) {
+//				Uri uri = Uri.parse(recipe.photo);
+//				ImageView iv = new ImageView(getActivity());
+//				
+//				if (!uri.getScheme().contains("http")) {
+//					iv.setImageURI(uri);
+//				} else {
+//					DownloadImageTask.doDownload(getActivity(), recipe.photo, iv);
+//				}
+			iv.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+					PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
+					pd.show(ft, "dialog");
 				}
-				iv.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-						PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
-						pd.show(ft, "dialog");
-					}
-				});
-				rvphoto.addView(iv);
-			}	
+			});
+			rvphoto.addView(iv);
+//			}	
 			return v;
 		}
 }

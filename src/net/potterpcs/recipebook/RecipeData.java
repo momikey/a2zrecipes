@@ -231,7 +231,8 @@ public class RecipeData {
 					if (r.directions != null) {
 						int step = 1;
 						for (String dir : r.directions) {
-							ContentValues cdirs = createDirectionsCV(rowid, step, dir);
+							ContentValues cdirs = 
+								createDirectionsCV(rowid, step, dir, r.directions_photos[step-1]);
 							db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
 							step++;
 						}
@@ -658,7 +659,7 @@ public class RecipeData {
 			if (r.directions != null) {
 				int step = 1;
 				for (String dir : r.directions) {
-					ContentValues cdirs = createDirectionsCV(rowid, step, dir);
+					ContentValues cdirs = createDirectionsCV(rowid, step, dir, r.directions_photos[step-1]);
 					db.insertWithOnConflict(DIRECTIONS_TABLE, null, cdirs, SQLiteDatabase.CONFLICT_IGNORE);
 					step++;
 				}
@@ -684,10 +685,11 @@ public class RecipeData {
 		return ctags;
 	}
 
-	public static ContentValues createDirectionsCV(long rowid, int step, String dir) {
+	public static ContentValues createDirectionsCV(long rowid, int step, String dir, String photo) {
 		ContentValues cdirs = new ContentValues();
 		cdirs.put(DT_STEP, dir);
 		cdirs.put(DT_SEQUENCE, step);
+		cdirs.put(DT_PHOTO, photo);
 		cdirs.put(DT_RECIPE_ID, rowid);
 		return cdirs;
 	}
@@ -708,6 +710,7 @@ public class RecipeData {
 		values.put(RT_DATE, r.date);
 		values.put(RT_SERVING, r.serving);
 		values.put(RT_TIME, r.time);
+		values.put(RT_PHOTO, r.photo);
 		return values;
 	}
 	
@@ -742,7 +745,8 @@ public class RecipeData {
 				db.delete(DIRECTIONS_TABLE, DT_RECIPE_ID + " = ?", whereArgs);
 				int step = 1;
 				for (String dir : r.directions) {
-					db.insertWithOnConflict(DIRECTIONS_TABLE, null, createDirectionsCV(rid, step, dir), 
+					db.insertWithOnConflict(DIRECTIONS_TABLE, null, 
+							createDirectionsCV(rid, step, dir, r.directions_photos[step-1]), 
 							SQLiteDatabase.CONFLICT_IGNORE);
 					step++;
 				}
@@ -877,7 +881,7 @@ public class RecipeData {
 		return parseJsonRecipes(st);
 	}
 
-	private ArrayList<Recipe> parseJsonRecipes(String st) {
+	public ArrayList<Recipe> parseJsonRecipes(String st) {
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 		try {
 			JSONArray ja = new JSONArray(st);

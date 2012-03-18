@@ -274,6 +274,7 @@ public class RecipeEditor extends FragmentActivity {
 		recipe.date = new Date().toString();
 		recipe.ingredients = ingredients.getIngredients();
 		recipe.directions = directions.getDirections();
+		recipe.directions_photos = directions.getPhotos();
 		recipe.tags = tags.getTags();
 		recipe.photo = photo.getPhotoUri();
 		
@@ -293,7 +294,7 @@ public class RecipeEditor extends FragmentActivity {
 		}
 	}
 	
-	public void onAttachPhoto(MenuItem item) {
+	public void onAttachPhoto(View v) {
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, GALLERY_ACTIVITY);
 	}
@@ -305,6 +306,7 @@ public class RecipeEditor extends FragmentActivity {
 				Uri selectedImage = data.getData();
 				Log.i(TAG, selectedImage.toString());
 				recipe.photo = selectedImage.toString();
+				photo.changeImage(recipe.photo);
 			}
 		}
 	}

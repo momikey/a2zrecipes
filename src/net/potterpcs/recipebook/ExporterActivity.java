@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ListAdapter;
 
 public class ExporterActivity extends ListActivity {
+	// Handle to the data layer
 	RecipeData data;
 	
 	@Override
@@ -20,6 +21,7 @@ public class ExporterActivity extends ListActivity {
 		
 		data = ((RecipeBook) getApplication()).getData();
 		
+		// Simple setup for a checked list of recipe names
 		setContentView(R.layout.exporter);
 		ListAdapter adapter = new SimpleCursorAdapter(this, 
 				android.R.layout.simple_list_item_checked, 
@@ -30,13 +32,22 @@ public class ExporterActivity extends ListActivity {
 	}
 	
 	public void onExportButton(View v) {
+		// TODO Allow the user to choose export location/filename
+		
+		// Unlike in the importer, here we *can* use getCheckedItemIds(),
+		// because CursorAdapters have stable IDs.
 		long[] ids = getListView().getCheckedItemIds();
+		
+		// Try to export
 		String filename = null;
 		try {
 			filename = data.exportRecipes(ids);
 		} catch (IOException e) {
+			// Export failed
+			// TODO Dialog
 		}
 		
+		// Show the filename
 		if (filename != null) {
 			new AlertDialog.Builder(this)
 			.setMessage(filename)

@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.content.Intent;
 
 public class CacheService extends IntentService {
+	// The maximum amount of memory the cache should use
 	// TODO allow user-defined cachesize
 	private static final long MAXCACHE = 1024000;
 
@@ -18,6 +19,7 @@ public class CacheService extends IntentService {
 		RecipeData data = ((RecipeBook) getApplication()).getData();
 		File cachePath = getCacheDir();
 		
+		// Keep removing the oldest cache entry until we're under the limit.
 		while (isOverCache()) {
 			String oldest = data.removeOldestCacheEntry();
 			File f = new File(cachePath, oldest);

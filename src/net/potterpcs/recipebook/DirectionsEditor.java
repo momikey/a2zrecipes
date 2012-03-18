@@ -26,13 +26,24 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class DirectionsEditor extends Fragment {
+	// Bundle extra for the directions array
 	static final String STATE_DIRS = "directions";
+	
+	// Bundle extra for the photos array
 	static final String STATE_PHOTOS = "direction-photos";
+	
+	// Handle to the parent activity
 	private RecipeEditor activity;
+
+	// ListView and ListAdapter
 	ListView listview;
+	private ArrayAdapter<String> adapter;
+	
+	// Lists for the recipe's directions and the photos for each direction
 	ArrayList<String> directions;
 	ArrayList<String> photoUris;
-	private ArrayAdapter<String> adapter;
+	
+	// The sequence number of the current direction (for move up/down operations)
 	int currentDirection;
 	
 	@Override
@@ -45,6 +56,7 @@ public class DirectionsEditor extends Fragment {
 		currentDirection = -1;
 		
 		if (savedInstanceState != null) {
+			// Load from the saved state if possible
 			String[] savedDirections = savedInstanceState.getStringArray(STATE_DIRS);
 			String[] savedUris = savedInstanceState.getStringArray(STATE_PHOTOS);
 			if (savedDirections != null) {
@@ -54,9 +66,10 @@ public class DirectionsEditor extends Fragment {
 				photoUris.addAll(Arrays.asList(savedUris));
 			}
 		} else {
-
-			// load an existing recipe's directions
+			// There's no saved state, so we can load a recipe from the database
+			// if needed, or start a new one.
 			if (rid > 0) {
+				// Load an existing recipe for editing
 				RecipeBook app = (RecipeBook) activity.getApplication();
 				Cursor c = app.getData().getRecipeDirections(rid);
 
@@ -71,7 +84,7 @@ public class DirectionsEditor extends Fragment {
 				}
 				c.close();
 			} else {
-				// this is a new recipe, so no setup required (yet?)
+				// Start a new recipe (this requires no extra setup)
 			}
 		}
 
@@ -85,8 +98,12 @@ public class DirectionsEditor extends Fragment {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.directionscontext, menu);
+		
+		// Don't display the "Remove Photo" option if there's no photo to remove
+		// FIXME Restore these options where appropriate
 		if (photoUris.get(((AdapterContextMenuInfo) menuInfo).position) == null) {
 			menu.removeItem(R.id.ctxremovephotodirection);
+			menu.removeItem(R.id.ctxphotodirection);
 		}
 	}
 	
@@ -95,6 +112,7 @@ public class DirectionsEditor extends Fragment {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		String selected = adapter.getItem(info.position);
 		String selectedPhoto = photoUris.get(info.position);
+		
 		switch (item.getItemId()) {
 		case R.id.ctxdeletedirection:
 			// "Delete" option
@@ -105,20 +123,22 @@ public class DirectionsEditor extends Fragment {
 		case R.id.ctxeditdirection:
 			// "Edit" option
 			currentDirection = info.position;
-			// set the editor box to have the old text
+			
+			// Set the editor box to have the old text
 			EditText edit = ((EditText) getView().findViewById(R.id.directionsedit));
 			edit.setText(selected);
 			edit.requestFocus();
 			adapter.remove(selected);
 			photoUris.remove(info.position);
-			// put a placeholder into the list
+			
+			// Put a placeholder into the list
 			adapter.insert(getResources().getString(R.string.recipereplacetext), currentDirection);
 			return true;
 		case R.id.ctxmovedowndirection:
 			// "Move Down" option
 			currentDirection = -1;
 			if (info.position < adapter.getCount()) {
-				// can't move down the last direction
+				// We can't move the last direction down
 				adapter.remove(selected);
 				adapter.insert(selected, info.position + 1);
 				
@@ -131,7 +151,7 @@ public class DirectionsEditor extends Fragment {
 			// "Move Up" option
 			currentDirection = -1;
 			if (info.position > 0) {
-				// can't move up the first direction
+				// We can't move the first direction up
 				adapter.remove(selected);
 				adapter.insert(selected, info.position - 1);
 				
@@ -141,9 +161,11 @@ public class DirectionsEditor extends Fragment {
 			}
 			return false;
 		case R.id.ctxphotodirection:
+			// "Attach Photo" option
 			attachPhoto(info.position);
 			return true;
 		case R.id.ctxremovephotodirection:
+			// "Remove Photo" option
 			photoUris.set(info.position, null);
 			return true;
 		default:
@@ -158,22 +180,26 @@ public class DirectionsEditor extends Fragment {
 		listview = (ListView) activity.findViewById(R.id.directionslist);
 		listview.setAdapter(adapter);
 
+		// Set up the "+" button
 		ImageButton add = (ImageButton) getActivity().findViewById(R.id.adddirection);
 		add.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				EditText edit = (EditText) getView().findViewById(R.id.directionsedit);
+				
 				if (edit.getText().length() > 0) {
+					// As long as there's *something* in the edit box
 					if (currentDirection == -1) {
+						// If we're inserting a new direction...
 						adapter.add(edit.getText().toString());
 						photoUris.add(null);
 					} else {
+						// If we're editing a direction that was already there
 						adapter.insert(edit.getText().toString(), currentDirection);
 						photoUris.add(currentDirection, edit.getText().toString());
 						adapter.remove(getResources().getString(R.string.recipereplacetext));
 						currentDirection = -1;
 					}
-					((EditText) getView().findViewById(R.id.directionsedit)).setText(null);
 				}
 				edit.setText("");
 				edit.requestFocus();
@@ -185,6 +211,8 @@ public class DirectionsEditor extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (photoUris.get(position) != null) {
+					// Show a bigger photo if the direction has one.
+					// This is just a smaller version of the "recipe photo" handler.
 					FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 					PhotoDialog pd = PhotoDialog.newInstance(photoUris.get(position));
 					pd.show(ft, "dialog");
@@ -201,7 +229,8 @@ public class DirectionsEditor extends Fragment {
 		String[] dirs = new String[adapter.getCount()];
 		int l = dirs.length;
 		for (int i = 0; i < l; i++) {
-			if (!adapter.getItem(i).contentEquals(getResources().getString(R.string.recipereplacetext))) {
+			if (!adapter.getItem(i).contentEquals(
+					getResources().getString(R.string.recipereplacetext))) {
 				dirs[i] = adapter.getItem(i);
 			}
 		}
@@ -218,13 +247,17 @@ public class DirectionsEditor extends Fragment {
 	}
 	
 	private void attachPhoto(int position) {
-		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		// We let the system do the hard work of finding a picture to attach.
+		Intent intent = new Intent(Intent.ACTION_PICK, 
+				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, position);		
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK) {
+			// If the user chose a picture, we can attach it to the direction,
+			// and it will appear next to it in the recipe viewer.
 			String selectedImageUri = data.getData().toString();
 			photoUris.set(requestCode, selectedImageUri);
 		}
@@ -232,6 +265,8 @@ public class DirectionsEditor extends Fragment {
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
+		// Save the directions and photos arrays, so that we can refill the
+		// lists after a pause/restore.
 		super.onSaveInstanceState(outState);
 		outState.putStringArray(STATE_DIRS, getDirections());
 		outState.putStringArray(STATE_PHOTOS, getPhotos());

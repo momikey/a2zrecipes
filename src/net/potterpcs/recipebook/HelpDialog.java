@@ -1,8 +1,5 @@
 package net.potterpcs.recipebook;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -12,13 +9,18 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 public class HelpDialog extends DialogFragment {
-
-	public static final String HELP_RESOURCE = "help-resource";
+	// Tag for logging
 	private static final String TAG = "HelpDialog";
+
+	// Bundle extra
+	public static final String HELP_RESOURCE = "help-resource";
+	
+	// Name of the help page
 	private String helpFile;
 	
 
 	static HelpDialog newInstance(String uri) {
+		// Standard Android-style factory method
 		HelpDialog hd = new HelpDialog();
 		
 		Bundle args = new Bundle();
@@ -41,6 +43,8 @@ public class HelpDialog extends DialogFragment {
 		View v = inflater.inflate(R.layout.helpdialog, container);
 		WebView web = (WebView) v.findViewById(R.id.helpwebview);
 		
+		// All we have to do is give the WebView a location, and it does
+		// all the work for us.
 		if (helpFile != null) {
 			String baseUrl = "file:///android_res/raw/";
 			String url = baseUrl + helpFile + ".html";
