@@ -21,6 +21,7 @@ public class RecipeBook extends Application {
 	static final String TIME_EXTRA_MAX = "time-search-maximum";
 	static final String TIME_EXTRA_MIN = "time-search-minimum";
 	public static final String OPEN_RECIPE_ACTION = "net.potterpcs.recipebook.OPEN_RECIPE";
+	private static final int DEFAULT_REQUIRED_SIZE = 800;
 
 	public void onCreate() {
 		super.onCreate();
@@ -32,18 +33,26 @@ public class RecipeBook extends Application {
     }
     
     public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, String s) {
+    	return setImageViewBitmapDecoded(a, iv, s, DEFAULT_REQUIRED_SIZE);
+    }
+    
+    public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, String s, int size) {
     	Uri u = null;
     	
     	if (s != null) {
     		u = Uri.parse(s);
     	}
     	
-    	return setImageViewBitmapDecoded(a, iv, u);
+    	return setImageViewBitmapDecoded(a, iv, u, size);
     }
     
     public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, Uri uri) {
+    	return setImageViewBitmapDecoded(a, iv, uri, DEFAULT_REQUIRED_SIZE);
+    }
+    
+    public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, Uri uri, int size) {
     	Bitmap b = null;
-    	final int REQUIRED_SIZE = 800;
+    	final int REQUIRED_SIZE = size;
     	
     	if (uri != null) {
     		if (!uri.getScheme().startsWith("http")) {

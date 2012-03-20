@@ -164,15 +164,6 @@ public class RecipeFlipbook extends FragmentActivity {
 			
 			ImageView iv = new ImageView(getActivity());
 			RecipeBook.setImageViewBitmapDecoded(getActivity(), iv, recipe.photo);
-//			if (recipe.photo != null) {
-//				Uri uri = Uri.parse(recipe.photo);
-//				ImageView iv = new ImageView(getActivity());
-//				
-//				if (!uri.getScheme().contains("http")) {
-//					iv.setImageURI(uri);
-//				} else {
-//					DownloadImageTask.doDownload(getActivity(), recipe.photo, iv);
-//				}
 			iv.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

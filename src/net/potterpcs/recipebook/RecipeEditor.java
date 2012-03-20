@@ -82,12 +82,6 @@ public class RecipeEditor extends FragmentActivity {
 			recipeId = recipe.id;
 		}
 		
-//		meta = (MetadataEditor) manager.findFragmentById(R.id.metafragment);
-//		ingredients = (IngredientsEditor) manager.findFragmentById(R.id.ingredientsfragment);
-//		directions = (DirectionsEditor) manager.findFragmentById(R.id.directionsfragment);
-//		tags = (TagsEditor) manager.findFragmentById(R.id.tagsfragment);
-//		photo = (PhotoEditor) manager.findFragmentById(R.id.photoeditfragment);
-		
 		if (sslistview != null) {
 			FragmentTransaction setup = manager.beginTransaction();
 			Log.v(TAG, "creating fragments");
@@ -181,42 +175,11 @@ public class RecipeEditor extends FragmentActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-//		if (sslistview != null) {
-//			FragmentTransaction ft = manager.beginTransaction();
-//			for (String s : ALL_FRAGMENT_NAMES) {
-//				Fragment f = manager.findFragmentByTag(s);
-//				Log.i(TAG, f.toString() + f.isVisible());
-//				if (f != null) {
-//					if (f.isVisible()) {
-//						nextFragment = f;
-//					}
-//					ft.hide(f);
-//				}
-//				Log.i(TAG, f.toString() + f.isVisible());
-//			}
-//			ft.commit();
-//		}
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		FragmentTransaction ft = manager.beginTransaction();
-//		for (String s: ALL_FRAGMENT_NAMES) {
-//			Fragment f = manager.findFragmentByTag(s);
-//			if (f != null && sslistview != null) {
-//				// if the fragment exists and is not the one that should be shown
-//				// (two-pane mode only, large-screen mode can show all fragments at once)
-//				Log.i(TAG, f.toString() + f.isVisible());
-//				if (f.equals(nextFragment)) {
-//					ft.show(f);
-//				} else {
-//					ft.hide(f);
-//				}
-//				Log.i(TAG, f.toString() + f.isVisible());
-//			}
-//		}
-//		ft.commit();
 	}
 	
 	@Override
@@ -225,8 +188,6 @@ public class RecipeEditor extends FragmentActivity {
 		inflater.inflate(R.menu.editormenu, menu);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenusave), 
 				MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-//		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuattach), 
-//				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuhelp),
 				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
@@ -238,9 +199,6 @@ public class RecipeEditor extends FragmentActivity {
 		case R.id.editormenusave:
 			onSaveItem(item);
 			return true;
-//		case R.id.editormenuattach:
-//			onAttachPhoto(item);
-//			return true;
 		case R.id.editormenuhelp:
 			onHelpItemSelected(item);
 			return true;

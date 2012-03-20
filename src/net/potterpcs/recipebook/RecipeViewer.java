@@ -108,7 +108,7 @@ public class RecipeViewer extends FragmentActivity {
 					return false;
 				} else {
 					ImageView iv = (ImageView) view;
-					setOrDownloadImage(iv, cursor.getString(columnIndex));
+					RecipeBook.setImageViewBitmapDecoded(getParent(), iv, cursor.getString(columnIndex), 160);
 					return true;
 				}
 			}
@@ -192,46 +192,6 @@ public class RecipeViewer extends FragmentActivity {
 	}
 	
 	private void setOrDownloadImage(ImageView iv, String photoUri) {
-//		if (photoUri != null) {
-//			Uri u = Uri.parse(photoUri);
-//			if (!u.getScheme().contains("http")) {
-//				if (u.getScheme().startsWith("content")) {
-//					iv.setImageBitmap(decodeStream(u));
-//				} else {
-//					iv.setImageURI(Uri.parse(photoUri));
-//				}
-//			} else {
-//				DownloadImageTask.doDownload(this, photoUri, iv);
-//			}
-//		}
 		RecipeBook.setImageViewBitmapDecoded(this, iv, photoUri);
 	}
-	
-	private Bitmap decodeStream(Uri uri) {
-		Bitmap b = null;
-		final int REQUIRED_SIZE = 1280;
-		
-		try {
-			BitmapFactory.Options o = new BitmapFactory.Options();
-			o.inJustDecodeBounds = true;
-			
-			InputStream is = getContentResolver().openInputStream(uri);
-			BitmapFactory.decodeStream(is, null, o);
-			is.close();
-			
-			int scale=1;
-	        while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
-	            scale*=2;
-			
-	        InputStream is2 = getContentResolver().openInputStream(uri);
-	        BitmapFactory.Options o2 = new BitmapFactory.Options();
-	        o2.inSampleSize = scale;
-	        b = BitmapFactory.decodeStream(is2, null, o2);
-
-		} catch (IOException e) {
-			// return a null bitmap, same as if we removed the photo
-		}
-		return b;
-	}
-
 }
