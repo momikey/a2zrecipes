@@ -4,11 +4,12 @@ import java.io.File;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 public class CacheService extends IntentService {
 	// The maximum amount of memory the cache should use
 	// TODO allow user-defined cachesize
-	private static final long MAXCACHE = 1024000;
+	private static final long MAXCACHE = 10240000;
 
 	public CacheService() {
 		super("CacheService");
@@ -38,7 +39,6 @@ public class CacheService extends IntentService {
 				csz += files[i].length();
 			}
 		}
-		
 		return csz >= MAXCACHE;
 	}
 

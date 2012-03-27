@@ -133,6 +133,15 @@ public class RecipeFlipbook extends FragmentActivity {
 		}
 		
 		@Override
+		public void onResume() {
+			super.onResume();
+			FrameLayout fl = (FrameLayout) getActivity().findViewById(R.id.photofragment);
+			ImageView iv = (ImageView) fl.getChildAt(0);
+			RecipeBook.setImageViewBitmapDecoded(getActivity(), iv, recipe.photo);
+
+		}
+		
+		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			View v = inflater.inflate(R.layout.recipeviewer, container, false);
@@ -163,7 +172,6 @@ public class RecipeFlipbook extends FragmentActivity {
 			lvdirections.setAdapter(directions);
 			
 			ImageView iv = new ImageView(getActivity());
-			RecipeBook.setImageViewBitmapDecoded(getActivity(), iv, recipe.photo);
 			iv.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

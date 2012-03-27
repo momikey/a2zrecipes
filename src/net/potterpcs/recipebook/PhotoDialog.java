@@ -1,10 +1,5 @@
 package net.potterpcs.recipebook;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -70,32 +65,4 @@ public class PhotoDialog extends DialogFragment {
 		
 		return v;
 	}
-	
-	private Bitmap decodeStream(Uri uri) {
-		Bitmap b = null;
-		final int REQUIRED_SIZE = 1280;
-		
-		try {
-			BitmapFactory.Options o = new BitmapFactory.Options();
-			o.inJustDecodeBounds = true;
-			
-			InputStream is = getActivity().getContentResolver().openInputStream(uri);
-			BitmapFactory.decodeStream(is, null, o);
-			is.close();
-			
-			int scale=1;
-	        while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
-	            scale*=2;
-			
-	        InputStream is2 = getActivity().getContentResolver().openInputStream(uri);
-	        BitmapFactory.Options o2 = new BitmapFactory.Options();
-	        o2.inSampleSize = scale;
-	        b = BitmapFactory.decodeStream(is2, null, o2);
-
-		} catch (IOException e) {
-			// return a null bitmap, same as if we removed the photo
-		}
-		return b;
-	}
-
 }

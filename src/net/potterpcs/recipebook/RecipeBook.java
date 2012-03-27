@@ -1,10 +1,10 @@
 package net.potterpcs.recipebook;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.app.Application;
@@ -52,50 +52,54 @@ public class RecipeBook extends Application {
     
     public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, Uri uri, int size) {
     	Bitmap b = null;
-    	final int REQUIRED_SIZE = size;
     	
     	if (uri != null) {
     		if (!uri.getScheme().startsWith("http")) {
     			try {
-    				BitmapFactory.Options o = new BitmapFactory.Options();
-    				o.inJustDecodeBounds = true;
+    				b = decodeScaledBitmap(a, uri, size);
 
-    				InputStream is = createInputStream(uri, a);
-    				BitmapFactory.decodeStream(is, null, o);
-    				is.close();
-
-    				int scale=1;
-    				while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
-    					scale*=2;
-
-    				InputStream is2 = createInputStream(uri, a);
-    				BitmapFactory.Options o2 = new BitmapFactory.Options();
-    				o2.inSampleSize = scale;
-    				o2.inPurgeable = true;
-    				o2.inInputShareable = true;
-    				
-    				b = BitmapFactory.decodeStream(is2, null, o2);
-
+    		    	if (iv != null) {
+    		    		iv.setImageBitmap(b);
+    		    	}
+    		    	
     			} catch (IOException e) {
     				// return a null bitmap, same as if we removed the photo
     			}
     		} else {
-    			try {
-    				b = new DownloadImageTask(a, iv).get();
-    			} catch (InterruptedException e) {
-    				b = null;
-    			} catch (ExecutionException e) {
-    				b = null;
-    			}
+    			new DownloadImageTask(a, iv).execute(uri.toString());
     		}
     	}
-
-    	if (iv != null) {
-    		iv.setImageBitmap(b);
-    	}
-    	
     	return iv;
     }
+    
+    static Bitmap decodeScaledBitmap(Activity a, Uri uri) 
+    		throws FileNotFoundException, IOException {
+    	return decodeScaledBitmap(a, uri, DEFAULT_REQUIRED_SIZE);
+    }
+
+	static Bitmap decodeScaledBitmap(Activity a, Uri uri, int size)
+			throws FileNotFoundException, IOException {
+		Bitmap b;
+		BitmapFactory.Options o = new BitmapFactory.Options();
+		o.inJustDecodeBounds = true;
+
+		InputStream is = createInputStream(uri, a);
+		BitmapFactory.decodeStream(is, null, o);
+		is.close();
+
+		int scale=1;
+		while(o.outWidth/scale/2>=size && o.outHeight/scale/2>=size)
+			scale*=2;
+
+		InputStream is2 = createInputStream(uri, a);
+		BitmapFactory.Options o2 = new BitmapFactory.Options();
+		o2.inSampleSize = scale;
+		o2.inPurgeable = true;
+		o2.inInputShareable = true;
+		
+		b = BitmapFactory.decodeStream(is2, null, o2);
+		return b;
+	}
     
     private static InputStream createInputStream(Uri uri, Activity a) throws FileNotFoundException {
     	InputStream is;
@@ -104,7 +108,7 @@ public class RecipeBook extends Application {
     	if (scheme.startsWith("content")) {
     		is = a.getContentResolver().openInputStream(uri);
     	} else if (scheme.startsWith("file")) {
-    		is = new FileInputStream(uri.toString());
+    		is = new FileInputStream(uri.getPath());
     	} else {
     		is = null;
     	}

@@ -1,6 +1,7 @@
 package net.potterpcs.recipebook;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -14,8 +15,10 @@ import org.apache.http.util.EntityUtils;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
@@ -46,7 +49,14 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 
 		if (data.isCached(urls[0])) {
 			// Retrieve a cached image if we have one
-			bitmap = BitmapFactory.decodeFile(data.findCacheEntry(urls[0]));
+			String pathName = data.findCacheEntry(urls[0]);
+			Uri pathUri = Uri.fromFile(new File(parent.getCacheDir(), pathName));
+			try {
+				bitmap = RecipeBook.decodeScaledBitmap(parent, pathUri);
+			} catch (IOException e) {
+				e.printStackTrace();
+				bitmap = null;
+			}
 		} else {
 			try {
 				// If the image isn't in the cache, we have to go and get it.
@@ -71,9 +81,12 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 				// Cache the file for offline use, and to lower data usage.
 				File cachePath = parent.getCacheDir();
 				String cacheFile = "recipecache-" + Long.toString(System.currentTimeMillis());
-				bitmap.compress(Bitmap.CompressFormat.PNG, 0, new FileOutputStream(new File(cachePath, cacheFile)));
-				RecipeData appData = ((RecipeBook) parent.getApplication()).getData();
-				appData.insertCacheEntry(urls[0], cacheFile);
+				if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, 
+						new FileOutputStream(new File(cachePath, cacheFile)))) {
+					RecipeData appData = ((RecipeBook) parent.getApplication()).getData();
+					appData.insertCacheEntry(urls[0], cacheFile);
+				}
+//				Log.v(TAG, cacheFile);
 				
 				// We're done!
 				publishProgress(100);
@@ -81,8 +94,8 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 				// TODO Maybe a dialog?
 			}
 
-			client.close();
 		}
+		client.close();
 		return bitmap;
 	}
 
@@ -95,6 +108,7 @@ public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 	@Override
 	protected void onProgressUpdate(Integer... values) {
 		// TODO If the download is going to take a while, pop up a dialog
+//		Log.v(TAG, values[0].toString());
 	}
 
 	public static void doDownload(Activity a, String url, ImageView view) {
