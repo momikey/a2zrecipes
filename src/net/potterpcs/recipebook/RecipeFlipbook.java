@@ -3,13 +3,12 @@ package net.potterpcs.recipebook;
 import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.view.ViewPager;
@@ -37,7 +36,7 @@ public class RecipeFlipbook extends FragmentActivity {
 	ViewPager pager;
 	Intent intent;
 
-	public class FlipAdapter extends FragmentPagerAdapter {
+	public class FlipAdapter extends FragmentStatePagerAdapter {
 		private static final String TAG = "FlipAdapater";
 		String searchQuery;
 		String searchTag;
@@ -135,7 +134,7 @@ public class RecipeFlipbook extends FragmentActivity {
 		@Override
 		public void onResume() {
 			super.onResume();
-			FrameLayout fl = (FrameLayout) getActivity().findViewById(R.id.photofragment);
+			FrameLayout fl = (FrameLayout) getView().findViewById(R.id.photofragment);
 			ImageView iv = (ImageView) fl.getChildAt(0);
 			RecipeBook.setImageViewBitmapDecoded(getActivity(), iv, recipe.photo);
 

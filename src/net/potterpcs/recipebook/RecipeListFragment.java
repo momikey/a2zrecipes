@@ -103,7 +103,8 @@ public class RecipeListFragment extends ListFragment {
 			break;
 		case R.id.menusortdate:
 			// TODO actually sort by date instead of ID
-			sort = RecipeData.RT_ID;
+//			sort = RecipeData.RT_ID;
+			sort = RecipeData.RT_DATE;
 			break;
 		case R.id.menusortname:
 		default:

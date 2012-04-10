@@ -150,6 +150,12 @@ public class RecipeData {
 			r.serving = jo.optInt(RT_SERVING);
 			r.time = jo.optInt(RT_TIME);
 			r.photo = jo.optString(RT_PHOTO);
+			
+			// remove local links from imported recipes
+			// TODO sharing, etc.
+			if (!r.photo.startsWith("http")) {
+				r.photo = "";
+			}
 
 			JSONArray ji = jo.optJSONArray(INGREDIENTS_TABLE);
 			JSONArray jd = jo.optJSONArray(DIRECTIONS_TABLE);
@@ -172,6 +178,12 @@ public class RecipeData {
 					if (diro != null) {
 						r.directions[d] = diro.optString(DT_STEP);
 						r.directions_photos[d] = diro.optString(DT_PHOTO);
+						
+						// remove local links
+						// TODO sharing, etc.
+						if (!r.directions_photos[d].startsWith("http")) {
+							r.directions_photos[d] = "";
+						}
 					} else {
 						r.directions[d] = jd.optString(d);
 						r.directions_photos[d] = null;

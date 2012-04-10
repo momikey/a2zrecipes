@@ -1,6 +1,8 @@
 package net.potterpcs.recipebook;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.app.AlertDialog;
@@ -15,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +32,7 @@ import android.widget.TextView;
 public class RecipeEditor extends FragmentActivity {
 	public static final String TAG = "RecipeEditor";
 	static final int GALLERY_ACTIVITY = 1;
+	static final int DIRECTION_PHOTO_ATTACH = 1000;
 	private static final int METADATA = 0;
 	private static final int INGREDIENTS = 1;
 	private static final int DIRECTIONS = 2;
@@ -229,7 +233,7 @@ public class RecipeEditor extends FragmentActivity {
 	public void onSaveItem(MenuItem item) {
 		recipe = meta.getRecipeMetadata();
 		recipe.id = recipeId;
-		recipe.date = new Date().toString();
+		recipe.date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ", Locale.US).format(new Date());
 		recipe.ingredients = ingredients.getIngredients();
 		recipe.directions = directions.getDirections();
 		recipe.directions_photos = directions.getPhotos();
@@ -256,6 +260,13 @@ public class RecipeEditor extends FragmentActivity {
 		Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		startActivityForResult(intent, GALLERY_ACTIVITY);
 	}
+	
+	public void onAttachDirectionPhoto(int position) {
+		// We let the system do the hard work of finding a picture to attach.
+		Intent intent = new Intent(Intent.ACTION_PICK, 
+				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+		startActivityForResult(intent, RecipeEditor.DIRECTION_PHOTO_ATTACH + position);	
+	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -265,6 +276,9 @@ public class RecipeEditor extends FragmentActivity {
 				Log.i(TAG, selectedImage.toString());
 				recipe.photo = selectedImage.toString();
 				photo.changeImage(recipe.photo);
+			} else if (requestCode >= DIRECTION_PHOTO_ATTACH) {
+				directions.onActivityResult(requestCode - DIRECTION_PHOTO_ATTACH, 
+						resultCode, data);
 			}
 		}
 	}

@@ -79,8 +79,8 @@ public class TagRecipeDialog extends DialogFragment {
 	public void onDismiss(DialogInterface dialog) {
 		super.onDismiss(dialog);
 		RecipeData data = app.getData();
-		Log.v(TAG, clicked);
 		if (clicked != null && !data.recipeHasTag(recipeId, clicked)) {
+			Log.v(TAG, clicked);
 			data.insertTags(RecipeData.createTagsCV(recipeId, clicked));
 		}
 	}

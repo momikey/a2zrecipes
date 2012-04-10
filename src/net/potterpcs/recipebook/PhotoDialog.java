@@ -33,9 +33,13 @@ public class PhotoDialog extends DialogFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		photoUri = Uri.parse(getArguments().getString(URI));
+		String u = getArguments().getString(URI);
+		if (u != null) {
+			photoUri = Uri.parse(u);
+		} else {
+			photoUri = null;
+		}
 		setStyle(STYLE_NO_TITLE, 0);
-		Log.i(TAG, "Creating photo dialog with uri: " + photoUri.toString());
 	}
 	
 	@Override
@@ -43,7 +47,7 @@ public class PhotoDialog extends DialogFragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.photodialog, container, false);
 		ImageView photo = (ImageView) v.findViewById(R.id.dialogphoto);
-		
+
 //		if (!photoUri.getScheme().contains("http")) {
 //			if (photoUri.getScheme().startsWith("content")) {
 //				photo.setImageBitmap(decodeStream(photoUri));

@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 public class PhotoEditor extends Fragment {
 	private static final String TAG = "PhotoEditor";
@@ -103,6 +104,7 @@ public class PhotoEditor extends Fragment {
 	
 	void changeImage(String uri) {
 		ImageView iv = (ImageView) getActivity().findViewById(R.id.photoeditphoto);
+		iv.setScaleType(ScaleType.CENTER_INSIDE);
 		RecipeBook.setImageViewBitmapDecoded(getActivity(), iv, uri);
 		Log.v(TAG, uri == null ? "no image" : uri);
 		photo = uri;

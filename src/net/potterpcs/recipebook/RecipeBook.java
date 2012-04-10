@@ -11,6 +11,7 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.widget.ImageView;
 
 public class RecipeBook extends Application {
@@ -55,19 +56,22 @@ public class RecipeBook extends Application {
     	
     	if (uri != null) {
     		if (!uri.getScheme().startsWith("http")) {
-    			try {
-    				b = decodeScaledBitmap(a, uri, size);
-
-    		    	if (iv != null) {
-    		    		iv.setImageBitmap(b);
-    		    	}
-    		    	
-    			} catch (IOException e) {
-    				// return a null bitmap, same as if we removed the photo
-    			}
+//    			try {
+//    				b = decodeScaledBitmap(a, uri, size);
+//
+//    		    	if (iv != null) {
+//    		    		iv.setImageBitmap(b);
+//    		    	}
+//    		    	
+//    			} catch (IOException e) {
+//    				// return a null bitmap, same as if we removed the photo
+//    			}
+    			new BackgroundBitmapDecoder(a, iv, size).execute(uri);
     		} else {
     			new DownloadImageTask(a, iv).execute(uri.toString());
     		}
+    	} else {
+    		iv.setImageBitmap(null);
     	}
     	return iv;
     }
@@ -88,7 +92,7 @@ public class RecipeBook extends Application {
 		is.close();
 
 		int scale=1;
-		while(o.outWidth/scale/2>=size && o.outHeight/scale/2>=size)
+		while(o.outWidth/scale/2>=size || o.outHeight/scale/2>=size)
 			scale*=2;
 
 		InputStream is2 = createInputStream(uri, a);
@@ -114,5 +118,57 @@ public class RecipeBook extends Application {
     	}
     	
     	return is;
+    }
+    
+    public static class BackgroundBitmapDecoder extends AsyncTask<Uri, Integer, Bitmap> {
+    	Activity parent;
+    	ImageView view;
+    	int size;
+    	
+    	public BackgroundBitmapDecoder(Activity a, ImageView v, int s) {
+    		parent = a;
+    		view = v;
+    		size = s;
+    	}
+
+		@Override
+		protected Bitmap doInBackground(Uri... params) {
+			Bitmap b;
+			BitmapFactory.Options o = new BitmapFactory.Options();
+			o.inJustDecodeBounds = true;
+
+			InputStream is;
+			try {
+				is = createInputStream(params[0], parent);
+				BitmapFactory.decodeStream(is, null, o);
+				is.close();
+			} catch (IOException e) {
+				b = null;
+			}
+
+			int scale=1;
+			while(o.outWidth/scale/2>=size || o.outHeight/scale/2>=size)
+				scale*=2;
+
+			InputStream is2;
+			try {
+				is2 = createInputStream(params[0], parent);
+				BitmapFactory.Options o2 = new BitmapFactory.Options();
+				o2.inSampleSize = scale;
+				o2.inPurgeable = true;
+				o2.inInputShareable = true;
+
+				b = BitmapFactory.decodeStream(is2, null, o2);
+			} catch (FileNotFoundException e) {
+				b = null;
+			}
+
+			return b;
+		}
+    	
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			view.setImageBitmap(result);
+		}
     }
 }

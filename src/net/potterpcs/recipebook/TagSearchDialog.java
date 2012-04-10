@@ -64,11 +64,16 @@ public class TagSearchDialog extends DialogFragment {
 				intent.putExtra(RecipeBook.TAG_EXTRA, 
 						adapter.getCursor().getString(adapter.getCursor().getColumnIndex(RecipeData.TT_TAG)));
 				startActivity(intent);
-				adapter.getCursor().close();
 				dismiss();
 			}
 		});
 					
 		return v;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		adapter.getCursor().close();
 	}
 }

@@ -1,22 +1,21 @@
 package net.potterpcs.recipebook;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
+import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -102,17 +101,7 @@ public class RecipeViewer extends FragmentActivity {
 		startManagingCursor(dirc);
 		SimpleCursorAdapter directions = new SimpleCursorAdapter(this, R.layout.recipedirectionrow,
 				dirc, DIRECTIONS_FIELDS, DIRECTIONS_IDS, 0);
-		directions.setViewBinder(new ViewBinder() {
-			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-				if (columnIndex != cursor.getColumnIndex(RecipeData.DT_PHOTO)) {
-					return false;
-				} else {
-					ImageView iv = (ImageView) view;
-					RecipeBook.setImageViewBitmapDecoded(getParent(), iv, cursor.getString(columnIndex), 160);
-					return true;
-				}
-			}
-		});
+		directions.setViewBinder(new DirectionViewBinder(this));
 		
 		lvdirections.setAdapter(directions);
 		lvdirections.setDividerHeight(0);
@@ -141,9 +130,9 @@ public class RecipeViewer extends FragmentActivity {
 					pd.show(ft, "dialog");
 				}
 				c.close();
-				
 			}
 		});
+
 	}
 	
 	@Override
@@ -193,5 +182,47 @@ public class RecipeViewer extends FragmentActivity {
 	
 	private void setOrDownloadImage(ImageView iv, String photoUri) {
 		RecipeBook.setImageViewBitmapDecoded(this, iv, photoUri);
+	}
+	
+	public class DirectionViewBinder implements ViewBinder {
+		FragmentActivity parent;
+		HashMap<View, Boolean> boundViews;
+		
+		public DirectionViewBinder(FragmentActivity a) {
+			parent = a;
+			boundViews = new HashMap<View, Boolean>();
+		}
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			boolean isBound = false;
+			if (boundViews.get(view) != null) {
+				isBound = boundViews.get(view);
+			}
+			
+			switch (view.getId()) {
+			case R.id.direction:
+				if (!isBound && view instanceof TextView) {
+					((TextView) view).setText(cursor.getString(columnIndex));
+					boundViews.put(view, true);
+				}
+				break;
+			case R.id.number:
+				if (!isBound && view instanceof TextView) {
+					((TextView) view).setText(Integer.toString(cursor.getInt(columnIndex)));
+					boundViews.put(view, true);
+				}
+			case R.id.directionphoto:
+				if (!isBound && view instanceof ImageView) {
+					RecipeBook.setImageViewBitmapDecoded(parent, (ImageView) view, 
+							cursor.getString(columnIndex), 160);
+					boundViews.put(view, true);
+				}
+				break;
+			default:
+				return false;
+			}
+			return true;
+		}		
 	}
 }

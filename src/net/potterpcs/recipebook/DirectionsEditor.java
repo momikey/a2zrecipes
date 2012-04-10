@@ -100,9 +100,9 @@ public class DirectionsEditor extends Fragment {
 		inflater.inflate(R.menu.directionscontext, menu);
 		
 		// Don't display the "Remove Photo" option if there's no photo to remove
-		// FIXME Restore these options where appropriate
 		if (photoUris.get(((AdapterContextMenuInfo) menuInfo).position) == null) {
 			menu.removeItem(R.id.ctxremovephotodirection);
+		} else {
 			menu.removeItem(R.id.ctxphotodirection);
 		}
 	}
@@ -137,7 +137,7 @@ public class DirectionsEditor extends Fragment {
 		case R.id.ctxmovedowndirection:
 			// "Move Down" option
 			currentDirection = -1;
-			if (info.position < adapter.getCount()) {
+			if (info.position < adapter.getCount() - 1) {
 				// We can't move the last direction down
 				adapter.remove(selected);
 				adapter.insert(selected, info.position + 1);
@@ -247,10 +247,7 @@ public class DirectionsEditor extends Fragment {
 	}
 	
 	private void attachPhoto(int position) {
-		// We let the system do the hard work of finding a picture to attach.
-		Intent intent = new Intent(Intent.ACTION_PICK, 
-				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		startActivityForResult(intent, position);		
+		activity.onAttachDirectionPhoto(position);
 	}
 	
 	@Override
