@@ -21,7 +21,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 public class TagsEditor extends Fragment {
+	// Bundle state info
 	static final String STATE = "tags";
+	
 	GridView gridview;
 	ArrayList<String> tags;
 	private ArrayAdapter<String> adapter;
@@ -34,12 +36,13 @@ public class TagsEditor extends Fragment {
 		tags = new ArrayList<String>();
 		
 		if (savedInstanceState != null) {
+			// Load old state if we have it...
 			String[] saved = savedInstanceState.getStringArray(STATE);
 			if (saved != null) {
 				tags.addAll(Arrays.asList(saved));
 			}
 		} else {
-
+			// ...or load an old recipe or start a new one.
 			long rid = activity.getRecipeId();
 
 			if (rid > 0) {

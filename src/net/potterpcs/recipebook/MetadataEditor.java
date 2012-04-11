@@ -10,7 +10,10 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 
 public class MetadataEditor extends Fragment {
+	// The current recipe
 	Recipe r;
+	
+	// Handle to the parent activity
 	private RecipeEditor activity;
 	
 	@Override
@@ -23,9 +26,10 @@ public class MetadataEditor extends Fragment {
 	public void onStart() {
 		super.onStart();
 		
+		// If we're editing an existing recipe, then populate the various
+		// UI elements with the appropriate parts. 
 		activity = (RecipeEditor) getActivity();
 		r = activity.getRecipe();
-		
 		if (activity.getRecipeId() != -1) {
 			((EditText) activity.findViewById(R.id.nameedit)).setText(r.name);
 			((EditText) activity.findViewById(R.id.descriptionedit)).setText(r.description);

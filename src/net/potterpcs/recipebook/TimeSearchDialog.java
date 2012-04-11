@@ -11,7 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class TimeSearchDialog extends DialogFragment {
-	private static final String TAG = "TimeSearchDialog";
+	// Tag for logging
+//	private static final String TAG = "TimeSearchDialog";
 	
 	EditText minHoursEdit;
 	EditText minMinutesEdit;
@@ -25,9 +26,9 @@ public class TimeSearchDialog extends DialogFragment {
 	
 	static TimeSearchDialog newInstance() {
 		TimeSearchDialog tsd = new TimeSearchDialog();
-		
-		// Bundle stuff goes here;
-		
+		// Standard Android factory method
+		Bundle args = new Bundle();
+		tsd.setArguments(args);
 		return tsd;
 	}
 	

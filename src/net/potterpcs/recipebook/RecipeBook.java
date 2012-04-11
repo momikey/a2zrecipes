@@ -1,6 +1,5 @@
 package net.potterpcs.recipebook;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,13 +14,24 @@ import android.os.AsyncTask;
 import android.widget.ImageView;
 
 public class RecipeBook extends Application {
+	// The data layer. This is accessed by pretty much every part of the app.
+	// All database queries, updates, and deletes go through here.
 	private RecipeData recipeData;
+	
+	// Various bundle state extras for use with searching and sorting
 	static final String SEARCH_EXTRA = "search-query";
 	static final String TAG_EXTRA = "tag-search";
 	static final String TIME_EXTRA = "time-search";
 	static final String TIME_EXTRA_MAX = "time-search-maximum";
 	static final String TIME_EXTRA_MIN = "time-search-minimum";
+	
+	// A custom intent action for opening a recipe. We can use this instead of
+	// the generic open action so that only our app is used when importing.
 	public static final String OPEN_RECIPE_ACTION = "net.potterpcs.recipebook.OPEN_RECIPE";
+	
+	// The default maximum size of a recipe photo. This is only used when
+	// loading a bitmap, because most camera images have to be scaled down
+	// when loading, or they'll cause an out-of-memory error.
 	private static final int DEFAULT_REQUIRED_SIZE = 800;
 
 	public void onCreate() {
@@ -52,22 +62,14 @@ public class RecipeBook extends Application {
     }
     
     public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, Uri uri, int size) {
-    	Bitmap b = null;
-    	
+    	// The real meat of this method runs in a background thread, unless we
+    	// get a null URI.
     	if (uri != null) {
     		if (!uri.getScheme().startsWith("http")) {
-//    			try {
-//    				b = decodeScaledBitmap(a, uri, size);
-//
-//    		    	if (iv != null) {
-//    		    		iv.setImageBitmap(b);
-//    		    	}
-//    		    	
-//    			} catch (IOException e) {
-//    				// return a null bitmap, same as if we removed the photo
-//    			}
+    			// A local file gets loaded this way...
     			new BackgroundBitmapDecoder(a, iv, size).execute(uri);
     		} else {
+    			// ...while online data has to go through this.
     			new DownloadImageTask(a, iv).execute(uri.toString());
     		}
     	} else {
@@ -83,6 +85,13 @@ public class RecipeBook extends Application {
 
 	static Bitmap decodeScaledBitmap(Activity a, Uri uri, int size)
 			throws FileNotFoundException, IOException {
+		// This is a copy of the "background" loader below, but this
+		// one is made to run in the thread that calls it. Right now,
+		// this means that the image downloader can use it without
+		// spawning another new thread.
+		
+		// The idea for this method (and much of the code) comes from
+		// a post on StackOverflow.
 		Bitmap b;
 		BitmapFactory.Options o = new BitmapFactory.Options();
 		o.inJustDecodeBounds = true;
@@ -121,6 +130,11 @@ public class RecipeBook extends Application {
     }
     
     public static class BackgroundBitmapDecoder extends AsyncTask<Uri, Integer, Bitmap> {
+    	// This is a bitmap loader/scaler that is made to run as
+    	// a background thread. Not only does this prevent ANRs,
+    	// but it also means that multi-core devices could load
+    	// multiple bitmaps simultaneously.
+    	
     	Activity parent;
     	ImageView view;
     	int size;

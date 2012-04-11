@@ -1,7 +1,6 @@
 package net.potterpcs.recipebook;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -18,12 +17,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class DownloadImageTask extends AsyncTask<String, Integer, Bitmap> {
 	// Tag for logging
-	private static final String TAG = "DownloadImageTask";
+//	private static final String TAG = "DownloadImageTask";
 
 	// Handle for the parent activity
 	Activity parent;

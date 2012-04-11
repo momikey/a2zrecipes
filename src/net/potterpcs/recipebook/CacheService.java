@@ -4,7 +4,6 @@ import java.io.File;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.util.Log;
 
 public class CacheService extends IntentService {
 	// The maximum amount of memory the cache should use

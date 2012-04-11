@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,7 +18,8 @@ import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 public class TimerFragment extends Fragment {
-	static final String TAG = "TimerFragment";
+	// Tag for logging
+//	static final String TAG = "TimerFragment";
 	
 	Button startButton;
 	Button stopButton;
@@ -76,7 +76,7 @@ public class TimerFragment extends Fragment {
 					
 					@Override
 					public void onTick(long millisUntilFinished) {
-						Log.i(TAG, "tick " + millisUntilFinished);
+//						Log.i(TAG, "tick " + millisUntilFinished);
 						if (display != null) {
 							display.setText(DateUtils.formatElapsedTime(millisUntilFinished / 1000));
 						} else {
@@ -90,6 +90,7 @@ public class TimerFragment extends Fragment {
 					
 					@Override
 					public void onFinish() {
+						// Play a sound and show a message when the timer ends
 						MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.ding);
 						mp.setOnCompletionListener(new OnCompletionListener() {
 							@Override
@@ -98,7 +99,7 @@ public class TimerFragment extends Fragment {
 							}
 						});
 						mp.setVolume(10.0f, 10.0f);
-						Log.i(TAG, "timer done");
+//						Log.i(TAG, "timer done");
 
 						Toast.makeText(getActivity(), "Done!", Toast.LENGTH_LONG).show();
 						mp.start();

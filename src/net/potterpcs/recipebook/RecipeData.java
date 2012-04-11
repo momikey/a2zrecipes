@@ -19,15 +19,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class RecipeData {
 
-	private static final String TAG = RecipeData.class.getSimpleName();
+//	private static final String TAG = "RecipeData";
 	
+	// Database version and filename
 	static final int DB_VERSION = 9;
 	static final String DB_FILENAME = "recipebook.db";
 	
+	// Definitions for the recipe table
 	static final String RECIPES_TABLE = "recipes";
 	public static final String RT_ID = "_id";
 	public static final String RT_NAME = "name";
@@ -41,12 +42,15 @@ public class RecipeData {
 	public static final String[] RECIPES_FIELDS = { RT_ID, RT_NAME,
 			RT_DESCRIPTION, RT_RATING, RT_CREATOR, RT_DATE, RT_SERVING, RT_TIME, RT_PHOTO };
 	
+	// Definitions for the ingredients table
+	// TODO Add ingredient photos?
 	static final String INGREDIENTS_TABLE = "ingredients";
 	public static final String IT_ID = "_id";
 	public static final String IT_NAME = "name";
 	public static final String IT_RECIPE_ID = "recipe_id";
 	public static final String[] INGREDIENTS_FIELDS = { IT_ID, IT_NAME };
 	
+	// Definitions for the directions table
 	static final String DIRECTIONS_TABLE = "directions";
 	public static final String DT_ID = "_id";
 	public static final String DT_STEP = "step";
@@ -55,12 +59,14 @@ public class RecipeData {
 	public static final String DT_RECIPE_ID = "recipe_id";
 	public static final String[] DIRECTIONS_FIELDS = { DT_ID, DT_STEP, DT_SEQUENCE, DT_PHOTO };
 	
+	// Definitions for the tags table
 	static final String TAGS_TABLE = "tags";
 	public static final String TT_ID = "_id";
 	public static final String TT_TAG = "tag";
 	public static final String TT_RECIPE_ID = "recipe_id";
 	public static final String[] TAGS_FIELDS = { TT_ID, TT_TAG };
 	
+	// Definitions for the cache table
 	static final String CACHE_TABLE = "imagecache";
 	public static final String CT_ID = "_id";
 	public static final String CT_URI = "uri";
@@ -68,7 +74,7 @@ public class RecipeData {
 	public static final String[] CACHE_FIELDS = { CT_URI, CT_CACHED };
 	
 	public static class Recipe {
-		// these don't really need to be private, because it's just a data class
+		// These don't really need to be private, because it's just a data class
 		long id;
 		String name;
 		String description;
@@ -109,7 +115,6 @@ public class RecipeData {
 				
 				JSONArray jd = new JSONArray();
 				for (int d = 0; d < directions.length; d++) {
-//					jd.put(directions[d]);
 					JSONObject diro = new JSONObject();
 					diro.put(DT_STEP, directions[d]);
 					diro.put(DT_PHOTO, directions_photos[d]);
@@ -123,7 +128,7 @@ public class RecipeData {
 				jo.put(TAGS_TABLE, jt);
 				
 			} catch (JSONException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 			return jo;
 		}
@@ -133,7 +138,7 @@ public class RecipeData {
 			try {
 				return Recipe.parseJSON(new JSONObject(json));
 			} catch (JSONException e) {
-				Log.i(TAG, e.toString());
+//				Log.i(TAG, e.toString());
 				return null;
 			}
 		}
@@ -151,7 +156,7 @@ public class RecipeData {
 			r.time = jo.optInt(RT_TIME);
 			r.photo = jo.optString(RT_PHOTO);
 			
-			// remove local links from imported recipes
+			// Remove local links from imported recipes
 			// TODO sharing, etc.
 			if (!r.photo.startsWith("http")) {
 				r.photo = "";
@@ -214,13 +219,14 @@ public class RecipeData {
 		
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.i(TAG, "Creating database: " + DB_FILENAME);
+//			Log.i(TAG, "Creating database: " + DB_FILENAME);
 			
 			createRecipeTable(db);
 			createSecondaryTables(db);
 			createCacheTable(db);
 			
-			// import starter recipes
+			// Import starter recipes
+			// TODO Make actual starter recipes, instead of tutorials
 			InputStream is = null;
 			try {
 				is = app.getResources().openRawResource(R.raw.starter);
@@ -258,15 +264,16 @@ public class RecipeData {
 					}
 				}
 			} catch (IOException e) {
-				Log.e(TAG, e.toString());
+//				Log.e(TAG, e.toString());
 			} catch (JSONException e) {
-				Log.e(TAG, e.toString());
+				// TODO handle and try to continue
+//				Log.e(TAG, e.toString());
 			} finally {
 				if (is != null) {
 					try {
 						is.close();
 					} catch (IOException e) {
-						Log.e(TAG, e.toString());
+//						Log.e(TAG, e.toString());
 					}
 				}
 			}
@@ -276,12 +283,12 @@ public class RecipeData {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			if (db.isReadOnly()) {
 				db = SQLiteDatabase.openDatabase(db.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
-				Log.i(TAG, "Successfully opened read-write database");
+//				Log.i(TAG, "Successfully opened read-write database");
 			} else {
-				if (oldVersion == 8) {
+				if (oldVersion <= 8) {
 					createCacheTable(db);
 				}
-				if (oldVersion == 7) {
+				if (oldVersion <= 7) {
 					db.execSQL("alter table " + DIRECTIONS_TABLE + " add column " + DT_PHOTO + " text");
 				} else if (oldVersion < 7) {
 					db.beginTransaction();
@@ -296,7 +303,6 @@ public class RecipeData {
 		}
 
 		private void createRecipeTable(SQLiteDatabase db) {
-			// create main table
 			db.execSQL("create table " + RECIPES_TABLE + " (" 
 					+ RT_ID + " integer primary key, "
 					+ RT_NAME + " text, " 
@@ -311,13 +317,11 @@ public class RecipeData {
 		}
 		
 		private void createSecondaryTables(SQLiteDatabase db) {
-			// create ingredients table
 			db.execSQL("create table " + INGREDIENTS_TABLE + " (" 
 					+ IT_ID + " integer primary key, " 
 					+ IT_NAME + " text, " 
 					+ IT_RECIPE_ID + RT_FOREIGN_KEY + ")");
 			
-			// create directions table
 			db.execSQL("create table " + DIRECTIONS_TABLE + " (" 
 					+ DT_ID + " integer primary key, "
 					+ DT_STEP + " text, " 
@@ -325,7 +329,6 @@ public class RecipeData {
 					+ DT_PHOTO + " text, "
 					+ DT_RECIPE_ID + RT_FOREIGN_KEY + ")");
 			
-			// create tags table
 			db.execSQL("create table " + TAGS_TABLE + " (" 
 					+ TT_ID + " integer primary key, "
 					+ TT_TAG + " text, " 
@@ -348,12 +351,7 @@ public class RecipeData {
 
 	public RecipeData(Context context) {
 		dbHelper = new DbHelper(context);
-//		if (dbHelper.needStarter) {
-//			Log.i(TAG, "Importing starter recipes");
-//			importRecipesFromResource(R.raw.starter);
-//			dbHelper.needStarter = false;
-//		}
-		Log.i(TAG, "Initialized database version " + dbHelper.getReadableDatabase().getVersion());
+//		Log.i(TAG, "Initialized database version " + dbHelper.getReadableDatabase().getVersion());
 	}
 	
 	public void close() {
@@ -370,13 +368,13 @@ public class RecipeData {
 	
 	public Cursor query(String search, String tag, int min, int max, String sortBy) {
 		// this is the "multi-query" method, that searches by name, tag, and time
-		Log.i(TAG, "multi-query: search = " + search + ", tag = " + tag + ", time = " + min + " to " + max + ", sort by = " + sortBy);
+//		Log.i(TAG, "multi-query: search = " + search + ", tag = " + tag + ", time = " + min + " to " + max + ", sort by = " + sortBy);
 		String like = createLikePattern();
 		String time = createTimeComparisonPattern();
 		String searchPart = "(" + like + ")";
 		String timePart = "(" + time + ")";
 		String tagPart = "(" + TT_TAG + " = ?)";
-		// FIXME Android bug 3153
+		// We have to match like this because of Android bug 3153
 		String match = "%" + search + "%";
 				
 		ArrayList<String> parts = new ArrayList<String>();
@@ -397,7 +395,7 @@ public class RecipeData {
 		}
 		String selection = TextUtils.join(" and ", parts);	
 		String[] selectionArgs = (String[]) args.toArray(new String[args.size()]);
-		Log.i(TAG, selection + ", " + selectionArgs + ", " + sortBy);
+//		Log.i(TAG, selection + ", " + selectionArgs + ", " + sortBy);
 		Cursor c = queryBuilder(selection, selectionArgs, sortBy);
 		return c;
 	}
@@ -415,7 +413,7 @@ public class RecipeData {
 	}
 	
 	private String createLikePattern() {
-		// FIXME hack until Google fixes query bug #3153
+		// See above re: query bug #3153
 //		return RT_NAME + " like '%" + strings[0] + "%' or " + RT_DESCRIPTION + " like '%" + strings[1] + "%'";
 		return RT_NAME + " like ? or " + RT_DESCRIPTION + " like ?";
 	}
@@ -426,7 +424,6 @@ public class RecipeData {
 	
 	public long getLastInsertRecipeId() {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-//		Cursor c = db.query(RECIPES_TABLE, new String[] { "last_insert_rowid() " }, null, null, null, null, null);
 		Cursor c = db.rawQuery("select max(_id) from " + RECIPES_TABLE, null);
 		c.moveToFirst();
 		long id = c.getLong(0);
@@ -463,9 +460,7 @@ public class RecipeData {
 	
 	public Cursor getMatchingRecipes(String match, String sortBy) {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-//		return db.query(RECIPES_TABLE, RECIPES_FIELDS, createLikePattern(new String[] { match, match }), null, null,
-//				null, RT_NAME);
-		// FIXME Android bug 3153
+		// We have to match like this because of Android bug 3153
 		String fixed = "%" + match + "%";
 		return db.query(RECIPES_TABLE, RECIPES_FIELDS, createLikePattern(), new String[] { fixed, fixed }, null,
 				null, sortBy);
@@ -901,12 +896,12 @@ public class RecipeData {
 				JSONObject jo = ja.getJSONObject(i);
 				Recipe r = Recipe.parseJSON(jo);
 				if (r != null) {
-//					insertRecipe(r);
 					recipes.add(r);
 				}
 			}
 		} catch (JSONException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
+			// TODO handle exception
 		}
 		return recipes;
 	}
@@ -936,7 +931,7 @@ public class RecipeData {
 			fos.write(buffer);
 			return export.toString();
 		} catch (FileNotFoundException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
 			return null;
 		} finally {
 			if (fos != null) {

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -22,12 +21,21 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class IngredientsEditor extends Fragment {
-	static final String TAG = "IngredientsEditor";
+	// Tag for logging
+//	static final String TAG = "IngredientsEditor";
+	
+	// Bundle identifier
 	static final String STATE = "ingredients";
+	
+	// Fields for the list of ingredients
 	ListView listview;
 	ArrayList<String> ingredients;
 	private ArrayAdapter<String> adapter;
+	
+	// Handle to parent activity
 	private RecipeEditor activity;
+	
+	// This holds the index of the current ingredient when editing
 	int currentIngredient;
 	
 	@Override
@@ -37,25 +45,26 @@ public class IngredientsEditor extends Fragment {
 		ingredients = new ArrayList<String>();
 		currentIngredient = -1;
 		
+		// Check for saved state and load it if needed
 		if (savedInstanceState != null) {
 			String[] saved = savedInstanceState.getStringArray(STATE);
 			if (saved != null) {
 				ingredients.addAll(Arrays.asList(saved));
 			}
 		} else {
-
+			// No saved state, so we start a fresh editor
 			long rid = activity.getRecipeId();
-			Log.i(TAG, "id=" + rid);
+//			Log.i(TAG, "id=" + rid);
 
-			// load an existing recipe's ingredients
+			// If we're editing an existing recipe...
 			if (rid > 0) {
 				RecipeBook app = (RecipeBook) activity.getApplication();
 				Cursor c = app.getData().getRecipeIngredients(rid);
-				Log.i(TAG, "count=" + c.getCount());
+//				Log.i(TAG, "count=" + c.getCount());
 
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
-					Log.i(TAG, c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
+//					Log.i(TAG, c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
 					ingredients.add(c.getString(c.getColumnIndex(RecipeData.IT_NAME)));
 					c.moveToNext();
 				}
@@ -63,7 +72,7 @@ public class IngredientsEditor extends Fragment {
 				c.close();
 
 			} else {
-				// creating a new recipe, so no setup required
+				// We're creating a new recipe, so no setup required (yet?)
 			}
 		}
 		
@@ -113,9 +122,11 @@ public class IngredientsEditor extends Fragment {
 	public void onStart() {
 		super.onStart();
 
+		// Set up the ingredients list
 		listview = (ListView) activity.findViewById(R.id.ingredients);
 		listview.setAdapter(adapter);
 		
+		// Set up the "+" button
 		ImageButton add = (ImageButton) getActivity().findViewById(R.id.addingredient);
 		add.setOnClickListener(new OnClickListener() {
 			@Override

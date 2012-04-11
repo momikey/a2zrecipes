@@ -99,7 +99,9 @@ public class DirectionsEditor extends Fragment {
 		MenuInflater inflater = getActivity().getMenuInflater();
 		inflater.inflate(R.menu.directionscontext, menu);
 		
-		// Don't display the "Remove Photo" option if there's no photo to remove
+		// Don't display the "Remove Photo" option if there's no photo to remove.
+		// On the other hand, if there's already a photo, don't try to add another.
+		// TODO Maybe allow a "Change Photo" option
 		if (photoUris.get(((AdapterContextMenuInfo) menuInfo).position) == null) {
 			menu.removeItem(R.id.ctxremovephotodirection);
 		} else {
@@ -132,6 +134,7 @@ public class DirectionsEditor extends Fragment {
 			photoUris.remove(info.position);
 			
 			// Put a placeholder into the list
+			// TODO Remove the placeholder if saved during editing
 			adapter.insert(getResources().getString(R.string.recipereplacetext), currentDirection);
 			return true;
 		case R.id.ctxmovedowndirection:

@@ -13,18 +13,25 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RateRecipeDialog extends DialogFragment {
-	private static final String TAG = "RateRecipeDialog";
+	// Tag for logging
+//	private static final String TAG = "RateRecipeDialog";
+
+	// Handle for the fragment holding the list of recipes 
+	private RecipeListFragment fragment;
+	
+	// Information for the recipe we're rating
 	long recipeId;
 	String recipeName;
 	float oldRating;
+	
+	// The rating bar itself
 	private RatingBar bar;
-	private RecipeListFragment fragment;
 	
 	static RateRecipeDialog newInstance(RecipeListFragment frag, long id, String name, float old) {
+		// Standard Android factory method
 		RateRecipeDialog rrd = new RateRecipeDialog(frag, id, name, old);
-		
-		// Bundle stuff here
-		
+		Bundle args = new Bundle();
+		rrd.setArguments(args);
 		return rrd;
 	}
 	
@@ -48,6 +55,10 @@ public class RateRecipeDialog extends DialogFragment {
 		bar = (RatingBar) v.findViewById(R.id.raterecipebar);
 		bar.setRating(oldRating);
 		
+		// Nothing happens until the user hits the "Rate It" button. Then the
+		// new rating is actually committed to the database. This means that
+		// you can keep playing with the stars as much as you want, then hit
+		// "Back", and you won't have to worry about the rating actually changing.
 		Button button = (Button) v.findViewById(R.id.raterecipebutton);
 		button.setOnClickListener(new OnClickListener() {
 			@Override

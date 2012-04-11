@@ -13,15 +13,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 public class TagSearchDialog extends DialogFragment {
-	private static final String TAG = "TagSearch";
+	// Tag for logging
+//	private static final String TAG = "TagSearch";
+	
 	String clicked;
 	SimpleCursorAdapter adapter;
 	
 	static TagSearchDialog newInstance() {
 		TagSearchDialog tsd = new TagSearchDialog();
-		
-		// Bundle stuff goes here
-		
+		// Standard Android factory method
+		Bundle args = new Bundle();
+		tsd.setArguments(args);
 		return tsd;
 	}
 	
@@ -30,7 +32,6 @@ public class TagSearchDialog extends DialogFragment {
 		setStyle(STYLE_NO_TITLE, getTheme());
 	}
 	
-//	@SuppressWarnings("deprecation")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

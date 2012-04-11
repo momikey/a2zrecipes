@@ -13,16 +13,18 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class RecipeBookActivity extends FragmentActivity {
-	
-	private final String TAG = RecipeBookActivity.class.getSimpleName();
+	// Tag for logging
+//	private final String TAG = "RecipeBookActivity";
 
+	// The fragment manager, for all the little parts of the app
 	FragmentManager manager;
+	
+	// Intent and bundle info, to use for searching and sorting
 	private Intent lastIntent;
 	private String searchQuery;
 	private String searchTag;
@@ -34,9 +36,11 @@ public class RecipeBookActivity extends FragmentActivity {
 	private boolean timeSearchMode;
 	int sortKey;
 
+	// Bundle state extras
 	static final String SORT_DESCENDING = " desc";
 	static final String SORT_KEY = "sort_key";
 
+	// The name of the helpfile for this part of the app
 	private static final String HELP_FILENAME = "recipebook";
 	
     @Override
@@ -46,6 +50,8 @@ public class RecipeBookActivity extends FragmentActivity {
         manager = getSupportFragmentManager();
         
         setContentView(R.layout.main);
+        
+        // Check if we're doing a search or re-sort.
         lastIntent = getIntent();
         handleIntent(lastIntent);
     }
@@ -57,6 +63,7 @@ public class RecipeBookActivity extends FragmentActivity {
     }
     
     private void handleIntent(Intent intent) {
+    	// Fill in all the search/sort criteria
 		if (intent.hasExtra(RecipeBook.SEARCH_EXTRA)) {
 			searchQuery = intent.getStringExtra(RecipeBook.SEARCH_EXTRA);
 		} else {
@@ -84,28 +91,29 @@ public class RecipeBookActivity extends FragmentActivity {
         	timeSearchMode = (searchMin != 0 || searchMax != 0);	    		
     	}
     	
-    	// in case max value is left blank
+    	// In case the max value is left blank
     	if (searchMax == 0 && searchMin > 0) {
     		searchMax = Integer.MAX_VALUE;
     	}
     	
-		Log.i(TAG, "Sort descending == " + sortDescending + ", sort key == " + sortKey 
-				+ " max time == " + searchMax + " min time == " + searchMin);
+//		Log.i(TAG, "Sort descending == " + sortDescending + ", sort key == " + sortKey 
+//				+ " max time == " + searchMax + " min time == " + searchMin);
     	
 		// Android 3.0+ has the action bar, and requires this call to change menu items.
-		// Earlier versions don't have it, because they don't need it.
+		// Earlier versions don't have it, because they don't need it. We'll use
+    	// reflection to call it, so that the code compiles with earlier targets.
     	try {
+//			invalidateOptionsMenu();
     		Method m = getClass().getMethod("invalidateOptionsMenu", (Class[]) null);
     		m.invoke(this, (Object[]) null);
-//			invalidateOptionsMenu();
 		} catch (SecurityException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
 		} catch (NoSuchMethodException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
 		} catch (IllegalAccessException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
 		} catch (InvocationTargetException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
 		}
     }
     
@@ -117,6 +125,7 @@ public class RecipeBookActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
     	super.onDestroy();
+    	// When the app closes, check if we can clear any cache space
     	Intent intent = new Intent(this, CacheService.class);
     	startService(intent);
     }
@@ -125,6 +134,8 @@ public class RecipeBookActivity extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
     	inflater.inflate(R.menu.mainmenu, menu);
+    	
+    	// Set up the action bar, if we have one. (Pre-Honeycomb devices don't) 
     	MenuCompat.setShowAsAction(menu.findItem(R.id.menunew), 
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     	MenuCompat.setShowAsAction(menu.findItem(R.id.menushowall),
@@ -140,7 +151,7 @@ public class RecipeBookActivity extends FragmentActivity {
     }
 
     private void setSortOptions(Menu menu) {
-		// activate the correct options in the sort menu
+		// Activate the correct options in the sort menu
     	if (sortKey != 0) {
     		menu.findItem(sortKey).setChecked(true);
     	} else {
@@ -163,7 +174,7 @@ public class RecipeBookActivity extends FragmentActivity {
     }
     
 	private void hideShowAllItem(Menu menu) {
-		// hide "Show All" option if already showing all recipes
+		// Hide the "Show All" option if already showing all recipes
 		boolean menuStatus = searchMode || tagSearchMode || timeSearchMode;
 		menu.findItem(R.id.menushowall).setVisible(menuStatus).setEnabled(menuStatus);	
 	}
@@ -228,6 +239,7 @@ public class RecipeBookActivity extends FragmentActivity {
 	}
 
 	private void startSortActivity(int key, boolean descending) {
+		// If we've changed the sort criteria, then we'll restart the activity
 		Intent intent = new Intent(this, this.getClass());
 		intent.putExtra(SORT_KEY, key);
 		intent.putExtra(SORT_DESCENDING, descending);
@@ -246,6 +258,7 @@ public class RecipeBookActivity extends FragmentActivity {
 	}
 
     void switchToFlipBook() {
+    	// Change from list mode to flipbook mode
     	Intent intent = new Intent(lastIntent);
     	intent.setClass(this, RecipeFlipbook.class);
     	startActivity(intent);
@@ -270,12 +283,11 @@ public class RecipeBookActivity extends FragmentActivity {
     
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-    	// the various fragments all handle their own context events
+    	// The various fragments all handle their own context events
     	return false;
     }
     
     public void onNewItemSelected(MenuItem item) {
-    	Log.i(TAG, "New option selected");
     	Uri uri = new Uri.Builder().scheme("content").authority("net.potterpcs.recipebook").build();
     	uri = ContentUris.withAppendedId(uri, -1);
     	Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, uri);
@@ -283,7 +295,6 @@ public class RecipeBookActivity extends FragmentActivity {
     }
     
     public void onShowAllRecipes(MenuItem item) {
-    	Log.i(TAG, "Show all option selected");
     	Intent intent = new Intent(this, RecipeBookActivity.class);
     	intent.putExtra(SORT_DESCENDING, sortDescending);
     	intent.putExtra(SORT_KEY, sortKey);

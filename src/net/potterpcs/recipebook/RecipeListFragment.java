@@ -9,14 +9,12 @@ import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -32,14 +30,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RecipeListFragment extends ListFragment {
-	Cursor cursor;
-	static final String TAG = "RecipeListFragment";
+	// Tag for logging
+//	static final String TAG = "RecipeListFragment";
 	
+	// Projections for the cursor adapter
 	static final String[] FROM = { RecipeData.RT_ID, RecipeData.RT_NAME, RecipeData.RT_DESCRIPTION,
 		RecipeData.RT_CREATOR, RecipeData.RT_RATING, RecipeData.RT_TIME };
 	static final int[] TO = { R.id.rowhidden, R.id.rowname, R.id.rowdescription, R.id.rowcreator,
 		R.id.rowrating, R.id.rowtime };
-	
+
+	// The cursor holding our list
+	Cursor cursor;
+
+	// The view binder fixes up the UI elements that the basic
+	// SimpleCursorAdapter can't handle. For us, that's the
+	// rating bar and the time display.
 	static final ViewBinder VIEW_BINDER = new ViewBinder() {
 		@Override
 		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
@@ -102,8 +107,6 @@ public class RecipeListFragment extends ListFragment {
 			sort = RecipeData.RT_TIME;
 			break;
 		case R.id.menusortdate:
-			// TODO actually sort by date instead of ID
-//			sort = RecipeData.RT_ID;
 			sort = RecipeData.RT_DATE;
 			break;
 		case R.id.menusortname:
@@ -122,11 +125,10 @@ public class RecipeListFragment extends ListFragment {
 	}
 
 	void getRecipes(RecipeBookActivity activity, RecipeData data, String sortData) {
-		// this uses the "multi-query" method so filtering previous searches works
+		// This uses the "multi-query" method so filtering previous searches works
 		cursor = data.query(activity.getSearchQuery(), activity.getSearchTag(), 
 				activity.getMinTime(), activity.getMaxTime(), sortData);
 
-//		@SuppressWarnings("deprecation")
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO, 0);
 
 		adapter.setViewBinder(VIEW_BINDER);
@@ -153,16 +155,13 @@ public class RecipeListFragment extends ListFragment {
 		try {
 			String filename = data.exportRecipes(getItemIds());
 			if (filename != null) {
-				Log.v(TAG, "Exported to " + filename);
+//				Log.v(TAG, "Exported to " + filename);
 				MediaScannerConnection.scanFile(getActivity(), new String[] { filename }, null, null);
-//				Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//				intent.setType("text/plain");
-//				startActivity(Intent.createChooser(intent, ""));
 			} else {
-				Log.e(TAG, "Unable to export recipes");
+//				Log.e(TAG, "Unable to export recipes");
 			}
 		} catch (IOException e) {
-			Log.e(TAG, e.toString());
+//			Log.e(TAG, e.toString());
 		}
 	}
 	
@@ -193,7 +192,7 @@ public class RecipeListFragment extends ListFragment {
 			.authority("net.potterpcs.recipebook")
 			.build();
 		uri = ContentUris.withAppendedId(uri, id);
-		Log.i(TAG, uri.toString());
+//		Log.i(TAG, uri.toString());
 		Intent intent = new Intent(RecipeBook.OPEN_RECIPE_ACTION, uri);
 		startActivity(intent);
 	}
@@ -240,14 +239,14 @@ public class RecipeListFragment extends ListFragment {
 			.authority("net.potterpcs.recipebook")
 			.build();
 		uri = ContentUris.withAppendedId(uri, info.id);
-		Log.i(TAG, "edit option selected, id=" + info.id);
+//		Log.i(TAG, "edit option selected, id=" + info.id);
 		Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT, uri);
 		startActivity(intent);
 	}
 	
 	public void onDeleteItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Log.i(TAG, "delete option selected, id=" + info.id);
+//		Log.i(TAG, "delete option selected, id=" + info.id);
 		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 		RecipeData data = ((RecipeBook) activity.getApplication()).getData();
 		data.deleteRecipe(info.id);
@@ -256,7 +255,7 @@ public class RecipeListFragment extends ListFragment {
 	
 	public void onRateItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Log.i(TAG, "rate option selected, id=" + info.id);
+//		Log.i(TAG, "rate option selected, id=" + info.id);
 		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 		FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
 		Recipe r = ((RecipeBook) activity.getApplication()).getData().getSingleRecipeObject(info.id);
@@ -266,7 +265,7 @@ public class RecipeListFragment extends ListFragment {
 	
 	public void onTagItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Log.i(TAG, "tag option selected, id=" + info.id);
+//		Log.i(TAG, "tag option selected, id=" + info.id);
 		RecipeBookActivity activity = (RecipeBookActivity) getActivity();
 		FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
 		Recipe r = ((RecipeBook) activity.getApplication()).getData().getSingleRecipeObject(info.id);

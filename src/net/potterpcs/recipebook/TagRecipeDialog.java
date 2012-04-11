@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +16,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 public class TagRecipeDialog extends DialogFragment {
-	private static final String TAG = "TagRecipeDialog";
+	// Tag for logging
+//	private static final String TAG = "TagRecipeDialog";
 	
 	String clicked;
 	SimpleCursorAdapter adapter;
@@ -28,9 +28,9 @@ public class TagRecipeDialog extends DialogFragment {
 	
 	static TagRecipeDialog newInstance(long rid) {
 		TagRecipeDialog tsd = new TagRecipeDialog(rid);
-		
-		// Bundle stuff goes here
-		
+		// Standard Android factory method
+		Bundle args = new Bundle();
+		tsd.setArguments(args);
 		return tsd;
 	}
 	
@@ -80,7 +80,7 @@ public class TagRecipeDialog extends DialogFragment {
 		super.onDismiss(dialog);
 		RecipeData data = app.getData();
 		if (clicked != null && !data.recipeHasTag(recipeId, clicked)) {
-			Log.v(TAG, clicked);
+//			Log.v(TAG, clicked);
 			data.insertTags(RecipeData.createTagsCV(recipeId, clicked));
 		}
 	}

@@ -25,7 +25,7 @@ import android.widget.ListAdapter;
 
 public class ImporterActivity extends ListActivity {
 	// Tag for logging
-	private static final String TAG = "ImporterActivity";
+//	private static final String TAG = "ImporterActivity";
 	
 	// Bundle extra that holds the imported file's location.
 	// This isn't really used yet.

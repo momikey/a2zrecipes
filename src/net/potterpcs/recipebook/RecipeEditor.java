@@ -17,8 +17,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,9 +28,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class RecipeEditor extends FragmentActivity {
-	public static final String TAG = "RecipeEditor";
+	// Tag for logging
+//	public static final String TAG = "RecipeEditor";
+	
+	// Request code for gallery browsing
 	static final int GALLERY_ACTIVITY = 1;
+	
+	// Result code for the photo editor
 	static final int DIRECTION_PHOTO_ATTACH = 1000;
+	
+	// Fragment info
 	private static final int METADATA = 0;
 	private static final int INGREDIENTS = 1;
 	private static final int DIRECTIONS = 2;
@@ -69,6 +74,7 @@ public class RecipeEditor extends FragmentActivity {
 		ssfragmentframe = (FrameLayout) findViewById(R.id.ssfragment);
 		fragmentnames = getResources().getStringArray(R.array.fragmentnames);
 		
+		// Load the recipe if needed, and old state if it's there
 		if (recipe == null) {
 			recipeId = Long.parseLong(getIntent().getData().getLastPathSegment());
 			
@@ -87,52 +93,57 @@ public class RecipeEditor extends FragmentActivity {
 		}
 		
 		if (sslistview != null) {
+			// Do all the fragment setup stuff here. In testing versions,
+			// there was a separate mode for 10" tablets. That mode didn't
+			// use a list of editors, but showed them all on screen at once.
+			// I might put that mode back in later on, so the list-mode
+			// check will stay in.
 			FragmentTransaction setup = manager.beginTransaction();
-			Log.v(TAG, "creating fragments");
+//			Log.v(TAG, "creating fragments");
 
 			meta = (MetadataEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[METADATA]);
 			if (meta == null) {
-				Log.v(TAG, "creating meta");
+//				Log.v(TAG, "creating meta");
 				meta = new MetadataEditor();
 				setup.add(R.id.ssfragment, meta, ALL_FRAGMENT_NAMES[METADATA]);
 			}
-			Log.v(TAG, meta.toString());
+//			Log.v(TAG, meta.toString());
 			setup.hide(meta);
 
 			ingredients = (IngredientsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[INGREDIENTS]);
 			if (ingredients == null) {
-				Log.v(TAG, "creating ingredients");
+//				Log.v(TAG, "creating ingredients");
 				ingredients = new IngredientsEditor();
 				setup.add(R.id.ssfragment, ingredients, ALL_FRAGMENT_NAMES[INGREDIENTS]);
 			}
-			Log.v(TAG, ingredients.toString());
+//			Log.v(TAG, ingredients.toString());
 			setup.hide(ingredients);
 
 			directions = (DirectionsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[DIRECTIONS]);
 			if (directions == null) {
-				Log.v(TAG, "creating directions");
+//				Log.v(TAG, "creating directions");
 				directions = new DirectionsEditor();
 				setup.add(R.id.ssfragment, directions, ALL_FRAGMENT_NAMES[DIRECTIONS]);
 			}
-			Log.v(TAG, directions.toString());
+//			Log.v(TAG, directions.toString());
 			setup.hide(directions);
 
 			tags = (TagsEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[TAGS]);
 			if (tags == null) {
-				Log.v(TAG, "creating tags");
+//				Log.v(TAG, "creating tags");
 				tags = new TagsEditor();
 				setup.add(R.id.ssfragment, tags, ALL_FRAGMENT_NAMES[TAGS]);
 			}
-			Log.v(TAG, tags.toString());
+//			Log.v(TAG, tags.toString());
 			setup.hide(tags);
 			
 			photo = (PhotoEditor) manager.findFragmentByTag(ALL_FRAGMENT_NAMES[PHOTO]);
 			if (photo == null) {
-				Log.v(TAG, "creating photo");
+//				Log.v(TAG, "creating photo");
 				photo = new PhotoEditor();
 				setup.add(R.id.ssfragment, photo, ALL_FRAGMENT_NAMES[PHOTO]);
 			}
-			Log.v(TAG, photo.toString());
+//			Log.v(TAG, photo.toString());
 			setup.hide(photo);
 			
 			setup.commit();
@@ -190,6 +201,8 @@ public class RecipeEditor extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.editormenu, menu);
+		
+		// Set up the action bar for devices that have it
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenusave), 
 				MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuhelp),
@@ -233,6 +246,9 @@ public class RecipeEditor extends FragmentActivity {
 	public void onSaveItem(MenuItem item) {
 		recipe = meta.getRecipeMetadata();
 		recipe.id = recipeId;
+		// This is the standard ISO date/time format. It's sortable and easily
+		// readable by machines and humans. Also, it doesn't suffer from locale
+		// issues like every other format.
 		recipe.date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ", Locale.US).format(new Date());
 		recipe.ingredients = ingredients.getIngredients();
 		recipe.directions = directions.getDirections();
@@ -243,7 +259,6 @@ public class RecipeEditor extends FragmentActivity {
 		if (recipe.id == -1) {
 			// an insert of a new recipe
 			recipeId = recipeData.insertRecipe(recipe);
-//			recipeId = recipeData.getLastInsertRecipeId();
 		} else {
 			// an edit of an existing recipe
 			recipeData.updateRecipe(recipe);
@@ -271,9 +286,13 @@ public class RecipeEditor extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
+			// This can be called by a couple of different parts of the app.
+			// Direction and recipe photos both go through here. The difference
+			// between the two is that directions must be ordered, and the
+			// request code will include the direction number.
 			if (requestCode == GALLERY_ACTIVITY) {
 				Uri selectedImage = data.getData();
-				Log.i(TAG, selectedImage.toString());
+//				Log.i(TAG, selectedImage.toString());
 				recipe.photo = selectedImage.toString();
 				photo.changeImage(recipe.photo);
 			} else if (requestCode >= DIRECTION_PHOTO_ATTACH) {

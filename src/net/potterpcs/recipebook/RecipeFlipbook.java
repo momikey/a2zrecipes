@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,14 +29,18 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RecipeFlipbook extends FragmentActivity {
-	private static final String TAG = "RecipeFlipbook";
+	// Tag for logging
+//	private static final String TAG = "RecipeFlipbook";
+	
+	// Helpfile name
 	private static final String HELP_FILENAME = "flipbook";
 	FlipAdapter flip;
 	ViewPager pager;
 	Intent intent;
 
 	public class FlipAdapter extends FragmentStatePagerAdapter {
-		private static final String TAG = "FlipAdapater";
+		// Tag for logging
+//		private static final String TAG = "FlipAdapater";
 		String searchQuery;
 		String searchTag;
 		int sortKey;
@@ -70,8 +73,7 @@ public class RecipeFlipbook extends FragmentActivity {
 				sortBy = RecipeData.RT_TIME;
 				break;
 			case R.id.menusortdate:
-				// TODO actually sort by date instead of ID
-				sortBy = RecipeData.RT_ID;
+				sortBy = RecipeData.RT_DATE;
 			case R.id.menusortname:
 			default:
 				sortBy = RecipeData.RT_NAME;
@@ -89,10 +91,10 @@ public class RecipeFlipbook extends FragmentActivity {
 			for (int i = 0 ; i < cursor.getCount(); ++i) {
 				cursor.moveToPosition(i);
 				ids[i] = cursor.getInt(cursor.getColumnIndex(RecipeData.RT_ID));
-				Log.i(TAG, "Cursor: " + cursor.getString(cursor.getColumnIndex(RecipeData.RT_NAME)));
+//				Log.i(TAG, "Cursor: " + cursor.getString(cursor.getColumnIndex(RecipeData.RT_NAME)));
 			}
-			Log.i(TAG, "Searching: " + searchQuery + ", Matches: " + cursor.getCount());
-			Log.i(TAG, "Sorting by: " + sortBy + " with descending: " + sortDescending + " and key: " + sortKey);
+//			Log.i(TAG, "Searching: " + searchQuery + ", Matches: " + cursor.getCount());
+//			Log.i(TAG, "Sorting by: " + sortBy + " with descending: " + sortDescending + " and key: " + sortKey);
 			cursor.close();
 		}
 
@@ -116,6 +118,7 @@ public class RecipeFlipbook extends FragmentActivity {
 		ArrayAdapter<String> tags;
 		
 		static FlipperFragment newInstance(int rid) {
+			// Standard Android factory method
 			FlipperFragment f = new FlipperFragment();
 			Bundle args = new Bundle();
 			args.putInt("rid", rid);
@@ -145,6 +148,7 @@ public class RecipeFlipbook extends FragmentActivity {
 				Bundle savedInstanceState) {
 			View v = inflater.inflate(R.layout.recipeviewer, container, false);
 			
+			// Fill in the UI
 			TextView rvname = (TextView) v.findViewById(R.id.rvname);
 			TextView rvcreator = (TextView) v.findViewById(R.id.rvcreator);
 			TextView rvserving = (TextView) v.findViewById(R.id.rvserving);
@@ -198,6 +202,7 @@ public class RecipeFlipbook extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.flippermenu, menu);
+		// Show items on the action bar if we have one
 		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtolist), MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.flipbookhelp), MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
@@ -230,6 +235,9 @@ public class RecipeFlipbook extends FragmentActivity {
 
 	void switchToListMode() {
 		Intent intent = new Intent(this, RecipeBookActivity.class);
+		
+		// When switching back to list mode, we have to restore the
+		// state of searching/sorting.
 		if (flip.searchQuery != null) {
 			intent.putExtra(RecipeBook.SEARCH_EXTRA, flip.searchQuery);
 		}

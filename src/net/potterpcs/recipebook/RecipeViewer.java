@@ -2,7 +2,6 @@ package net.potterpcs.recipebook;
 
 import java.util.HashMap;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,11 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
-import android.support.v4.widget.ResourceCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +28,20 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class RecipeViewer extends FragmentActivity {
+	// Tag for logging
+//	static final String TAG = "RecipeViewer";
+	
+	// Projections for the cursor adapter
+	static final String[] INGREDIENTS_FIELDS = { RecipeData.IT_NAME };
+	static final String[] DIRECTIONS_FIELDS = { RecipeData.DT_STEP, RecipeData.DT_SEQUENCE, RecipeData.DT_PHOTO };
+	static final int[] INGREDIENTS_IDS = { android.R.id.text1 };
+	static final int[] DIRECTIONS_IDS = { R.id.direction, R.id.number, R.id.directionphoto };
+	
+	// The helpfile name
+	private static final String HELP_FILENAME = "viewer";
+
+	private RecipeData data;
+	private long rid;
 	RecipeBook app;
 	TextView rvname;
 	TextView rvcreator;
@@ -42,16 +53,6 @@ public class RecipeViewer extends FragmentActivity {
 	FrameLayout rvphoto;
 	String photoUri;
 	
-	static final String TAG = "RecipeViewer";
-	
-	static final String[] INGREDIENTS_FIELDS = { RecipeData.IT_NAME };
-	static final String[] DIRECTIONS_FIELDS = { RecipeData.DT_STEP, RecipeData.DT_SEQUENCE, RecipeData.DT_PHOTO };
-	static final int[] INGREDIENTS_IDS = { android.R.id.text1 };
-	static final int[] DIRECTIONS_IDS = { R.id.direction, R.id.number, R.id.directionphoto };
-	private static final String HELP_FILENAME = "viewer";
-	private RecipeData data;
-	private long rid;
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,6 +61,7 @@ public class RecipeViewer extends FragmentActivity {
 		app = (RecipeBook) getApplication();
 		data = app.getData();
 
+		// Fill in the UI
 		rvname = (TextView) findViewById(R.id.rvname);
 		rvcreator = (TextView) findViewById(R.id.rvcreator);
 		rvserving = (TextView) findViewById(R.id.rvserving);
@@ -139,6 +141,8 @@ public class RecipeViewer extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.viewermenu, menu);
+		
+		// Set up the action bar if we have one
 		MenuCompat.setShowAsAction(menu.findItem(R.id.viewertimer), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.viewerhelp), 
@@ -185,6 +189,9 @@ public class RecipeViewer extends FragmentActivity {
 	}
 	
 	public class DirectionViewBinder implements ViewBinder {
+		// This class helps set up the directions. The main point of the class
+		// is to prevent repeated loads, downloads, and scales of direction
+		// photos. This lowers data usage and memory usage.
 		FragmentActivity parent;
 		HashMap<View, Boolean> boundViews;
 		
