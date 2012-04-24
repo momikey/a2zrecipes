@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
@@ -173,7 +173,7 @@ public class RecipeListFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.listviewmenu, menu);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.switchtoflipbook), 
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.switchtoflipbook), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	}
 	

@@ -9,7 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.text.format.DateUtils;
@@ -143,9 +143,9 @@ public class RecipeViewer extends FragmentActivity {
 		inflater.inflate(R.menu.viewermenu, menu);
 		
 		// Set up the action bar if we have one
-		MenuCompat.setShowAsAction(menu.findItem(R.id.viewertimer), 
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.viewertimer), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.viewerhelp), 
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.viewerhelp), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}

@@ -16,7 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -203,9 +203,9 @@ public class RecipeEditor extends FragmentActivity {
 		inflater.inflate(R.menu.editormenu, menu);
 		
 		// Set up the action bar for devices that have it
-		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenusave), 
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.editormenusave), 
 				MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.editormenuhelp),
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.editormenuhelp),
 				MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}

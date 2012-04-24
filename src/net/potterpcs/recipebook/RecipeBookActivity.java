@@ -1,19 +1,15 @@
 package net.potterpcs.recipebook;
 
-import java.util.List;
-
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuCompat;
-import android.util.Log;
+import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -124,13 +120,13 @@ public class RecipeBookActivity extends FragmentActivity {
     	inflater.inflate(R.menu.mainmenu, menu);
     	
     	// Set up the action bar, if we have one. (Pre-Honeycomb devices don't) 
-    	MenuCompat.setShowAsAction(menu.findItem(R.id.menunew), 
+    	MenuItemCompat.setShowAsAction(menu.findItem(R.id.menunew), 
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-    	MenuCompat.setShowAsAction(menu.findItem(R.id.menushowall),
+    	MenuItemCompat.setShowAsAction(menu.findItem(R.id.menushowall),
     			MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-    	MenuCompat.setShowAsAction(menu.findItem(R.id.menuhelp),
+    	MenuItemCompat.setShowAsAction(menu.findItem(R.id.menuhelp),
     			MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    	MenuCompat.setShowAsAction(menu.findItem(R.id.menuexport), 
+    	MenuItemCompat.setShowAsAction(menu.findItem(R.id.menuexport), 
     			MenuItem.SHOW_AS_ACTION_NEVER);
 
     	hideShowAllItem(menu);
