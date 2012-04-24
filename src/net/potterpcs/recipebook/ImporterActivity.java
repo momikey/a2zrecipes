@@ -84,6 +84,19 @@ public class ImporterActivity extends ListActivity {
 		finish();
 	}
 	
+	public void onSelectAllButton(View v) {
+		// Run through the list of recipes, and check each one
+		for (int i = 0; i < getListView().getCount(); i++) {
+			getListView().setItemChecked(i, true);
+		}
+	}
+	
+	public void onClearAllButton(View v) {
+		// Run through the list of recipes, and uncheck each one
+		for (int i = 0; i < getListView().getCount(); i++) {
+			getListView().setItemChecked(i, false);
+		}
+	}
 	
 	// The class representing the worker thread
 	private class DownloadHelperTask extends AsyncTask<String, Void, ArrayList<Recipe>> {

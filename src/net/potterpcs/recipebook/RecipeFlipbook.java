@@ -1,8 +1,10 @@
 package net.potterpcs.recipebook;
 
 import net.potterpcs.recipebook.RecipeData.Recipe;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -231,6 +234,17 @@ public class RecipeFlipbook extends FragmentActivity {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
 		helpFragment.show(ft, "help");
+	}
+	
+	public void onSelectRecipe(View v) {
+		Uri uri = new Uri.Builder()
+			.scheme("content")
+			.authority("net.potterpcs.recipebook")
+			.build();
+		int id = flip.ids[pager.getCurrentItem()];
+		uri = ContentUris.withAppendedId(uri, id);
+		Intent intent = new Intent(RecipeBook.OPEN_RECIPE_ACTION, uri);
+		startActivity(intent);		
 	}
 
 	void switchToListMode() {

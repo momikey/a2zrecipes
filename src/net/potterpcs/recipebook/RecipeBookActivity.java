@@ -1,11 +1,11 @@
 package net.potterpcs.recipebook;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.List;
 
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -100,21 +101,8 @@ public class RecipeBookActivity extends FragmentActivity {
 //				+ " max time == " + searchMax + " min time == " + searchMin);
     	
 		// Android 3.0+ has the action bar, and requires this call to change menu items.
-		// Earlier versions don't have it, because they don't need it. We'll use
-    	// reflection to call it, so that the code compiles with earlier targets.
-    	try {
-//			invalidateOptionsMenu();
-    		Method m = getClass().getMethod("invalidateOptionsMenu", (Class[]) null);
-    		m.invoke(this, (Object[]) null);
-		} catch (SecurityException e) {
-//			Log.e(TAG, e.toString());
-		} catch (NoSuchMethodException e) {
-//			Log.e(TAG, e.toString());
-		} catch (IllegalAccessException e) {
-//			Log.e(TAG, e.toString());
-		} catch (InvocationTargetException e) {
-//			Log.e(TAG, e.toString());
-		}
+		// Earlier versions don't have it, because they don't need it.
+    	invalidateOptionsMenu();
     }
     
     @Override

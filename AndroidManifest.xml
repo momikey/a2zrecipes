@@ -109,13 +109,12 @@
             android:name=".ImporterActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.rcp"
-                    android:scheme="file" />
+                    android:scheme="file" android:mimeType="*/*"/>
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.rcp"
@@ -126,9 +125,9 @@
                     android:scheme="https" />
                 <data
                     android:host="*"
-                    android:pathPattern=".*\\.rcp"
-                    android:scheme="content" />
+                    android:scheme="content" android:mimeType="*/*" android:pathPattern=".*\\.rcp"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
             </intent-filter>
         </activity>
     </application>

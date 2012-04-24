@@ -60,4 +60,16 @@ public class ExporterActivity extends ListActivity {
 			.show();
 		}
 	}
+	
+	public void onSelectAllButton(View v) {
+		for (int i = 0; i < getListView().getCount(); i++) {
+			getListView().setItemChecked(i, true);
+		}
+	}
+	
+	public void onClearAllButton(View v) {
+		for (int i = 0; i < getListView().getCount(); i++) {
+			getListView().setItemChecked(i, false);
+		}
+	}
 }

@@ -50,7 +50,7 @@ public class RecipeBook extends Application {
     public static ImageView setImageViewBitmapDecoded(Activity a, ImageView iv, String s, int size) {
     	Uri u = null;
     	
-    	if (s != null) {
+    	if (s != null && !s.equalsIgnoreCase("")) {
     		u = Uri.parse(s);
     	}
     	

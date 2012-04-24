@@ -4,6 +4,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+
+        <Button
+            android:id="@+id/checkall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dip"
+            android:paddingLeft="40dip"
+            android:paddingRight="40dip"
+            android:onClick="onSelectAllButton"
+            android:text="@string/portselectall" />
+
+        <Button
+            android:id="@+id/uncheckall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dip"
+            android:paddingLeft="40dip"
+            android:paddingRight="40dip"
+            android:onClick="onClearAllButton"
+            android:text="@string/portclearall" />
+    </LinearLayout>
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"

@@ -83,4 +83,7 @@
         <string name="exportrecipes">Exported Selected Recipes</string>
         <string name="menuexportrecipes">Export Recipes</string>
         <string name="importrecipes">Import Recipes</string>
+        <string name="portselectall">Select All</string>
+        <string name="portclearall">Clear All</string>
+        <string name="flipbookselectrecipe">Select This Recipe</string>
 </resources>
