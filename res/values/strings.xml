@@ -3,7 +3,7 @@
     <string name="app_name">A to Z Recipes</string>
     <string name="recipename">Recipe Name</string>
     <string name="recipedescription">Description</string>
-    <string name="recipecreator">"Creator's Name"</string>
+    <string name="recipecreator">"Creator’s Name"</string>
     <string name="reciperating">Rating</string>
     <string name="recipedate">Date</string>
     <string name="recipeclearbutton">Clear All</string>
@@ -64,7 +64,7 @@
         <string name="timesearchmiddle">but no more than</string>
         <string name="timesearchbutton">Search</string>
         <string name="recipereplacetext">(Editing)</string>
-        <string name="raterecipetext">Rate Recipe \"%s\"</string>
+        <string name="raterecipetext">Rate Recipe “%s”</string>
         <string name="raterecipebutton">Rate It!</string>
         <string name="recipelistrate">Rate This Recipe</string>
         <string name="recipeeditoralert">A recipe already exists with this name and description. Please rename this recipe or rewrite its description.</string>
@@ -90,4 +90,19 @@
         <string name="importfiles">Select a recipe book to import:</string>
         <string name="noimports">No recipe books were found in your Download folder</string>
         <string name="norecipes">No recipes were found. Create a new recipe or try a new search.</string>
+        <string name="altadd">Add</string>
+        <string name="altrecipe_photo">Recipe photo</string>
+        <string name="altdirection_photo">Recipe direction photo</string>
+        <string name="addtexthere">Add Text Here</string>
+        <string name="timerlayoutsettimer">Set Timer</string>
+        <string name="timerlayout00">00</string>
+        <string name="timerlayoutminutes">min</string>
+        <string name="timerlayoutseconds">sec</string>
+        <string name="timerlayoutstart">Start</string>
+        <string name="timerlayoutstop">Stop</string>
+        <string name="timerpicker0000">00:00</string>
+        <string name="timerpickersetfor">"Set timer for "</string>
+        <string name="timerpickerminutes">" minute(s)"</string>
+        <string name="timerpickerstart">Start</string>
+        <string name="timerpickerstop">Stop</string>
 </resources>

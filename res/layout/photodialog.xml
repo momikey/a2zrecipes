@@ -9,7 +9,7 @@
         android:id="@+id/dialogphoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/screen_background_dark_transparent" >
+        android:src="@android:drawable/screen_background_dark_transparent" android:contentDescription="@string/altrecipe_photo">
     </ImageView>
 
 </FrameLayout>

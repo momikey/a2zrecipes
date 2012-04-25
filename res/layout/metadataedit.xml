@@ -5,9 +5,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_margin="20dip">
-        <RelativeLayout android:id="@+id/relativeLayout1" android:layout_height="fill_parent" android:layout_width="fill_parent">
+        <RelativeLayout android:id="@+id/relativeLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent">
             <TextView android:id="@+id/nametext" android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_alignParentLeft="true" android:text="@string/recipename"></TextView>
-            <EditText android:layout_height="wrap_content" android:layout_below="@+id/nametext" android:id="@+id/nameedit" android:layout_alignLeft="@+id/nametext" android:layout_width="match_parent" android:layout_marginBottom="20dip" android:singleLine="true">
+            <EditText android:layout_height="wrap_content" android:layout_below="@+id/nametext" android:id="@+id/nameedit" android:layout_alignLeft="@+id/nametext" android:layout_width="match_parent" android:layout_marginBottom="20dip" android:singleLine="true" android:inputType="text">
                 <requestFocus></requestFocus>
             </EditText>
             <TextView android:id="@+id/desctext" android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/nameedit" android:layout_alignLeft="@+id/nameedit" android:text="@string/recipedescription"></TextView>

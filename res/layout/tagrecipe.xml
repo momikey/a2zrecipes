@@ -22,7 +22,7 @@
 
         <EditText
             android:id="@+id/tagrecipenew"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="24dip"
             android:layout_weight="1"
