@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -880,7 +881,7 @@ public class RecipeData {
 	
 	// TODO rewrite the import/export to allow user choices
 	public ArrayList<Recipe> importRecipes(String path) throws IOException {
-		File f = new File(path);
+		File f = new File(URI.create(path));
 		FileInputStream fis = new FileInputStream(f);
 		byte[] buffer = new byte[fis.available()];
 		fis.read(buffer);

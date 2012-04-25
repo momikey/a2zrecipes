@@ -86,4 +86,5 @@
         <string name="portselectall">Select All</string>
         <string name="portclearall">Clear All</string>
         <string name="flipbookselectrecipe">Select This Recipe</string>
+        <string name="importrecipeslist">Import Recipes</string>
 </resources>

@@ -187,6 +187,8 @@ public class RecipeBookActivity extends FragmentActivity {
     		return true;
     	case R.id.menuexport:
     		onExportRecipes(item);
+    	case R.id.menuimport:
+    		onImportFileList(item);
     		
     	// Sort direction items (only one active at a time)
     	case R.id.menusortdescending:
@@ -213,6 +215,11 @@ public class RecipeBookActivity extends FragmentActivity {
 
     public void onExportRecipes(MenuItem item) {
     	Intent intent = new Intent(this, ExporterActivity.class);
+    	startActivity(intent);
+    }
+    
+    public void onImportFileList(MenuItem item) {
+    	Intent intent = new Intent(this, ImportFileListActivity.class);
     	startActivity(intent);
     }
 

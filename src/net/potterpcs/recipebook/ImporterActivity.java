@@ -124,6 +124,7 @@ public class ImporterActivity extends ListActivity {
 				} catch (IOException e) {
 					// Not much we can do if there's an I/O exception.
 					// TODO Maybe pop up a dialog?
+					e.printStackTrace();
 				}
 			} else {
 				// Set up the networking stuff

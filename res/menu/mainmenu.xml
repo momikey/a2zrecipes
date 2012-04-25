@@ -28,7 +28,8 @@
             <item android:title="@string/menusearchtime" android:id="@+id/menusearchtime"></item>
         </menu>
     </item>
-    <item android:id="@+id/menuexport" android:title="@string/menuexportrecipes" android:onClick="onExportRecipes"></item><item android:id="@+id/menuhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
+    <item android:id="@+id/menuimport" android:title="@string/importrecipeslist" android:onClick="onImportFileList"></item><item android:id="@+id/menuexport" android:title="@string/menuexportrecipes" android:onClick="onExportRecipes"></item><item android:id="@+id/menuhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
+    
     
     
     
