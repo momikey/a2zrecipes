@@ -53,6 +53,7 @@ public class RecipeViewer extends FragmentActivity {
 	FrameLayout rvphoto;
 	String photoUri;
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

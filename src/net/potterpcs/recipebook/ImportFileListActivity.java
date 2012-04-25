@@ -19,7 +19,9 @@ public class ImportFileListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onResume();
+		setContentView(R.layout.importfilelist);
 
+		// Get a list of all "rcp" files in the download directory
 		File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		FileFilter filter = new FileFilter() {
 			@Override

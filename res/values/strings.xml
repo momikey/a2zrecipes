@@ -87,4 +87,7 @@
         <string name="portclearall">Clear All</string>
         <string name="flipbookselectrecipe">Select This Recipe</string>
         <string name="importrecipeslist">Import Recipes</string>
+        <string name="importfiles">Select a recipe book to import:</string>
+        <string name="noimports">No recipe books were found in your Download folder</string>
+        <string name="norecipes">No recipes were found. Create a new recipe or try a new search.</string>
 </resources>
