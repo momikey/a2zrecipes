@@ -19,8 +19,8 @@ import android.widget.Toast;
 
 public class TimerFragment extends Fragment {
 	// Tag for logging
-//	static final String TAG = "TimerFragment";
-	
+	//	static final String TAG = "TimerFragment";
+
 	Button startButton;
 	Button stopButton;
 	TextView display;
@@ -28,13 +28,13 @@ public class TimerFragment extends Fragment {
 	CountDownTimer timer;
 	EditText timermin;
 	EditText timersec;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, 
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.timerlayout, container, false);
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -45,12 +45,12 @@ public class TimerFragment extends Fragment {
 		picker = (NumberPicker) getActivity().findViewById(R.id.numberpicker);
 		timermin = (EditText) getActivity().findViewById(R.id.timerdisplayminutes);
 		timersec = (EditText) getActivity(). findViewById(R.id.timerdisplayseconds);
-		
+
 		if (picker != null) {
 			picker.setMinValue(0);
 			picker.setMaxValue(99);
 		}
-		
+
 		startButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -66,17 +66,23 @@ public class TimerFragment extends Fragment {
 				}
 				startButton.setEnabled(false);
 				stopButton.setEnabled(true);
-				timermin.setEnabled(false);
-				timersec.setEnabled(false);
+
+				if (picker == null) {
+					timermin.setEnabled(false);
+					timersec.setEnabled(false);
+				} else {
+					picker.setEnabled(false);
+				}
+
 				if (display != null) {
 					display.setText(DateUtils.formatElapsedTime(seconds));
 				}
-				
+
 				timer = new CountDownTimer(seconds * 1000, 1000) {
-					
+
 					@Override
 					public void onTick(long millisUntilFinished) {
-//						Log.i(TAG, "tick " + millisUntilFinished);
+						//						Log.i(TAG, "tick " + millisUntilFinished);
 						if (display != null) {
 							display.setText(DateUtils.formatElapsedTime(millisUntilFinished / 1000));
 						} else {
@@ -87,7 +93,7 @@ public class TimerFragment extends Fragment {
 							timersec.setText(String.format("%02d", s));
 						}
 					}
-					
+
 					@Override
 					public void onFinish() {
 						// Play a sound and show a message when the timer ends
@@ -99,18 +105,18 @@ public class TimerFragment extends Fragment {
 							}
 						});
 						mp.setVolume(10.0f, 10.0f);
-//						Log.i(TAG, "timer done");
+						//						Log.i(TAG, "timer done");
 
 						Toast.makeText(getActivity(), "Done!", Toast.LENGTH_LONG).show();
 						mp.start();
 						clearToZero();
 					}
 				};
-				
+
 				timer.start();
 			}
 		});
-		
+
 		stopButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -123,10 +129,16 @@ public class TimerFragment extends Fragment {
 	void clearToZero() {
 		startButton.setEnabled(true);
 		stopButton.setEnabled(false);
-		timermin.setEnabled(true);
-		timersec.setEnabled(true);
+
+		if (picker == null) {
+			timermin.setEnabled(true);
+			timersec.setEnabled(true);
+		} else {
+			picker.setEnabled(true);
+		}
+
 		if (display != null) {
-		display.setText(DateUtils.formatElapsedTime(0));
+			display.setText(DateUtils.formatElapsedTime(0));
 		} else {
 			timermin.setText("00", BufferType.EDITABLE);
 			timersec.setText("00", BufferType.EDITABLE);

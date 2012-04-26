@@ -55,6 +55,7 @@ public class ImportFileListActivity extends ListActivity {
 				Intent intent = new Intent(parent.getContext(), ImporterActivity.class);
 				intent.setData(Uri.fromFile(importFile));
 				startActivity(intent);
+				finish();
 			}
 		});
 	}
