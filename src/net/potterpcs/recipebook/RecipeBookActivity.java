@@ -4,7 +4,9 @@ import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -98,7 +100,9 @@ public class RecipeBookActivity extends FragmentActivity {
     	
 		// Android 3.0+ has the action bar, and requires this call to change menu items.
 		// Earlier versions don't have it, because they don't need it.
-    	invalidateOptionsMenu();
+    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    		invalidateOptionsMenu();
+    	}
     }
     
     @Override
