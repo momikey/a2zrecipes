@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.NumberPicker.Formatter;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
@@ -24,7 +25,8 @@ public class TimerFragment extends Fragment {
 	Button startButton;
 	Button stopButton;
 	TextView display;
-	NumberPicker picker;
+	NumberPicker minutePicker;
+	NumberPicker secondPicker;
 	CountDownTimer timer;
 	EditText timermin;
 	EditText timersec;
@@ -42,21 +44,32 @@ public class TimerFragment extends Fragment {
 		startButton = (Button) getActivity().findViewById(R.id.timerstartbutton);
 		stopButton = (Button) getActivity().findViewById(R.id.timerstopbutton);
 		display = (TextView) getActivity().findViewById(R.id.timerdisplay);
-		picker = (NumberPicker) getActivity().findViewById(R.id.numberpicker);
+		minutePicker = (NumberPicker) getActivity().findViewById(R.id.minutepicker);
+		secondPicker = (NumberPicker) getActivity().findViewById(R.id.secondpicker);
 		timermin = (EditText) getActivity().findViewById(R.id.timerdisplayminutes);
 		timersec = (EditText) getActivity(). findViewById(R.id.timerdisplayseconds);
 
-		if (picker != null) {
-			picker.setMinValue(0);
-			picker.setMaxValue(99);
+		if (minutePicker != null) {
+			minutePicker.setMinValue(0);
+			minutePicker.setMaxValue(99);
+			secondPicker.setMinValue(0);
+			secondPicker.setMaxValue(59);
+			secondPicker.setFormatter(new Formatter() {
+				@Override
+				public String format(int value) {
+					return String.format("%02d", value);
+				}
+			});
+			getActivity().findViewById(R.id.pickerlayout).setVisibility(View.VISIBLE);
+			display.setVisibility(View.GONE);
 		}
 
 		startButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				int seconds;
-				if (picker != null) {
-					seconds = picker.getValue() * 60;
+				if (minutePicker != null) {
+					seconds = minutePicker.getValue() * 60 + secondPicker.getValue();
 				} else {
 					int m = Integer.parseInt(timermin.getEditableText().toString());
 					int s = Integer.parseInt(timersec.getEditableText().toString());
@@ -67,11 +80,14 @@ public class TimerFragment extends Fragment {
 				startButton.setEnabled(false);
 				stopButton.setEnabled(true);
 
-				if (picker == null) {
+				if (minutePicker == null) {
 					timermin.setEnabled(false);
 					timersec.setEnabled(false);
 				} else {
-					picker.setEnabled(false);
+					minutePicker.setEnabled(false);
+					secondPicker.setEnabled(false);
+					getActivity().findViewById(R.id.pickerlayout).setVisibility(View.GONE);
+					display.setVisibility(View.VISIBLE);
 				}
 
 				if (display != null) {
@@ -104,9 +120,7 @@ public class TimerFragment extends Fragment {
 								mp.release();
 							}
 						});
-						mp.setVolume(10.0f, 10.0f);
-						//						Log.i(TAG, "timer done");
-
+						mp.setVolume(1.0f, 1.0f);
 						Toast.makeText(getActivity(), "Done!", Toast.LENGTH_LONG).show();
 						mp.start();
 						clearToZero();
@@ -130,11 +144,14 @@ public class TimerFragment extends Fragment {
 		startButton.setEnabled(true);
 		stopButton.setEnabled(false);
 
-		if (picker == null) {
+		if (minutePicker == null) {
 			timermin.setEnabled(true);
 			timersec.setEnabled(true);
 		} else {
-			picker.setEnabled(true);
+			minutePicker.setEnabled(true);
+			secondPicker.setEnabled(true);
+			getActivity().findViewById(R.id.pickerlayout).setVisibility(View.VISIBLE);
+			display.setVisibility(View.GONE);
 		}
 
 		if (display != null) {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+
+	<LinearLayout android:layout_width="match_parent"
+		android:orientation="vertical" android:layout_height="wrap_content"
+		android:layout_weight="1">
+
+		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+			android:id="@+id/rowname" android:layout_height="wrap_content"
+			android:text="Name" android:layout_width="wrap_content"></TextView>
+		<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+			android:id="@+id/rowdescription" android:layout_height="wrap_content"
+			android:text="Description" android:layout_width="wrap_content"></TextView>
+		<TextView android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="Time" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/rowtime"></TextView>
+		<TextView android:textAppearance="?android:attr/textAppearanceSmall"
+			android:id="@+id/rowcreator" android:layout_height="wrap_content"
+			android:text="Creator" android:layout_width="wrap_content"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_width="match_parent"
+		android:orientation="vertical" android:layout_height="wrap_content"
+		android:layout_weight="1">
+		<RatingBar 
+			android:id="@+id/rowrating" android:layout_height="wrap_content"
+			 android:numStars="5"
+			android:layout_width="wrap_content" android:layout_gravity="right"
+			android:isIndicator="true"></RatingBar>
+		<TextView android:id="@+id/rowhidden" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:visibility="gone" />
+	</LinearLayout>
+</LinearLayout>

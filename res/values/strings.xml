@@ -105,4 +105,5 @@
         <string name="timerpickerminutes">" minute(s)"</string>
         <string name="timerpickerstart">Start</string>
         <string name="timerpickerstop">Stop</string>
+        <string name="timerpickerseparator">:</string>
 </resources>
