@@ -46,6 +46,9 @@ public class DirectionsEditor extends Fragment {
 	// The sequence number of the current direction (for move up/down operations)
 	int currentDirection;
 	
+	// The URI of the current photo (for editing and moving)
+	String currentPhoto;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class DirectionsEditor extends Fragment {
 		directions = new ArrayList<String>();
 		photoUris = new ArrayList<String>();
 		currentDirection = -1;
+		currentPhoto = null;
 		
 		if (savedInstanceState != null) {
 			// Load from the saved state if possible
@@ -121,10 +125,12 @@ public class DirectionsEditor extends Fragment {
 			adapter.remove(selected);
 			photoUris.remove(info.position);
 			currentDirection = -1;
+			currentPhoto = null;
 			return true;
 		case R.id.ctxeditdirection:
 			// "Edit" option
 			currentDirection = info.position;
+			currentPhoto = photoUris.get(info.position);
 			
 			// Set the editor box to have the old text
 			EditText edit = ((EditText) getView().findViewById(R.id.directionsedit));
@@ -140,6 +146,7 @@ public class DirectionsEditor extends Fragment {
 		case R.id.ctxmovedowndirection:
 			// "Move Down" option
 			currentDirection = -1;
+			currentPhoto = null;
 			if (info.position < adapter.getCount() - 1) {
 				// We can't move the last direction down
 				adapter.remove(selected);
@@ -153,6 +160,7 @@ public class DirectionsEditor extends Fragment {
 		case R.id.ctxmoveupdirection:
 			// "Move Up" option
 			currentDirection = -1;
+			currentPhoto = null;
 			if (info.position > 0) {
 				// We can't move the first direction up
 				adapter.remove(selected);
@@ -199,7 +207,7 @@ public class DirectionsEditor extends Fragment {
 					} else {
 						// If we're editing a direction that was already there
 						adapter.insert(edit.getText().toString(), currentDirection);
-						photoUris.add(currentDirection, edit.getText().toString());
+						photoUris.add(currentDirection, currentPhoto);
 						adapter.remove(getResources().getString(R.string.recipereplacetext));
 						currentDirection = -1;
 					}
