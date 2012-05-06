@@ -119,6 +119,7 @@ public class RecipeData {
 					JSONObject diro = new JSONObject();
 					diro.put(DT_STEP, directions[d]);
 					diro.put(DT_PHOTO, directions_photos[d]);
+					jd.put(diro);
 				}
 				jo.put(DIRECTIONS_TABLE, jd);
 				
