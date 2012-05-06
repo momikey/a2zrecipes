@@ -40,7 +40,7 @@ public class PhotoDialog extends DialogFragment {
 		
 		// Just parse the URI right now, since the dialog UI isn't there yet
 		String u = getArguments().getString(URI);
-		if (u != null) {
+		if (u != null && !u.equals("")) {
 			photoUri = Uri.parse(u);
 		} else {
 			photoUri = null;

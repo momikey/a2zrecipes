@@ -85,7 +85,7 @@ public class RecipeViewer extends FragmentActivity {
 		rvrating.setRating(mdc.getFloat(mdc.getColumnIndex(RecipeData.RT_RATING)));
 		
 		photoUri = mdc.getString(mdc.getColumnIndex(RecipeData.RT_PHOTO));
-		if (photoUri != null) {
+		if (photoUri != null && !photoUri.equals("")) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
 			ImageView iv = new ImageView(this);
 			setOrDownloadImage(iv, photoUri);
