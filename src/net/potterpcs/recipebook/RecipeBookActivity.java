@@ -254,7 +254,12 @@ public class RecipeBookActivity extends FragmentActivity {
 
     void switchToFlipBook() {
     	// Change from list mode to flipbook mode
-    	Intent intent = new Intent(lastIntent);
+    	Intent intent;
+    	if (!lastIntent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
+    		intent = new Intent(lastIntent);
+    	} else {
+    		intent = new Intent();
+    	}
     	intent.setClass(this, RecipeFlipbook.class);
     	startActivity(intent);
     }
