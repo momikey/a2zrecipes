@@ -149,7 +149,7 @@ public class RecipeViewer extends FragmentActivity {
 				Cursor c = data.getRecipeDirections(rid);
 				c.moveToPosition(position);
 				String uri = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
-				if (uri != null) {
+				if (uri != null && !uri.equals("")) {
 					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					PhotoDialog pd = PhotoDialog.newInstance(uri);
 					pd.show(ft, "dialog");
