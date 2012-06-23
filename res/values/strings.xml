@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+      Copyright 2012 Michael Potter
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
 <resources>
+
     <string name="app_name">A to Z Recipes</string>
     <string name="recipename">Recipe Name</string>
     <string name="recipedescription">Description</string>
@@ -35,75 +51,78 @@
     <string name="editormenuattach">Attach Photo</string>
     <string name="search_hint">Search recipes</string>
     <string name="recipemenusearch">Search</string>
+
     <string-array name="fragmentnames">
         <item>Recipe Information</item>
         <item>Ingredients</item>
         <item>Directions</item>
         <item>Tags</item>
-        <item >Recipe Photo</item>
+        <item>Recipe Photo</item>
     </string-array>
-        <string name="flipbookswitch">Switch to Flipbook Mode</string>
-        <string name="recipelistswitch">Switch to Recipe List Mode</string>
-        <string name="numrecipes">Recipes: %d</string>
-        <string name="viewallrecipes">Show All Recipes</string>
-        <string name="recipemenushowall">Show All Recipes</string>
-        <string name="menusearchstring">Search for Text</string>
-        <string name="menusearchtag">Search by Tag</string>
-        <string name="menusearchtime">Search by Time</string>
-        <string name="recipemenusort">Sort</string>
-        <string name="menusortname">Sort by Name</string>
-        <string name="menusortrating">Sort by Rating</string>
-        <string name="menusorttime">Sort by Time</string>
-        <string name="menusortascending">Ascending Sort</string>
-        <string name="menusortdescending">Descending Sort</string>
-        <string name="switchtolist">Switch to List Mode</string>
-        <string name="switchtoflipbook">Switch to Flipbook Mode</string>
-        <string name="menusortdate">Sort by Date</string>
-        <string name="tagsearchtext">Select a Tag</string>
-        <string name="timesearchheader">Find recipes that take at least</string>
-        <string name="timesearchmiddle">but no more than</string>
-        <string name="timesearchbutton">Search</string>
-        <string name="recipereplacetext">(Editing)</string>
-        <string name="raterecipetext">Rate Recipe “%s”</string>
-        <string name="raterecipebutton">Rate It!</string>
-        <string name="recipelistrate">Rate This Recipe</string>
-        <string name="recipeeditoralert">A recipe already exists with this name and description. Please rename this recipe or rewrite its description.</string>
-        <string name="recipemenuexport">Export Recipes</string>
-        <string name="recipemenuhelp">Help</string>
-        <string name="recipelisttag">Tag This Recipe</string>
-        <string name="ctxphotodirection">Add Photo</string>
-        <string name="tagrecipeheader">Tag Recipe</string>
-        <string name="tagrecipenew">Create New Tag</string>
-        <string name="tagrecipecreatehint">Add a new tag or select an existing tag below</string>
-        <string name="photoattach">Attach Photo</string>
-        <string name="ctxremovephotodirection">Remove Photo</string>
-        <string name="photoeditattach">Attach Photo</string>
-        <string name="photoeditremove">Remove Photo</string>
-        <string name="recipephoto">Recipe Photo</string>
-        <string name="exportrecipes">Exported Selected Recipes</string>
-        <string name="menuexportrecipes">Export Recipes</string>
-        <string name="importrecipes">Import Recipes</string>
-        <string name="portselectall">Select All</string>
-        <string name="portclearall">Clear All</string>
-        <string name="flipbookselectrecipe">Select This Recipe</string>
-        <string name="importrecipeslist">Import Recipes</string>
-        <string name="importfiles">Select a recipe book to import:</string>
-        <string name="noimports">No recipe books were found in your Download folder</string>
-        <string name="norecipes">No recipes were found. Create a new recipe or try a new search.</string>
-        <string name="altadd">Add</string>
-        <string name="altrecipe_photo">Recipe photo</string>
-        <string name="altdirection_photo">Recipe direction photo</string>
-        <string name="addtexthere">Add Text Here</string>
-        <string name="timerlayoutsettimer">Set Timer</string>
-        <string name="timerlayout00">00</string>
-        <string name="timerlayoutminutes">min</string>
-        <string name="timerlayoutseconds">sec</string>
-        <string name="timerlayoutstart">Start</string>
-        <string name="timerlayoutstop">Stop</string>
-        <string name="timerpicker0000">00:00</string>
-        <string name="timerpickersetfor">"Set timer for "</string>
-        <string name="timerpickerminutes">" minute(s)"</string>
-        <string name="timerpickerstart">Start</string>
-        <string name="timerpickerstop">Stop</string>
-        <string name="timerpickerseparator">:</string>
+
+    <string name="flipbookswitch">Switch to Flipbook Mode</string>
+    <string name="recipelistswitch">Switch to Recipe List Mode</string>
+    <string name="numrecipes">Recipes: %d</string>
+    <string name="viewallrecipes">Show All Recipes</string>
+    <string name="recipemenushowall">Show All Recipes</string>
+    <string name="menusearchstring">Search for Text</string>
+    <string name="menusearchtag">Search by Tag</string>
+    <string name="menusearchtime">Search by Time</string>
+    <string name="recipemenusort">Sort</string>
+    <string name="menusortname">Sort by Name</string>
+    <string name="menusortrating">Sort by Rating</string>
+    <string name="menusorttime">Sort by Time</string>
+    <string name="menusortascending">Ascending Sort</string>
+    <string name="menusortdescending">Descending Sort</string>
+    <string name="switchtolist">Switch to List Mode</string>
+    <string name="switchtoflipbook">Switch to Flipbook Mode</string>
+    <string name="menusortdate">Sort by Date</string>
+    <string name="tagsearchtext">Select a Tag</string>
+    <string name="timesearchheader">Find recipes that take at least</string>
+    <string name="timesearchmiddle">but no more than</string>
+    <string name="timesearchbutton">Search</string>
+    <string name="recipereplacetext">(Editing)</string>
+    <string name="raterecipetext">Rate Recipe “%s”</string>
+    <string name="raterecipebutton">Rate It!</string>
+    <string name="recipelistrate">Rate This Recipe</string>
+    <string name="recipeeditoralert">A recipe already exists with this name and description. Please rename this recipe or rewrite its description.</string>
+    <string name="recipemenuexport">Export Recipes</string>
+    <string name="recipemenuhelp">Help</string>
+    <string name="recipelisttag">Tag This Recipe</string>
+    <string name="ctxphotodirection">Add Photo</string>
+    <string name="tagrecipeheader">Tag Recipe</string>
+    <string name="tagrecipenew">Create New Tag</string>
+    <string name="tagrecipecreatehint">Add a new tag or select an existing tag below</string>
+    <string name="photoattach">Attach Photo</string>
+    <string name="ctxremovephotodirection">Remove Photo</string>
+    <string name="photoeditattach">Attach Photo</string>
+    <string name="photoeditremove">Remove Photo</string>
+    <string name="recipephoto">Recipe Photo</string>
+    <string name="exportrecipes">Exported Selected Recipes</string>
+    <string name="menuexportrecipes">Export Recipes</string>
+    <string name="importrecipes">Import Recipes</string>
+    <string name="portselectall">Select All</string>
+    <string name="portclearall">Clear All</string>
+    <string name="flipbookselectrecipe">Select This Recipe</string>
+    <string name="importrecipeslist">Import Recipes</string>
+    <string name="importfiles">Select a recipe book to import:</string>
+    <string name="noimports">No recipe books were found in your Download folder</string>
+    <string name="norecipes">No recipes were found. Create a new recipe or try a new search.</string>
+    <string name="altadd">Add</string>
+    <string name="altrecipe_photo">Recipe photo</string>
+    <string name="altdirection_photo">Recipe direction photo</string>
+    <string name="addtexthere">Add Text Here</string>
+    <string name="timerlayoutsettimer">Set Timer</string>
+    <string name="timerlayout00">00</string>
+    <string name="timerlayoutminutes">min</string>
+    <string name="timerlayoutseconds">sec</string>
+    <string name="timerlayoutstart">Start</string>
+    <string name="timerlayoutstop">Stop</string>
+    <string name="timerpicker0000">00:00</string>
+    <string name="timerpickersetfor">"Set timer for "</string>
+    <string name="timerpickerminutes">" minute(s)"</string>
+    <string name="timerpickerstart">Start</string>
+    <string name="timerpickerstop">Stop</string>
+    <string name="timerpickerseparator">:</string>
+
 </resources>

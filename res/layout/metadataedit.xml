@@ -1,27 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/scrollview"
+<!--
+      Copyright 2012 Michael Potter
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="20dip" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="20dip">
-        <RelativeLayout android:id="@+id/relativeLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent">
-            <TextView android:id="@+id/nametext" android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_alignParentLeft="true" android:text="@string/recipename"></TextView>
-            <EditText android:layout_height="wrap_content" android:layout_below="@+id/nametext" android:id="@+id/nameedit" android:layout_alignLeft="@+id/nametext" android:layout_width="match_parent" android:layout_marginBottom="20dip" android:singleLine="true" android:inputType="text">
-                <requestFocus></requestFocus>
-            </EditText>
-            <TextView android:id="@+id/desctext" android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/nameedit" android:layout_alignLeft="@+id/nameedit" android:text="@string/recipedescription"></TextView>
-            <EditText android:layout_height="wrap_content" android:id="@+id/descriptionedit" android:inputType="textMultiLine" android:layout_below="@+id/desctext" android:layout_alignLeft="@+id/desctext" android:layout_width="match_parent" android:layout_marginBottom="20dip"></EditText>
-            <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_below="@+id/descriptionedit" android:layout_alignLeft="@+id/descriptionedit" android:id="@+id/timetext" android:text="@string/recipetime"></TextView>
-            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:inputType="number" android:layout_below="@+id/timetext" android:layout_alignLeft="@+id/timetext" android:id="@+id/hoursedit" android:layout_marginBottom="20dip" android:ems="3"></EditText>
-            <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_below="@+id/hoursedit" android:layout_alignLeft="@+id/hoursedit" android:id="@+id/servingtext" android:text="@string/recipeserving" android:layout_marginBottom="20dip" android:layout_marginRight="20dip" android:layout_marginTop="10dip"></TextView>
-            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:inputType="number" android:layout_toRightOf="@+id/servingtext" android:layout_alignBottom="@+id/servingtext" android:id="@+id/servingedit" android:ems="4"></EditText>
-            <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_toRightOf="@+id/hoursedit" android:layout_alignBottom="@+id/hoursedit" android:id="@+id/hourstext" android:text="@string/recipetimehours" android:layout_marginLeft="10dip" android:layout_marginRight="10dip"></TextView>
-            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:inputType="number" android:layout_toRightOf="@+id/hourstext" android:layout_alignBottom="@+id/hourstext" android:id="@+id/minutesedit" android:ems="4" android:layout_alignTop="@+id/hoursedit"></EditText>
-            <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_height="wrap_content" android:layout_toRightOf="@+id/minutesedit" android:layout_alignBottom="@+id/minutesedit" android:id="@+id/minutestext" android:text="@string/recipetimeminutes" android:layout_marginLeft="10dip"></TextView>
-            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/servingtext" android:layout_alignLeft="@+id/servingtext" android:id="@+id/creatortext" android:text="@string/recipecreator"></TextView>
-            <EditText android:layout_height="wrap_content" android:inputType="textPersonName" android:layout_below="@+id/creatortext" android:layout_alignLeft="@+id/creatortext" android:layout_width="match_parent" android:id="@+id/creatoredit" android:layout_marginBottom="20dip" android:singleLine="true"></EditText>
-            <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_below="@+id/creatoredit" android:layout_alignLeft="@+id/creatoredit" android:text="@string/reciperating" android:id="@+id/ratingtext"></TextView>
-            <RatingBar android:layout_height="wrap_content" android:layout_below="@+id/ratingtext" android:layout_width="wrap_content" android:layout_alignLeft="@+id/ratingtext" android:layout_marginBottom="20dip" android:id="@+id/ratingbar" android:numStars="5"></RatingBar>
-        </RelativeLayout>
-    </ScrollView>
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/nametext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/recipename"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/nameedit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/nametext"
+            android:layout_below="@+id/nametext"
+            android:layout_marginBottom="20dip"
+            android:inputType="text"
+            android:singleLine="true" >
+
+            <requestFocus>
+            </requestFocus>
+        </EditText>
+
+        <TextView
+            android:id="@+id/desctext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/nameedit"
+            android:layout_below="@+id/nameedit"
+            android:text="@string/recipedescription"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/descriptionedit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/desctext"
+            android:layout_below="@+id/desctext"
+            android:layout_marginBottom="20dip"
+            android:inputType="textMultiLine" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/timetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/descriptionedit"
+            android:layout_below="@+id/descriptionedit"
+            android:text="@string/recipetime"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/hoursedit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/timetext"
+            android:layout_below="@+id/timetext"
+            android:layout_marginBottom="20dip"
+            android:ems="3"
+            android:inputType="number" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/servingtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/hoursedit"
+            android:layout_below="@+id/hoursedit"
+            android:layout_marginBottom="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginTop="10dip"
+            android:text="@string/recipeserving"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/servingedit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/servingtext"
+            android:layout_toRightOf="@+id/servingtext"
+            android:ems="4"
+            android:inputType="number" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/hourstext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/hoursedit"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_toRightOf="@+id/hoursedit"
+            android:text="@string/recipetimehours"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/minutesedit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/hourstext"
+            android:layout_alignTop="@+id/hoursedit"
+            android:layout_toRightOf="@+id/hourstext"
+            android:ems="4"
+            android:inputType="number" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/minutestext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/minutesedit"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/minutesedit"
+            android:text="@string/recipetimeminutes"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/creatortext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/servingtext"
+            android:layout_below="@+id/servingtext"
+            android:text="@string/recipecreator"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/creatoredit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/creatortext"
+            android:layout_below="@+id/creatortext"
+            android:layout_marginBottom="20dip"
+            android:inputType="textPersonName"
+            android:singleLine="true" >
+        </EditText>
+
+        <TextView
+            android:id="@+id/ratingtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/creatoredit"
+            android:layout_below="@+id/creatoredit"
+            android:text="@string/reciperating"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <RatingBar
+            android:id="@+id/ratingbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/ratingtext"
+            android:layout_below="@+id/ratingtext"
+            android:layout_marginBottom="20dip"
+            android:numStars="5" >
+        </RatingBar>
+    </RelativeLayout>
+
+</ScrollView>

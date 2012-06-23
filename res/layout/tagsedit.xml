@@ -1,19 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:id="@+id/tagstext" android:text="@string/recipetags" android:layout_marginBottom="16dip" android:layout_gravity="center_horizontal"></TextView>
+<!--
+      Copyright 2012 Michael Potter
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tagstext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dip"
+        android:text="@string/recipetags"
+        android:textAppearance="?android:attr/textAppearanceMedium" >
+    </TextView>
+
     <LinearLayout
         android:id="@+id/editbuttonlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal">
-        <EditText android:id="@+id/tagsedit" android:layout_width="0dip" android:layout_weight="1" android:layout_height="wrap_content" android:hint="@string/addtexthere" android:layout_gravity="center_vertical">
-            <requestFocus></requestFocus>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/tagsedit"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:hint="@string/addtexthere" >
+
+            <requestFocus>
+            </requestFocus>
         </EditText>
-        <ImageButton android:src="@drawable/buttonadd" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/addtag" android:layout_gravity="center_vertical" android:contentDescription="@string/altadd"></ImageButton>
+
+        <ImageButton
+            android:id="@+id/addtag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/altadd"
+            android:src="@drawable/buttonadd" >
+        </ImageButton>
     </LinearLayout>
-    <GridView android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/tagsgrid" android:numColumns="4" android:verticalSpacing="0px"></GridView>
-    
+
+    <GridView
+        android:id="@+id/tagsgrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="4"
+        android:verticalSpacing="0px" >
+    </GridView>
+
 </LinearLayout>

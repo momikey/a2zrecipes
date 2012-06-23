@@ -1,22 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content" android:id="@+id/timesearchheader" android:layout_centerHorizontal="true" android:text="@string/timesearchheader" android:layout_marginLeft="16dip" android:layout_marginRight="16dip" android:layout_marginTop="16dip" android:layout_alignParentTop="true"></TextView>
-    <EditText android:layout_width="wrap_content" android:inputType="number" android:layout_height="wrap_content" android:layout_below="@+id/timesearchheader" android:layout_marginTop="20dip" android:id="@+id/searchminhours" android:maxLength="2" android:layout_alignLeft="@+id/timesearchheader">
-        <requestFocus></requestFocus>
+<!--
+      Copyright 2012 Michael Potter
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/timesearchheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="16dip"
+        android:layout_marginRight="16dip"
+        android:layout_marginTop="16dip"
+        android:text="@string/timesearchheader"
+        android:textAppearance="?android:attr/textAppearanceLarge" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/searchminhours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timesearchheader"
+        android:layout_below="@+id/timesearchheader"
+        android:layout_marginTop="20dip"
+        android:inputType="number"
+        android:maxLength="2" >
+
+        <requestFocus>
+        </requestFocus>
     </EditText>
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_alignBaseline="@+id/searchminhours" android:layout_alignBottom="@+id/searchminhours" android:layout_marginLeft="16dip" android:id="@+id/searchminhtext" android:text="@string/recipetimehours" android:layout_toRightOf="@+id/searchminhours"></TextView>
-    <EditText android:layout_width="wrap_content" android:inputType="number" android:layout_height="wrap_content" android:layout_alignBottom="@+id/searchminhours" android:maxLength="2" android:id="@+id/searchminminutes" android:layout_toLeftOf="@+id/searchminmtext" android:layout_marginRight="16dip"></EditText>
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_alignRight="@+id/timesearchheader" android:id="@+id/searchminmtext" android:text="@string/recipetimeminutes" android:layout_alignBottom="@+id/searchminhours" android:layout_alignBaseline="@+id/searchminhours"></TextView>
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content" android:layout_below="@+id/searchminhours" android:layout_marginTop="32dip" android:text="@string/timesearchmiddle" android:layout_alignRight="@+id/timesearchheader" android:layout_alignLeft="@+id/timesearchheader" android:layout_centerHorizontal="true" android:gravity="center" android:id="@+id/timesearchmiddle"></TextView>
-    <EditText android:layout_width="wrap_content" android:inputType="number" android:layout_height="wrap_content" android:layout_below="@+id/timesearchmiddle" android:layout_alignLeft="@+id/timesearchmiddle" android:id="@+id/searchmaxhours" android:maxLength="2" android:layout_marginTop="20dip"></EditText>
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_alignBottom="@+id/searchmaxhours" android:layout_alignLeft="@+id/searchminhtext" android:layout_alignBaseline="@+id/searchmaxhours" android:text="@string/recipetimehours" android:id="@+id/searchmaxhtext"></TextView>
-    <EditText android:layout_width="wrap_content" android:inputType="number" android:layout_height="wrap_content" android:layout_alignBottom="@+id/searchmaxhours" android:layout_alignLeft="@+id/searchminminutes" android:maxLength="2" android:id="@+id/searchmaxminutes"></EditText>
-    <TextView android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_height="wrap_content" android:layout_alignBaseline="@+id/searchmaxminutes" android:layout_alignBottom="@+id/searchmaxminutes" android:layout_toRightOf="@+id/searchminminutes" android:id="@+id/searchmaxmtext" android:text="@string/recipetimeminutes"></TextView>
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@+id/searchmaxhours" android:layout_alignLeft="@+id/timesearchheader" android:layout_alignRight="@+id/timesearchheader" android:id="@+id/timesearchbutton" android:text="@string/timesearchbutton" android:layout_marginTop="16dip" android:minHeight="80dip"></Button>
-    <TextView android:layout_width="wrap_content" android:id="@+id/textspacer" android:layout_height="wrap_content" android:layout_below="@+id/timesearchbutton" android:layout_alignLeft="@+id/timesearchbutton" android:layout_alignRight="@+id/timesearchbutton" android:minHeight="16dip"></TextView>
-    
+
+    <TextView
+        android:id="@+id/searchminhtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/searchminhours"
+        android:layout_alignBottom="@+id/searchminhours"
+        android:layout_marginLeft="16dip"
+        android:layout_toRightOf="@+id/searchminhours"
+        android:text="@string/recipetimehours"
+        android:textAppearance="?android:attr/textAppearanceMedium" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/searchminminutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/searchminhours"
+        android:layout_marginRight="16dip"
+        android:layout_toLeftOf="@+id/searchminmtext"
+        android:inputType="number"
+        android:maxLength="2" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/searchminmtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/searchminhours"
+        android:layout_alignBottom="@+id/searchminhours"
+        android:layout_alignRight="@+id/timesearchheader"
+        android:text="@string/recipetimeminutes"
+        android:textAppearance="?android:attr/textAppearanceMedium" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/timesearchmiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timesearchheader"
+        android:layout_alignRight="@+id/timesearchheader"
+        android:layout_below="@+id/searchminhours"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dip"
+        android:gravity="center"
+        android:text="@string/timesearchmiddle"
+        android:textAppearance="?android:attr/textAppearanceLarge" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/searchmaxhours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timesearchmiddle"
+        android:layout_below="@+id/timesearchmiddle"
+        android:layout_marginTop="20dip"
+        android:inputType="number"
+        android:maxLength="2" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/searchmaxhtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/searchmaxhours"
+        android:layout_alignBottom="@+id/searchmaxhours"
+        android:layout_alignLeft="@+id/searchminhtext"
+        android:text="@string/recipetimehours"
+        android:textAppearance="?android:attr/textAppearanceMedium" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/searchmaxminutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/searchmaxhours"
+        android:layout_alignLeft="@+id/searchminminutes"
+        android:inputType="number"
+        android:maxLength="2" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/searchmaxmtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/searchmaxminutes"
+        android:layout_alignBottom="@+id/searchmaxminutes"
+        android:layout_toRightOf="@+id/searchminminutes"
+        android:text="@string/recipetimeminutes"
+        android:textAppearance="?android:attr/textAppearanceMedium" >
+    </TextView>
+
+    <Button
+        android:id="@+id/timesearchbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timesearchheader"
+        android:layout_alignRight="@+id/timesearchheader"
+        android:layout_below="@+id/searchmaxhours"
+        android:layout_marginTop="16dip"
+        android:minHeight="80dip"
+        android:text="@string/timesearchbutton" >
+    </Button>
+
+    <TextView
+        android:id="@+id/textspacer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/timesearchbutton"
+        android:layout_alignRight="@+id/timesearchbutton"
+        android:layout_below="@+id/timesearchbutton"
+        android:minHeight="16dip" >
+    </TextView>
+
 </RelativeLayout>

@@ -1,32 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <RelativeLayout android:layout_width="match_parent" android:id="@+id/relativeLayout1" android:layout_height="wrap_content" android:layout_weight="0">
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_alignParentTop="true" android:id="@+id/rvname" android:text="Recipe Name"></TextView>
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_below="@+id/rvname" android:layout_alignLeft="@+id/rvname" android:id="@+id/rvservestext" android:text="@string/recipeserving"></TextView>
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_below="@+id/rvservestext" android:layout_alignLeft="@+id/rvservestext" android:id="@+id/rvtimetext" android:text="@string/recipetime"></TextView>
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_toRightOf="@+id/rvtimetext" android:layout_alignTop="@+id/rvtimetext" android:layout_alignBottom="@+id/rvtimetext" android:layout_marginLeft="16dip" android:id="@+id/rvtime" android:text="Time taken"></TextView>
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_toRightOf="@+id/rvservestext" android:layout_alignTop="@+id/rvservestext" android:layout_alignBottom="@+id/rvservestext" android:id="@+id/rvserving" android:layout_marginLeft="16dip" android:text="Serving size"></TextView>
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:layout_toRightOf="@+id/rvname" android:layout_alignBottom="@+id/rvname" android:id="@+id/rvbytext" android:text="@string/rvby" android:layout_alignBaseline="@id/rvname" android:layout_marginLeft="20dip" android:layout_marginRight="8dip"></TextView>
-        <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_toRightOf="@+id/rvbytext" android:layout_alignBottom="@+id/rvbytext" android:id="@+id/rvcreator" android:layout_alignBaseline="@id/rvname" android:text="Creator"></TextView>
-        <RatingBar android:layout_height="wrap_content" android:layout_alignParentRight="true" android:layout_width="wrap_content" android:id="@+id/rvrating" android:numStars="5" android:isIndicator="true"></RatingBar>
+<!--
+      Copyright 2012 Michael Potter
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
+
+        <TextView
+            android:id="@+id/rvname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="Recipe Name"
+            android:textAppearance="?android:attr/textAppearanceLarge" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/rvservestext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/rvname"
+            android:layout_below="@+id/rvname"
+            android:text="@string/recipeserving"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/rvtimetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/rvservestext"
+            android:layout_below="@+id/rvservestext"
+            android:text="@string/recipetime"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/rvtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/rvtimetext"
+            android:layout_alignTop="@+id/rvtimetext"
+            android:layout_marginLeft="16dip"
+            android:layout_toRightOf="@+id/rvtimetext"
+            android:text="Time taken"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/rvserving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/rvservestext"
+            android:layout_alignTop="@+id/rvservestext"
+            android:layout_marginLeft="16dip"
+            android:layout_toRightOf="@+id/rvservestext"
+            android:text="Serving size"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/rvbytext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/rvname"
+            android:layout_alignBottom="@+id/rvname"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="8dip"
+            android:layout_toRightOf="@+id/rvname"
+            android:text="@string/rvby"
+            android:textAppearance="?android:attr/textAppearanceSmall" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/rvcreator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/rvname"
+            android:layout_alignBottom="@+id/rvbytext"
+            android:layout_toRightOf="@+id/rvbytext"
+            android:text="Creator"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
+        </TextView>
+
+        <RatingBar
+            android:id="@+id/rvrating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:isIndicator="true"
+            android:numStars="5" >
+        </RatingBar>
     </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/middlerow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:layout_weight="2" android:orientation="horizontal">
-        <GridView android:id="@+id/ingredients" android:layout_height="wrap_content" android:layout_width="0dip" android:padding="20dip" android:verticalSpacing="20dip" android:horizontalSpacing="20dip" android:numColumns="auto_fit" android:columnWidth="160dip" android:stretchMode="columnWidth" android:layout_weight="3"></GridView>
-        <FrameLayout android:layout_height="match_parent" android:id="@+id/photofragment" android:layout_width="0dip" android:layout_weight="2"></FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="horizontal" >
+
+        <GridView
+            android:id="@+id/ingredients"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:columnWidth="160dip"
+            android:horizontalSpacing="20dip"
+            android:numColumns="auto_fit"
+            android:padding="20dip"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="20dip" >
+        </GridView>
+
+        <FrameLayout
+            android:id="@+id/photofragment"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="2" >
+        </FrameLayout>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/bottomrow"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:layout_weight="3" android:orientation="horizontal">
-        <ListView android:id="@+id/directions" android:layout_height="wrap_content" android:layout_width="0dip" android:layout_weight="2"></ListView>
-        <FrameLayout android:layout_height="match_parent" android:id="@+id/timerfragment" android:layout_width="0dip" android:layout_weight="1"></FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="horizontal" >
+
+        <ListView
+            android:id="@+id/directions"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="2" >
+        </ListView>
+
+        <FrameLayout
+            android:id="@+id/timerfragment"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
+        </FrameLayout>
     </LinearLayout>
-    
+
 </LinearLayout>

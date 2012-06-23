@@ -1,37 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/menunew" android:onClick="onNewItemSelected"
-		android:showAsAction="ifRoom|withText" android:title="@string/recipemenucreate" android:icon="@drawable/menu_new"></item>
+<!--
+      Copyright 2012 Michael Potter
+  
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<item android:id="@+id/menushowall" android:title="@string/recipemenushowall"
-		android:onClick="onShowAllRecipes" android:showAsAction="ifRoom|withText" android:icon="@drawable/menu_showall"></item>
-	<item android:id="@+id/submenusort" android:title="@string/recipemenusort" android:icon="@drawable/menu_sort">
-		<menu>
-            
-            <group android:checkableBehavior="single" android:menuCategory="alternative" android:id="@+id/sorttypes">
-            <item android:id="@+id/menusortname" android:title="@string/menusortname"></item>
-            <item android:id="@+id/menusortrating" android:title="@string/menusortrating">
-	</item>
-            <item android:id="@+id/menusorttime" android:title="@string/menusorttime"></item>
-            <item android:id="@+id/menusortdate" android:title="@string/menusortdate"></item>
-</group>
-            <group android:checkableBehavior="single" android:menuCategory="alternative" android:id="@+id/sortdirections">
-                <item android:id="@+id/menusortascending" android:title="@string/menusortascending"></item>
-                <item android:id="@+id/menusortdescending" android:title="@string/menusortdescending"></item>
+    <item
+        android:id="@+id/menunew"
+        android:icon="@drawable/menu_new"
+        android:onClick="onNewItemSelected"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/recipemenucreate">
+    </item>
+    <item
+        android:id="@+id/menushowall"
+        android:icon="@drawable/menu_showall"
+        android:onClick="onShowAllRecipes"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/recipemenushowall">
+    </item>
+    <item
+        android:id="@+id/submenusort"
+        android:icon="@drawable/menu_sort"
+        android:title="@string/recipemenusort">
+        <menu>
+            <group
+                android:id="@+id/sorttypes"
+                android:checkableBehavior="single"
+                android:menuCategory="alternative" >
+                <item
+                    android:id="@+id/menusortname"
+                    android:title="@string/menusortname">
+                </item>
+                <item
+                    android:id="@+id/menusortrating"
+                    android:title="@string/menusortrating">
+                </item>
+                <item
+                    android:id="@+id/menusorttime"
+                    android:title="@string/menusorttime">
+                </item>
+                <item
+                    android:id="@+id/menusortdate"
+                    android:title="@string/menusortdate">
+                </item>
+            </group>
+            <group
+                android:id="@+id/sortdirections"
+                android:checkableBehavior="single"
+                android:menuCategory="alternative" >
+                <item
+                    android:id="@+id/menusortascending"
+                    android:title="@string/menusortascending">
+                </item>
+                <item
+                    android:id="@+id/menusortdescending"
+                    android:title="@string/menusortdescending">
+                </item>
             </group>
         </menu>
     </item>
-    <item android:title="@string/recipemenusearch" android:showAsAction="ifRoom" android:id="@+id/submenusearch" android:icon="@drawable/menu_search">
+    <item
+        android:id="@+id/submenusearch"
+        android:icon="@drawable/menu_search"
+        android:showAsAction="ifRoom"
+        android:title="@string/recipemenusearch">
         <menu>
-            <item android:id="@+id/menusearch" android:title="@string/menusearchstring"></item>
-            <item android:title="@string/menusearchtag" android:id="@+id/menusearchtag"></item>
-            <item android:title="@string/menusearchtime" android:id="@+id/menusearchtime"></item>
+            <item
+                android:id="@+id/menusearch"
+                android:title="@string/menusearchstring">
+            </item>
+            <item
+                android:id="@+id/menusearchtag"
+                android:title="@string/menusearchtag">
+            </item>
+            <item
+                android:id="@+id/menusearchtime"
+                android:title="@string/menusearchtime">
+            </item>
         </menu>
     </item>
-    <item android:id="@+id/menuimport" android:title="@string/importrecipeslist" android:onClick="onImportFileList"></item><item android:id="@+id/menuexport" android:title="@string/menuexportrecipes" android:onClick="onExportRecipes"></item><item android:id="@+id/menuhelp" android:title="@string/recipemenuhelp" android:onClick="onHelpItemSelected" android:icon="@drawable/menu_help" android:showAsAction="ifRoom"></item>
-    
-    
-    
-    
-    
+    <item
+        android:id="@+id/menuimport"
+        android:onClick="onImportFileList"
+        android:title="@string/importrecipeslist">
+    </item>
+    <item
+        android:id="@+id/menuexport"
+        android:onClick="onExportRecipes"
+        android:title="@string/menuexportrecipes">
+    </item>
+    <item
+        android:id="@+id/menuhelp"
+        android:icon="@drawable/menu_help"
+        android:onClick="onHelpItemSelected"
+        android:showAsAction="ifRoom"
+        android:title="@string/recipemenuhelp">
+    </item>
+
 </menu>
