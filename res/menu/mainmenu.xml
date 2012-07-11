@@ -92,14 +92,28 @@
         </menu>
     </item>
     <item
-        android:id="@+id/menuimport"
-        android:onClick="onImportFileList"
-        android:title="@string/importrecipeslist">
+        android:id="@+id/submenuimportexport"
+        android:icon="@drawable/menu_export"
+        android:title="@string/recipemenuimportexport">
+        <menu>
+            <item
+                android:id="@+id/menuimport"
+                android:onClick="onImportFileList"
+                android:title="@string/importrecipeslist">
+            </item>
+            <item
+                android:id="@+id/menuexport"
+                android:onClick="onExportRecipes"
+                android:title="@string/menuexportrecipes">
+            </item>
+        </menu>
     </item>
     <item
-        android:id="@+id/menuexport"
-        android:onClick="onExportRecipes"
-        android:title="@string/menuexportrecipes">
+        android:id="@+id/menuprefs"
+        android:icon="@drawable/menu_prefs"
+        android:onClick="onPreferences"
+        android:showAsAction="ifRoom"
+        android:title="@string/recipemenuprefs">
     </item>
     <item
         android:id="@+id/menuhelp"

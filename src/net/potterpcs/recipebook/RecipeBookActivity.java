@@ -153,6 +153,8 @@ public class RecipeBookActivity extends FragmentActivity {
     			MenuItem.SHOW_AS_ACTION_IF_ROOM);
     	MenuItemCompat.setShowAsAction(menu.findItem(R.id.menuexport), 
     			MenuItem.SHOW_AS_ACTION_NEVER);
+    	MenuItemCompat.setShowAsAction(menu.findItem(R.id.menuprefs), 
+    			MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
     	hideShowAllItem(menu);
     	setSortOptions(menu);
@@ -197,6 +199,9 @@ public class RecipeBookActivity extends FragmentActivity {
     		return true;
     	case R.id.menuhelp:
     		onHelpItemSelected(item);
+    		return true;
+    	case R.id.menuprefs:
+    		onPreferences(item);
     		return true;
     	case R.id.menusearch:
     		onSearchRequested();
@@ -252,6 +257,11 @@ public class RecipeBookActivity extends FragmentActivity {
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		DialogFragment helpFragment = HelpDialog.newInstance(HELP_FILENAME);
 		helpFragment.show(ft, "help");
+	}
+	
+	public void onPreferences(MenuItem item) {
+    	Intent intent = new Intent(this, Preferences.class);
+    	startActivity(intent);
 	}
 
 	private void startSortActivity(int key, boolean descending) {

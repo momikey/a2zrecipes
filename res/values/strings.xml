@@ -124,5 +124,7 @@
     <string name="timerpickerstart">Start</string>
     <string name="timerpickerstop">Stop</string>
     <string name="timerpickerseparator">:</string>
+    <string name="recipemenuprefs">Preferences</string>
+    <string name="recipemenuimportexport">Import/Export</string>
 
 </resources>

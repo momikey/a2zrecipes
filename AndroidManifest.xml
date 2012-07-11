@@ -130,6 +130,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ImportFileListActivity" android:label="@string/app_name"></activity>
+        <activity android:name=".Preferences" android:label="@string/app_name"></activity>
     </application>
 
 </manifest>
