@@ -24,7 +24,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/ic_launcher"
-        android:name="RecipeBook" android:uiOptions="splitActionBarWhenNarrow">
+        android:name="RecipeBook" android:uiOptions="splitActionBarWhenNarrow" android:theme="@style/atoz">
         <activity
             android:label="@string/app_name"
             android:launchMode="singleTop"
