@@ -126,5 +126,7 @@
     <string name="timerpickerseparator">:</string>
     <string name="recipemenuprefs">Preferences</string>
     <string name="recipemenuimportexport">Import/Export</string>
+    <string name="minutesecond">%1$02d:%2$02d</string>
+    <string name="menushare">Share</string>
 
 </resources>

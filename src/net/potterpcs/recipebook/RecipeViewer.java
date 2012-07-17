@@ -31,6 +31,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
@@ -51,7 +52,7 @@ import android.widget.TextView;
 
 public class RecipeViewer extends FragmentActivity {
 	// Tag for logging
-//	static final String TAG = "RecipeViewer";
+	static final String TAG = "RecipeViewer";
 	
 	// Projections for the cursor adapter
 	static final String[] INGREDIENTS_FIELDS = { RecipeData.IT_NAME };
@@ -62,6 +63,7 @@ public class RecipeViewer extends FragmentActivity {
 	// The helpfile name
 	private static final String HELP_FILENAME = "viewer";
 
+	private ShareCompat.IntentBuilder shareIntent;
 	private RecipeData data;
 	private long rid;
 	RecipeBook app;
@@ -96,17 +98,15 @@ public class RecipeViewer extends FragmentActivity {
 		
 		rid = Long.parseLong(getIntent().getData().getLastPathSegment());
 		
-		Cursor mdc = data.getSingleRecipe(rid);
-		startManagingCursor(mdc);
-		mdc.moveToPosition(0);
-		rvname.setText(mdc.getString(mdc.getColumnIndex(RecipeData.RT_NAME)));
-		rvcreator.setText(mdc.getString(mdc.getColumnIndex(RecipeData.RT_CREATOR)));
-		rvserving.setText(mdc.getString(mdc.getColumnIndex(RecipeData.RT_SERVING)));
-		rvtime.setText(DateUtils.formatElapsedTime(
-				mdc.getLong(mdc.getColumnIndex(RecipeData.RT_TIME))));
-		rvrating.setRating(mdc.getFloat(mdc.getColumnIndex(RecipeData.RT_RATING)));
+		RecipeData.Recipe r = data.getSingleRecipeObject(rid);
 		
-		photoUri = mdc.getString(mdc.getColumnIndex(RecipeData.RT_PHOTO));
+		rvname.setText(r.name);
+		rvcreator.setText(r.creator);
+		rvserving.setText(Integer.toString(r.serving));
+		rvtime.setText(DateUtils.formatElapsedTime(r.time));
+		rvrating.setRating(r.rating);
+		
+		photoUri = r.photo;
 		if (photoUri != null && !photoUri.equals("")) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
 			ImageView iv = new ImageView(this);
@@ -137,6 +137,11 @@ public class RecipeViewer extends FragmentActivity {
 				ingc, INGREDIENTS_FIELDS, INGREDIENTS_IDS, 0);
 		lvingredients.setAdapter(ingredients);
 		
+		// Set up sharing intent
+		shareIntent = ShareCompat.IntentBuilder.from(this)
+			.setSubject(r.name)
+			.setText(r.toText(this))
+			.setType("text/plain");
 	}
 	
 	@Override
@@ -168,8 +173,14 @@ public class RecipeViewer extends FragmentActivity {
 		// Set up the action bar if we have one
 		MenuItemCompat.setShowAsAction(menu.findItem(R.id.viewertimer), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.viewershare),
+				MenuItem.SHOW_AS_ACTION_ALWAYS);
 		MenuItemCompat.setShowAsAction(menu.findItem(R.id.viewerhelp), 
 				MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
+		// Set up Share menu item
+		ShareCompat.configureMenuItem(menu.findItem(R.id.viewershare), shareIntent);
+		
 		return true;
 	}
 	
@@ -178,6 +189,9 @@ public class RecipeViewer extends FragmentActivity {
 		switch (item.getItemId()) {
 		case R.id.viewertimer:
 			onTimerSelected(item);
+			return true;
+		case R.id.viewershare:
+			onShare(item);
 			return true;
 		case R.id.viewerhelp:
 			onHelpItemSelected(item);
@@ -205,6 +219,10 @@ public class RecipeViewer extends FragmentActivity {
     	transaction.replace(R.id.timerfragment, timerFragment);
     	transaction.addToBackStack(null);
     	transaction.commit();
+	}
+	
+	public void onShare(MenuItem item) {
+		startActivity(shareIntent.createChooserIntent());
 	}
 	
 	private void setOrDownloadImage(ImageView iv, String photoUri) {

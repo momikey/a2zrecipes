@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -111,6 +112,33 @@ public class RecipeData {
 		String[] tags;
 		String photo;
 		
+		// convert the Recipe to plain text for sharing
+		// takes a Context so that it can load resource strings
+		public String toText(Context ctx) {
+			StringBuilder sb = new StringBuilder();
+			Resources res = ctx.getResources();
+			sb.append(name + ' ' + res.getString(R.string.rvby) + ' ' + creator + '\n');
+			sb.append(description + '\n');
+			sb.append(res.getString(R.string.rvserves) + ' ');
+			sb.append(serving);
+			sb.append('\n' + res.getString(R.string.recipetime) + ' ');
+			sb.append(String.format(res.getString(R.string.minutesecond), time/60, time%60));
+			sb.append("\n\n" + res.getString(R.string.ingredientstext) + '\n');
+			for (String ing : ingredients) {
+				sb.append("* " + ing + '\n');
+			}
+			sb.append('\n' + res.getString(R.string.directionstext) + '\n');
+			
+			// we need to iterate by index to preserve step numbers
+			for (int i = 0; i < directions.length; ++i) {
+				// array indices are 0-based, recipes are 1-based
+				sb.append(i+1);
+				sb.append(". " + directions[i] + '\n');
+			}
+			return sb.toString();
+		}
+		
+		// convert the Recipe to JSON for exporting 
 		public String toJSONString() {
 			return toJSON().toString();
 		}

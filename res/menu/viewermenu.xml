@@ -23,12 +23,13 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/viewermenutimer">
     </item>
-    <item
+    <item android:id="@+id/viewershare" android:title="@string/menushare" android:icon="@drawable/menu_share" android:onClick="onShare" android:showAsAction="always"></item><item
         android:id="@+id/viewerhelp"
         android:icon="@drawable/menu_help"
         android:onClick="onHelpItemSelected"
         android:showAsAction="ifRoom"
         android:title="@string/recipemenuhelp">
     </item>
+    
 
 </menu>
