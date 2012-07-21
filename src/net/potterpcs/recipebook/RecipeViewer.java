@@ -25,8 +25,10 @@ package net.potterpcs.recipebook;
 import java.util.HashMap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -64,8 +66,11 @@ public class RecipeViewer extends FragmentActivity {
 	private static final String HELP_FILENAME = "viewer";
 
 	private ShareCompat.IntentBuilder shareIntent;
+	private SharedPreferences preferences;
 	private RecipeData data;
 	private long rid;
+	private boolean photoPref;
+	private boolean dirPhotoPref;
 	RecipeBook app;
 	TextView rvname;
 	TextView rvcreator;
@@ -85,6 +90,9 @@ public class RecipeViewer extends FragmentActivity {
 
 		app = (RecipeBook) getApplication();
 		data = app.getData();
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		photoPref = preferences.getBoolean(getResources().getString(R.string.prefphotokey), true);
+		dirPhotoPref = preferences.getBoolean(getResources().getString(R.string.prefdirphotokey), true);
 
 		// Fill in the UI
 		rvname = (TextView) findViewById(R.id.rvname);
@@ -107,7 +115,7 @@ public class RecipeViewer extends FragmentActivity {
 		rvrating.setRating(r.rating);
 		
 		photoUri = r.photo;
-		if (photoUri != null && !photoUri.equals("")) {
+		if (photoPref && photoUri != null && !photoUri.equals("")) {
 			rvphoto = (FrameLayout) findViewById(R.id.photofragment);
 			ImageView iv = new ImageView(this);
 			setOrDownloadImage(iv, photoUri);
@@ -147,22 +155,23 @@ public class RecipeViewer extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		lvdirections.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Cursor c = data.getRecipeDirections(rid);
-				c.moveToPosition(position);
-				String uri = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
-				if (uri != null && !uri.equals("")) {
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-					PhotoDialog pd = PhotoDialog.newInstance(uri);
-					pd.show(ft, "dialog");
+		if (dirPhotoPref) {
+			lvdirections.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					Cursor c = data.getRecipeDirections(rid);
+					c.moveToPosition(position);
+					String uri = c.getString(c.getColumnIndex(RecipeData.DT_PHOTO));
+					if (uri != null && !uri.equals("")) {
+						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+						PhotoDialog pd = PhotoDialog.newInstance(uri);
+						pd.show(ft, "dialog");
+					}
+					c.close();
 				}
-				c.close();
-			}
-		});
-
+			});
+		}
 	}
 	
 	@Override
@@ -262,8 +271,10 @@ public class RecipeViewer extends FragmentActivity {
 				}
 			case R.id.directionphoto:
 				if (!isBound && view instanceof ImageView) {
-					RecipeBook.setImageViewBitmapDecoded(parent, (ImageView) view, 
-							cursor.getString(columnIndex), 160);
+					if (dirPhotoPref) {
+						RecipeBook.setImageViewBitmapDecoded(parent, (ImageView) view, 
+								cursor.getString(columnIndex), 160);
+					}
 					boundViews.put(view, true);
 				}
 				break;

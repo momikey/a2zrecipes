@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -198,16 +199,21 @@ public class RecipeFlipbook extends FragmentActivity {
 			lvingredients.setAdapter(ingredients);
 			lvdirections.setAdapter(directions);
 			
-			ImageView iv = new ImageView(getActivity());
-			iv.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-					PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
-					pd.show(ft, "dialog");
-				}
-			});
-			rvphoto.addView(iv);
+			boolean photoPref = 
+				PreferenceManager.getDefaultSharedPreferences(getActivity())
+				.getBoolean(getResources().getString(R.string.prefphotokey), true);
+			if (photoPref) {
+				ImageView iv = new ImageView(getActivity());
+				iv.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+						PhotoDialog pd = PhotoDialog.newInstance(recipe.photo);
+						pd.show(ft, "dialog");
+					}
+				});
+				rvphoto.addView(iv);
+			}
 //			}	
 			return v;
 		}

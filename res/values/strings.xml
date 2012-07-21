@@ -128,5 +128,12 @@
     <string name="recipemenuimportexport">Import/Export</string>
     <string name="minutesecond">%1$02d:%2$02d</string>
     <string name="menushare">Share</string>
+    <string name="prefphotokey">photos</string>
+    <string name="prefphoto">Show recipe images</string>
+    <string name="prefphotosummary">Display photo images in recipe and flipbook views</string>
+    <string name="prefdirphotokey">directionphotos</string>
+    <string name="prefdirphotos">Show direction images</string>
+    <string name="prefdirphotosummary">Display photo thumbnails for each recipe step</string>
+    <string name="prefgroupphotos">Image Display</string>
 
 </resources>

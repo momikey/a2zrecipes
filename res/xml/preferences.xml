@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    
+
+    <PreferenceCategory android:title="@string/prefgroupphotos" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="@string/prefphotokey"
+            android:selectable="true"
+            android:summary="@string/prefphotosummary"
+            android:title="@string/prefphoto" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="@string/prefdirphotokey"
+            android:selectable="true"
+            android:summary="@string/prefdirphotosummary"
+            android:title="@string/prefdirphotos" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
