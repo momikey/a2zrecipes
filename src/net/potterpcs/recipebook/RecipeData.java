@@ -447,8 +447,7 @@ public class RecipeData {
 		String selection = TextUtils.join(" and ", parts);	
 		String[] selectionArgs = (String[]) args.toArray(new String[args.size()]);
 //		Log.i(TAG, selection + ", " + selectionArgs + ", " + sortBy);
-		Cursor c = queryBuilder(selection, selectionArgs, sortBy);
-		return c;
+		return queryBuilder(selection, selectionArgs, sortBy);
 	}
 	
 	private String createInnerJoin(String left, String right, String left_id, String right_id) {

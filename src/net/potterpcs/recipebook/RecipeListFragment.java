@@ -84,6 +84,7 @@ public class RecipeListFragment extends ListFragment {
 			}
 		}
 	};
+	private SimpleCursorAdapter adapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,6 +96,18 @@ public class RecipeListFragment extends ListFragment {
 	public void onStart() {
 		super.onStart();
 		registerForContextMenu(getListView());
+		// This is moved from onResume() to onStart() for symmetry with
+		// onStop() below.
+		retrieveRecipes();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		// This is moved to onStop() because ListViews access their adapters
+		// and cursors in onSaveInstanceState(), which can cause a crash by
+		// reading from a closed cursor.
+		cursor.close();
 	}
 	
 	@Override
@@ -106,13 +119,13 @@ public class RecipeListFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		retrieveRecipes();
+//		retrieveRecipes();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		cursor.close();
+//		cursor.close();
 	}
 	
 	private void retrieveRecipes() {
@@ -151,7 +164,7 @@ public class RecipeListFragment extends ListFragment {
 		cursor = data.query(activity.getSearchQuery(), activity.getSearchTag(), 
 				activity.getMinTime(), activity.getMaxTime(), sortData);
 
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO, 0);
+		adapter = new SimpleCursorAdapter(activity, R.layout.rowlayout, cursor, FROM, TO, 0);
 
 		adapter.setViewBinder(VIEW_BINDER);
 		setListAdapter(adapter);
