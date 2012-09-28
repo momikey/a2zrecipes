@@ -270,7 +270,8 @@ public class RecipeFlipbook extends FragmentActivity {
 			.build();
 		int id = flip.ids[pager.getCurrentItem()];
 		uri = ContentUris.withAppendedId(uri, id);
-		Intent intent = new Intent(RecipeBook.OPEN_RECIPE_ACTION, uri);
+//		Intent intent = new Intent(RecipeBook.OPEN_RECIPE_ACTION, uri);
+		Intent intent = new Intent(this, RecipeViewer.class).setData(uri);
 		startActivity(intent);		
 	}
 
