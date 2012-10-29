@@ -81,7 +81,15 @@ public class RecipeViewer extends FragmentActivity {
 	ListView lvdirections;
 	FrameLayout rvphoto;
 	String photoUri;
+
+	// Cursor adapters for the directions and ingredients lists
+	private SimpleCursorAdapter directionsAdapter;
+	private SimpleCursorAdapter ingredientsAdapter;
 	
+	// Cursors for use by the ListView adapters
+	private Cursor directionsCursor;
+	private Cursor ingredientsCursor;
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -130,20 +138,16 @@ public class RecipeViewer extends FragmentActivity {
 			rvphoto.addView(iv);
 		}
 
-		Cursor dirc = data.getRecipeDirections(rid);
-		startManagingCursor(dirc);
-		SimpleCursorAdapter directions = new SimpleCursorAdapter(this, R.layout.recipedirectionrow,
-				dirc, DIRECTIONS_FIELDS, DIRECTIONS_IDS, 0);
-		directions.setViewBinder(new DirectionViewBinder(this));
+		directionsAdapter = new SimpleCursorAdapter(this, R.layout.recipedirectionrow,
+				null, DIRECTIONS_FIELDS, DIRECTIONS_IDS, 0);
+		directionsAdapter.setViewBinder(new DirectionViewBinder(this));
 		
-		lvdirections.setAdapter(directions);
+		lvdirections.setAdapter(directionsAdapter);
 		lvdirections.setDividerHeight(0);
 		
-		Cursor ingc = data.getRecipeIngredients(rid);
-		startManagingCursor(ingc);
-		SimpleCursorAdapter ingredients = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, 
-				ingc, INGREDIENTS_FIELDS, INGREDIENTS_IDS, 0);
-		lvingredients.setAdapter(ingredients);
+		ingredientsAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, 
+				null, INGREDIENTS_FIELDS, INGREDIENTS_IDS, 0);
+		lvingredients.setAdapter(ingredientsAdapter);
 		
 		// Set up sharing intent
 		shareIntent = ShareCompat.IntentBuilder.from(this)
@@ -155,6 +159,16 @@ public class RecipeViewer extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
+		// This is essentially a single-threaded emulation of what
+		// the Loader framework already does. Hopefully it will work
+		// until I rewrite the app to use Loaders everywhere.
+		directionsCursor = data.getRecipeDirections(rid);
+		directionsAdapter.swapCursor(directionsCursor);
+		
+		ingredientsCursor = data.getRecipeIngredients(rid);
+		ingredientsAdapter.swapCursor(ingredientsCursor);
+
 		if (dirPhotoPref) {
 			lvdirections.setOnItemClickListener(new OnItemClickListener() {
 				@Override
@@ -172,6 +186,21 @@ public class RecipeViewer extends FragmentActivity {
 				}
 			});
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		// Clean up after ourselves. The Cursors are created in onResume,
+		// so they have to be closed in onPause, really for symmetry reasons.
+		// But first, we swap the Cursors out of their adapters, so that
+		// *those* aren't trying to access a closed cursor, which leads to
+		// all kinds of crashes and bugs.
+		directionsAdapter.swapCursor(null);
+		ingredientsAdapter.swapCursor(null);
+		directionsCursor.close();
+		ingredientsCursor.close();
 	}
 	
 	@Override
