@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.potterpcs.recipebook"
-    android:versionCode="23"
-    android:versionName="1.1.3" >
+<manifest package="net.potterpcs.recipebook"
+    android:versionCode="30"
+    android:versionName="1.2" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -21,15 +20,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name="RecipeBook"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/ic_launcher"
-        android:name="RecipeBook" android:uiOptions="splitActionBarWhenNarrow" android:theme="@style/atoz">
+        android:theme="@style/atoz"
+        android:uiOptions="splitActionBarWhenNarrow" >
         <activity
+            android:name=".RecipeBookActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:name=".RecipeBookActivity" >
-            <intent-filter >
+            android:launchMode="singleTop" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,7 +43,7 @@
                 </data>
             </intent-filter>
             -->
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.SEARCH" >
                 </action>
             </intent-filter>
@@ -53,9 +54,9 @@
             </meta-data>
         </activity>
         <activity
-            android:label="@string/app_name"
-            android:name=".RecipeViewer" >
-            <intent-filter >
+            android:name=".RecipeViewer"
+            android:label="@string/app_name" >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" >
                 </action>
 
@@ -71,9 +72,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/app_name"
-            android:name=".RecipeEditor" >
-            <intent-filter >
+            android:name=".RecipeEditor"
+            android:label="@string/app_name" >
+            <intent-filter>
                 <action android:name="android.intent.action.INSERT_OR_EDIT" >
                 </action>
 
@@ -87,8 +88,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:label="@string/app_name"
-            android:name=".RecipeFlipbook" >
+            android:name=".RecipeFlipbook"
+            android:label="@string/app_name" >
         </activity>
 
         <meta-data
@@ -96,24 +97,26 @@
             android:value=".RecipeBookActivity" />
 
         <activity
-            android:label="@string/app_name"
-            android:name=".ExporterActivity" >
+            android:name=".ExporterActivity"
+            android:label="@string/app_name" >
         </activity>
 
         <service android:name=".CacheService" >
         </service>
 
         <activity
-            android:label="@string/app_name"
-            android:name=".ImporterActivity" >
-            <intent-filter >
+            android:name=".ImporterActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
                     android:host="*"
+                    android:mimeType="*/*"
                     android:pathPattern=".*\\.rcp"
-                    android:scheme="file" android:mimeType="*/*"/>
+                    android:scheme="file" />
                 <data
                     android:host="*"
                     android:pathPattern=".*\\.rcp"
@@ -124,13 +127,25 @@
                     android:scheme="https" />
                 <data
                     android:host="*"
-                    android:scheme="content" android:mimeType="*/*" android:pathPattern=".*\\.rcp"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                    android:mimeType="*/*"
+                    android:pathPattern=".*\\.rcp"
+                    android:scheme="content" />
 
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-        <activity android:name=".ImportFileListActivity" android:label="@string/app_name"></activity>
-        <activity android:name=".Preferences" android:label="@string/app_name"></activity>
+        <activity
+            android:name=".ImportFileListActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".Preferences"
+            android:label="@string/app_name" >
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIN4qyfaGFN6zV0-xXMTIQNlpQnU2qYn4Ky-7w5A" />
     </application>
 
 </manifest>
