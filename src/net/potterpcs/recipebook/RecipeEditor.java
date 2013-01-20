@@ -29,6 +29,7 @@ import java.util.Locale;
 import net.potterpcs.recipebook.RecipeData.Recipe;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -84,10 +85,13 @@ public class RecipeEditor extends FragmentActivity {
 	Fragment nextFragment;
 	Fragment lastFragment;
 	
+	private BackupManager backupManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.recipeeditor);
+		backupManager = new BackupManager(this);
 		
 		recipeData = ((RecipeBook) getApplication()).getData();
 		
@@ -290,6 +294,9 @@ public class RecipeEditor extends FragmentActivity {
 			// Conflict error
 			AlertDialogFragment adf = AlertDialogFragment.newInstance(this);
 			adf.show(getSupportFragmentManager(), "alert");
+		} else {
+			// successfully saved the recipe, now notify the backup agent
+			backupManager.dataChanged();
 		}
 	}
 	
